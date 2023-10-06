@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string>
 #include <format>
+#include <dxgidebug.h>
 
 
 #include <d3d12.h>
@@ -10,6 +11,7 @@
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib")
 
 
 
@@ -174,7 +176,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     // エラー時に止まる
     infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
     // 警告時に止まる
-    infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+    //infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
     // 抑制するメッセージのID
     D3D12_MESSAGE_ID denyIds[] = {
@@ -215,6 +217,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, nullptr, IID_PPV_ARGS(&commandList));
   // コマンドリストの生成がうまくいかなかったので起動できない
   assert(SUCCEEDED(hr));
+
+  // 初期値0でFenceを作る
+  ID3D12Fence* fence = nullptr;
+  uint64_t fenceValue = 0;
+  hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+  assert(SUCCEEDED(hr));
+
+  // FenceのSignalを待つためのイベントを作成する
+  HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+  assert(fenceEvent != nullptr);
 
 
   // スワップチェーンを生成する
@@ -268,11 +280,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   // これから書き込むバックバッファのインデックスを取得
   UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+
+  // TransitionBarrierの設定
+  D3D12_RESOURCE_BARRIER barrier{};
+  // 今回のバリアはTransition
+  barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+  // Noneにしておく
+  barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+  // バリアを張る対象のリソース。現在のバックバッファに対して行う
+  barrier.Transition.pResource = swapChainResources[backBufferIndex];
+  // 遷移前（現在）のResourceState
+  barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+  // 遷移後のResourceState
+  barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+  // TransitionBarrierを張る
+  commandList->ResourceBarrier(1, &barrier);
+
+
+
+
   // 描画先のRTVを設定する
   commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, nullptr);
   // 指定した色で画面全体をクリアする
   float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f }; // 青っぽい色。RGBAの順       
   commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
+
+  // 今回はRenderTargetからPresentにする
+  barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+  barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+  // TransitionBarrierを張る
+  commandList->ResourceBarrier(1, &barrier);
+
   // コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseすること
   hr = commandList->Close();
   assert(SUCCEEDED(hr));
@@ -282,6 +320,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   commandQueue->ExecuteCommandLists(1, commandLists);
   // GPUとOSに画面の交換を行うよう通知する
   swapChain->Present(1, 0);
+
+  // Fenceの値を更新
+  fenceValue++;
+  // GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
+  commandQueue->Signal(fence, fenceValue);
+
+  // Fenceの値が指定したSignal値にたどり着いているか確認する
+// GetCompletedValueの初期値はFence作成時に渡した初期値
+  if (fence->GetCompletedValue() < fenceValue)
+  {
+    // 指定したSignalにたどりついていないので、たどり着くまで待つようにイベントを設定する
+    fence->SetEventOnCompletion(fenceValue, fenceEvent);
+    // イベント待つ
+    WaitForSingleObject(fenceEvent, INFINITE);
+  }
+
+
+
   // 次のフレーム用のコマンドリストを準備
   hr = commandAllocator->Reset();
   assert(SUCCEEDED(hr));
@@ -310,7 +366,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   }
 
+  CloseHandle(fenceEvent);
+  fence->Release();
+  rtvDescriptorHeap->Release();
+  swapChainResources[0]->Release();
+  swapChainResources[1]->Release();
+  swapChain->Release();
+  commandList->Release();
+  commandAllocator->Release();
+  commandQueue->Release();
+  device->Release();
+  useAdapter->Release();
+  dxgiFactory->Release();
+#ifdef _DEBUG
+  debugController->Release();
+#endif
+  CloseWindow(hwnd);
 
+
+
+
+  // リソースリークチェック
+  IDXGIDebug1* debug;
+  if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
+    debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+    debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
+    debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
+    debug->Release();
+  }
 
 
   return 0;
