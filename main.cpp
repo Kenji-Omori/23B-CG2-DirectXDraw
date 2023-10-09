@@ -26,6 +26,8 @@ typedef struct Vector4
 
 
 
+
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -155,6 +157,11 @@ IDxcBlob* CompileShader(
   // 実行用のバイナリを返却
   return shaderBlob;
 
+
+}
+
+ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
+{
 
 }
 
@@ -328,6 +335,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   // RootSignature作成
   D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
   descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+  // RootParameter作成。複数設定できるので配列。今回は結果1つだけなので長さ1の配列
+  D3D12_ROOT_PARAMETER rootParameters[1] = {};
+  rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;    // CBVを使う
+  rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;   // PixelShaderで使う
+  rootParameters[0].Descriptor.ShaderRegister = 0;    // レジスタ番号0とバインド
+  descriptionRootSignature.pParameters = rootParameters;  // ルートパラメータ配列へのポインタ
+  descriptionRootSignature.NumParameters = _countof(rootParameters);  // 配列の長さ
+
+  // マテリアル用のリソースを作る。今回はcolor1つ分のサイズを用意する
+  ID3D12Resource* materialResource = CreateBufferResource(device, sizeof(Vector4));
+  // マテリアルにデータを書き込む
+  Vector4* materialData = nullptr;
+  // 書き込むためのアドレスを取得
+  materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+  // 今回は赤を書き込んでみる
+  *materialData = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+
   // シリアライズしてバイナリにする
   ID3DBlob* signatureBlob = nullptr;
   ID3DBlob* errorBlob = nullptr;
