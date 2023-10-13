@@ -41,6 +41,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
+
 std::wstring ConvertString(const std::string &str)
 {
   if (str.empty())
@@ -162,6 +163,26 @@ IDxcBlob* CompileShader(
 
 ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
 {
+  // 頂点リソース用のヒープの設定
+  D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+  uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;// UploadHeapを使う
+  // 頂点リソースの設定
+  D3D12_RESOURCE_DESC resourceDesc{};
+  // バッファリソース。テクスチャの場合はまた別の設定をする
+  resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+  resourceDesc.Width = sizeInBytes;// リソースのサイズ。
+  // バッファの場合はこれらは1にする決まり
+  resourceDesc.Height = 1;
+  resourceDesc.DepthOrArraySize = 1;
+  resourceDesc.MipLevels = 1;
+  resourceDesc.SampleDesc.Count = 1;
+  // バッファの場合はこれにする決まり
+  resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+  // 実際に頂点リソースを作る
+  ID3D12Resource* resource = nullptr;
+  HRESULT hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+  assert(SUCCEEDED(hr));
+  return resource;
 
 }
 
@@ -414,25 +435,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
   assert(SUCCEEDED(hr));
 
-  // 頂点リソース用のヒープの設定
-  D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-  uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;// UploadHeapを使う
-  // 頂点リソースの設定
-  D3D12_RESOURCE_DESC vertexResourceDesc{};
-  // バッファリソース。テクスチャの場合はまた別の設定をする
-  vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-  vertexResourceDesc.Width = sizeof(Vector4) * 3;// リソースのサイズ。今回はVector4を3頂点分
-  // バッファの場合はこれらは1にする決まり
-  vertexResourceDesc.Height = 1;
-  vertexResourceDesc.DepthOrArraySize = 1;
-  vertexResourceDesc.MipLevels = 1;
-  vertexResourceDesc.SampleDesc.Count = 1;
-  // バッファの場合はこれにする決まり
-  vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-  // 実際に頂点リソースを作る
-  ID3D12Resource* vertexResource = nullptr;
-  hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &vertexResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexResource));
-  assert(SUCCEEDED(hr));
+  // 頂点リソース用のヒープの設定(関数化)
+  ID3D12Resource* vertexResource = CreateBufferResource(device, sizeof(Vector4) * 3);
 
   // 頂点バッファビューを作成する
   D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
@@ -472,25 +476,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   scissorRect.right = kClientWidth;
   scissorRect.top = 0;
   scissorRect.bottom = kClientHeight;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // スワップチェーンを生成する
   IDXGISwapChain4* swapChain = nullptr;
@@ -575,7 +560,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   commandList->SetGraphicsRootSignature(rootSignature); 
   commandList->SetPipelineState(graphicsPipelineState);   // PSOを設定
   commandList->IASetVertexBuffers(0, 1, &vertexBufferView);   // VBVを設定
-  // 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけば良いcommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  // 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけば良い
+  commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
   // 描画！（DrawCall/ドローコール）。3頂点で1つのインスタンス。インスタンスについては今後
   commandList->DrawInstanced(3, 1, 0, 0);
 
