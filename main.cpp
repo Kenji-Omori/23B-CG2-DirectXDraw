@@ -192,6 +192,8 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 
+  CoInitializeEx(0, COINIT_MULTITHREADED);
+
   OutputDebugStringA("Hello, DirectX!\n");
   WNDCLASS wc{};
   wc.lpfnWndProc = WindowProc;
@@ -562,6 +564,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   commandList->IASetVertexBuffers(0, 1, &vertexBufferView);   // VBVを設定
   // 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけば良い
   commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+  commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
+
+
+
   // 描画！（DrawCall/ドローコール）。3頂点で1つのインスタンス。インスタンスについては今後
   commandList->DrawInstanced(3, 1, 0, 0);
 
@@ -638,6 +645,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   swapChainResources[0]->Release();
   swapChainResources[1]->Release();
   swapChain->Release();
+  materialResource->Release();
   commandList->Release();
   commandAllocator->Release();
   commandQueue->Release();
@@ -661,6 +669,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     debug->Release();
   }
 
-
+  CoUninitialize();
   return 0;
 }
