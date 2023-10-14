@@ -5,6 +5,14 @@
 #include <dxgidebug.h>
 #include <dxcapi.h>
 
+#include "externals/imgui/imgui.h"
+#include "externals/imgui/imgui_impl_dx12.h"
+#include "externals/imgui/imgui_impl_win32.h"
+
+#include "externals/DirectXTex/DirectXTex.h"
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -46,6 +54,11 @@ Matrix4x4 MakeIdentity4x4()
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+
+  if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
+    return true;
+  }
+
   switch (msg)
   {
   case WM_DESTROY:
@@ -201,6 +214,99 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
   return resource;
 
 }
+
+ID3D12DescriptorHeap* CreateDescriptorHeap(
+  ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
+{
+  ID3D12DescriptorHeap* descriptorHeap = nullptr;
+  D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
+  descriptorHeapDesc.Type = heapType;
+  descriptorHeapDesc.NumDescriptors = numDescriptors;
+  descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+  HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+  assert(SUCCEEDED(hr));
+  return descriptorHeap;
+}
+
+DirectX::ScratchImage LoadTexture(const std::string& filePath)
+{
+  // テクスチャファイルを読んでプログラムで扱えるようにする
+  DirectX::ScratchImage image{};
+  std::wstring filePathW = ConvertString(filePath);
+  HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+  assert(SUCCEEDED(hr));
+
+  // ミップマップの作成
+  DirectX::ScratchImage mipImages{};
+  hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+  assert(SUCCEEDED(hr));
+
+  // ミップマップ付きのデータを返す
+  return mipImages;
+}
+
+ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata)
+{
+  // 1. metadataを基にResourceの設定
+  // // metadataを基にResourceの設定
+  D3D12_RESOURCE_DESC resourceDesc{};
+  resourceDesc.Width = UINT(metadata.width); // Textureの幅
+  resourceDesc.Height = UINT(metadata.height); // Textureの高さ
+  resourceDesc.MipLevels = UINT16(metadata.mipLevels); // mipmapの数
+  resourceDesc.DepthOrArraySize = UINT16(metadata.arraySize); // 奥行き or 配列Textureの配列数
+  resourceDesc.Format = metadata.format; // TextureのFormat
+  resourceDesc.SampleDesc.Count = 1; // サンプリングカウント。1固定。
+  resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension); // Textureの次元数。普段使っているのは2次元
+
+
+
+  // 2. 利用するHeapの設定
+  // 利用するHeapの設定。非常に特殊な運用。02_04exで一般的なケース版がある
+  D3D12_HEAP_PROPERTIES heapProperties{};
+  heapProperties.Type = D3D12_HEAP_TYPE_CUSTOM; // 細かい設定を行う
+  heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK; // WriteBackポリシーでCPUアクセス可能
+  heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; //　プロセッサの近くに配置
+
+  // 3. Resourceを生成する
+  // Resourceの生成
+  ID3D12Resource* resource = nullptr;
+  HRESULT hr = device->CreateCommittedResource(
+    &heapProperties, // Heapの設定
+    D3D12_HEAP_FLAG_NONE, // Heapの特殊な設定。特になし。
+    &resourceDesc,  // Resourceの設定
+    D3D12_RESOURCE_STATE_GENERIC_READ,  // 初回のResourceState。Textureは基本読むだけ
+    nullptr, // Clear最適値。使わないのでnullptr
+    IID_PPV_ARGS(&resource)); // 作成するResourceポインタへのポインタ
+  assert(SUCCEEDED(hr));
+  return resource;
+
+}
+
+void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages)
+{
+  // Meta情報を取得
+  const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
+  // 全MipMapについて
+  for (size_t mipLevel = 0; mipLevel < metadata.mipLevels; ++mipLevel) {
+    // MipMapLevelを指定して各Imageを取得
+    const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
+    // Textureに転送
+    HRESULT hr = texture->WriteToSubresource(
+      UINT(mipLevel),
+      nullptr,              // 全領域へコピー
+      img->pixels,          // 元データアドレス
+      UINT(img->rowPitch),  // 1ラインサイズ
+      UINT(img->slicePitch) // 1枚サイズ
+    );
+    assert(SUCCEEDED(hr));
+  }
+}
+
+
+
+
+
+
 
 
 
@@ -521,14 +627,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   hr=dxgiFactory->CreateSwapChainForHwnd(commandQueue,hwnd,&swapChainDesc,nullptr,nullptr,reinterpret_cast<IDXGISwapChain1**>(&swapChain));
   assert(SUCCEEDED(hr));
 
-  // ディスクリプタヒープの生成
-  ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
-  D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc{};
-  rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー用
-  rtvDescriptorHeapDesc.NumDescriptors = 2; // ダブルバッファ用に2つ。多くても別に構わない
-  hr = device->CreateDescriptorHeap(&rtvDescriptorHeapDesc, IID_PPV_ARGS(&rtvDescriptorHeap));
-  // ディスクリプタヒープが作れなかったので起動できない
-  assert(SUCCEEDED(hr));
+  //// ディスクリプタヒープの生成
+  //D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc{};
+  //rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー用
+  //rtvDescriptorHeapDesc.NumDescriptors = 2; // ダブルバッファ用に2つ。多くても別に構わない
+  //hr = device->CreateDescriptorHeap(&rtvDescriptorHeapDesc, IID_PPV_ARGS(&rtvDescriptorHeap));
+  //// ディスクリプタヒープが作れなかったので起動できない
+  //assert(SUCCEEDED(hr));
+
+  // RTV用のヒープでディスクリプタの数は2。RTVはShader内で触るものではないので、ShaderVisibleはfalse
+  ID3D12DescriptorHeap* rtvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV,2, false);
+
+  // SRV用のヒープでディスクリプタの数は128。SRVはShader内で触るものなので、ShaderVisibleはtrue
+  ID3D12DescriptorHeap* srvDescriptorHeap = CreateDescriptorHeap(device,D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,128,true);
+
+
+  // Textureを読んで転送する
+  DirectX::ScratchImage mipImages = LoadTexture("resources/uvChecker.png");
+  const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
+  ID3D12Resource* textureResource = CreateTextureResource(device, metadata);
+  UploadTextureData(textureResource, mipImages);
+
+
 
   // SwapChainからResourceを引っ張ってくる
   ID3D12Resource* swapChainResources[2] = { nullptr };
@@ -583,6 +703,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f }; // 青っぽい色。RGBAの順       
   commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
 
+  // 描画用のDescriptorHeapの設定
+  ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap };
+  commandList->SetDescriptorHeaps(1, descriptorHeaps);
+
+
 
   commandList->RSSetViewports(1, &viewport);  // Viewportを設定
   commandList->RSSetScissorRects(1, &scissorRect);    // Scirssorを設定
@@ -601,6 +726,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   // 描画！（DrawCall/ドローコール）。3頂点で1つのインスタンス。インスタンスについては今後
   commandList->DrawInstanced(3, 1, 0, 0);
+
+  // 実際のcommandListのImGuiの描画コマンドを積む
+//  ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
+
 
 
 
@@ -652,6 +781,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
+
+  // ImGuiの初期化。詳細はさして重要ではないので解説は省略する。
+  // こういうもんである
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGui::StyleColorsDark();
+  ImGui_ImplWin32_Init(hwnd);
+  ImGui_ImplDX12_Init(device,
+    swapChainDesc.BufferCount,
+    rtvDesc.Format,
+    srvDescriptorHeap,
+    srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+    srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+
   MSG msg{};
   while(msg.message != WM_QUIT)
   {
@@ -661,6 +804,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       DispatchMessage(&msg);
       continue;
     }
+
+
+    //ImGui_ImplDX12_NewFrame();
+    //ImGui_ImplWin32_NewFrame();
+    //ImGui::NewFrame();
+
+    //// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
+    ////ImGui::ShowDemoWindow();
+
+    //// ImGuiの内部コマンドを生成する
+    //ImGui::Render();
+
+
+
 
 
 
