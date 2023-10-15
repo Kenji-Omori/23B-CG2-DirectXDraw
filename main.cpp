@@ -503,10 +503,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   rootParameters[1].Descriptor.ShaderRegister = 0;    // レジスタ番号0を使う
 
 
-  /*
-  * DescriptorRangeの設定 
-  */
-
   D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
   descriptorRange[0].BaseShaderRegister = 0;  // 0から始まる
   descriptorRange[0].NumDescriptors = 1;  // 数は1つ
@@ -517,6 +513,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
   rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;  // Tableの中身の配列を指定
   rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange); // Tableで利用する数
+
+  D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+  staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // バイリニアフィルタ
+  staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;   // 0~1の範囲外をリピート
+  staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+  staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+  staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // 比較しない
+  staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;   // ありったけのMipmapを使う
+  staticSamplers[0].ShaderRegister = 0;   // レジスタ番号0を使う
+  staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
+  descriptionRootSignature.pStaticSamplers = staticSamplers;
+  descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
+
+
 
 
 
@@ -532,8 +542,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   Vector4* materialData = nullptr;
   // 書き込むためのアドレスを取得
   materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-  // 今回は赤を書き込んでみる
-  *materialData = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+  // テクスチャの色そのものということで白を書き込む
+  *materialData = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
   // WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
   ID3D12Resource* wvpResource = CreateBufferResource(device, sizeof(Matrix4x4));
@@ -609,13 +619,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
   // 実際に生成
   ID3D12PipelineState* graphicsPipelineState = nullptr;
-
-  /* ERROR!! 
-  * 
-  * D3D12 ERROR: ID3D12Device::CreateGraphicsPipelineState: Root Signature doesn't match Pixel Shader: Shader sampler descriptor range (BaseShaderRegister=0, NumDescriptors=1, RegisterSpace=0) is not fully bound in root signature
-  * [ STATE_CREATION ERROR #690: CREATEGRAPHICSPIPELINESTATE_PS_ROOT_SIGNATURE_MISMATCH]
-  * D3D12: **BREAK** enabled for the previous message, which was: [ ERROR STATE_CREATION #690: CREATEGRAPHICSPIPELINESTATE_PS_ROOT_SIGNATURE_MISMATCH ]
-  */
 
   hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
   assert(SUCCEEDED(hr));
