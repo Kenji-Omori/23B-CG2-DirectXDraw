@@ -5,11 +5,18 @@
 #include <dxgidebug.h>
 #include <dxcapi.h>
 
-#include "externals/imgui/imgui.h"
-#include "externals/imgui/imgui_impl_dx12.h"
-#include "externals/imgui/imgui_impl_win32.h"
+#include "Core/Type/String.h"
+#include "Core/Type/Vector2.h"
+#include "Core/Type/Vector4.h"
+#include "Core/Type/Matrix4x4.h"
 
-#include "externals/DirectXTex/DirectXTex.h"
+
+
+#include "Externals/imgui/imgui.h"
+#include "Externals/imgui/imgui_impl_dx12.h"
+#include "Externals/imgui/imgui_impl_win32.h"
+
+#include "Externals/DirectXTex/DirectXTex.h"
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
@@ -24,46 +31,13 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #pragma comment(lib, "dxcompiler.lib")
 
 
-typedef struct Vector4
-{
-  float x;
-  float y;
-  float z;
-  float w;
-}Vector4;
 
-
-typedef struct Vector2
-{
-  float x;
-  float y;
-}Vector;
-
-typedef struct Matrix4x4 {
-  float m[4][4];
-}Matrix4x4;
 
 typedef struct VertexData {
   Vector4 position;
   Vector2 texcoord;
 }VertexData;
 
-
-
-Matrix4x4 MakeIdentity4x4()
-{
-  Matrix4x4 result= {
-    {
-      {1,0,0,0},
-      {0,1,0,0},
-      {0,0,1,0},
-      {0,0,0,1}
-    }
-  };
-
-
-  return result;
-}
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -84,39 +58,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 }
 
 
-std::wstring ConvertString(const std::string &str)
-{
-  if (str.empty())
-  {
-    return std::wstring();
-  }
-
-  auto sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, reinterpret_cast<const char *>(&str[0]), static_cast<int>(str.size()), NULL, 0);
-  if (sizeNeeded == 0)
-  {
-    return std::wstring();
-  }
-  std::wstring result(sizeNeeded, 0);
-  MultiByteToWideChar(CP_UTF8, 0, reinterpret_cast<const char *>(&str[0]), static_cast<int>(str.size()), &result[0], sizeNeeded);
-  return result;
-}
-
-std::string ConvertString(const std::wstring &str)
-{
-  if (str.empty())
-  {
-    return std::string();
-  }
-
-  auto sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), NULL, 0, NULL, NULL);
-  if (sizeNeeded == 0)
-  {
-    return std::string();
-  }
-  std::string result(sizeNeeded, 0);
-  WideCharToMultiByte(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), result.data(), sizeNeeded, NULL, NULL);
-  return result;
-}
 
 void Log(const std::string& message)
 {
@@ -552,7 +493,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   // 書き込むためのアドレスを取得
   wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&wvpData));
   // 単位行列を書きこんでおく
-  *wvpData = MakeIdentity4x4();
+  *wvpData = Matrix4x4::Identity();
 
   // シリアライズしてバイナリにする
   ID3DBlob* signatureBlob = nullptr;
@@ -596,10 +537,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
   // Shaderをコンパイルする
-  IDxcBlob* vertexShaderBlob = CompileShader(L"Object3D.VS.hlsl", L"vs_6_0", dxcUtils, dxcCompiler, includeHandler);
+  IDxcBlob* vertexShaderBlob = CompileShader(L"./Resources/Shader/Object3D.VS.hlsl", L"vs_6_0", dxcUtils, dxcCompiler, includeHandler);
   assert(vertexShaderBlob != nullptr);
 
-  IDxcBlob* pixelShaderBlob = CompileShader(L"Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includeHandler);
+  IDxcBlob* pixelShaderBlob = CompileShader(L"./Resources/Shader/Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includeHandler);
   assert(pixelShaderBlob != nullptr);
 
   D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
@@ -711,7 +652,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
   // Textureを読んで転送する
-  DirectX::ScratchImage mipImages = LoadTexture("resources/uvChecker.png");
+  DirectX::ScratchImage mipImages = LoadTexture("./Resources/Texture/uvChecker.png");
   const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
   ID3D12Resource* textureResource = CreateTextureResource(device, metadata);
   UploadTextureData(textureResource, mipImages);
