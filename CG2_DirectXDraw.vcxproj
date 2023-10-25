@@ -43,6 +43,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -94,6 +100,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\Type\Matrix4x4.cpp" />
+    <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp" />
     <ClCompile Include="Externals\imgui\imgui_draw.cpp" />
     <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp" />
@@ -123,6 +130,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Core\Type\Matrix4x4.h" />
     <ClInclude Include="Core\Type\Vector2.h" />
     <ClInclude Include="Core\Type\Vector4.h" />
+    <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Externals\imgui\imconfig.h" />
     <ClInclude Include="Externals\imgui\imgui.h" />
     <ClInclude Include="Externals\imgui\imgui_impl_dx12.h" />

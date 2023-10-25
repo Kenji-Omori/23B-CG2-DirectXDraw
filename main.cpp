@@ -1,14 +1,17 @@
-#include <Windows.h>
+
 #include <cstdint>
 #include <string>
 #include <format>
 #include <dxgidebug.h>
 #include <dxcapi.h>
 
-#include "Core/Type/String.h"
-#include "Core/Type/Vector2.h"
-#include "Core/Type/Vector4.h"
-#include "Core/Type/Matrix4x4.h"
+#include <Core/Window.h>
+
+#include <Core/Type/String.h>
+#include <Core/Type/Vector2.h>
+#include <Core/Type/Vector4.h>
+#include <Core/Type/Matrix4x4.h>
+
 
 
 
@@ -37,26 +40,6 @@ typedef struct VertexData {
   Vector4 position;
   Vector2 texcoord;
 }VertexData;
-
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-
-  if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
-    return true;
-  }
-
-  switch (msg)
-  {
-  case WM_DESTROY:
-    PostQuitMessage(0);
-    return 0;
-  default:
-    break;
-  }
-  return DefWindowProc(hwnd, msg, wparam, lparam);
-}
-
 
 
 void Log(const std::string& message)
@@ -270,33 +253,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   CoInitializeEx(0, COINIT_MULTITHREADED);
 
+
   OutputDebugStringA("Hello, DirectX!\n");
-  WNDCLASS wc{};
-  wc.lpfnWndProc = WindowProc;
-  wc.lpszClassName = L"CG2WindowClass";
-  wc.hInstance = GetModuleHandle(nullptr);
-  wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-  RegisterClass(&wc);
+  Core::Window window;
+  window.Initialize();
+  //WNDCLASS wc{};
+  //wc.lpfnWndProc = WindowProc;
+  //wc.lpszClassName = L"CG2WindowClass";
+  //wc.hInstance = GetModuleHandle(nullptr);
+  //wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+  //RegisterClass(&wc);
 
 
-  const int32_t kClientWidth = 720;
-  const int32_t kClientHeight = 720;
-  RECT wrc = { 0,0,kClientWidth, kClientHeight };
-  AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU, false);
+  //const int32_t kClientWidth = 720;
+  //const int32_t kClientHeight = 720;
+  //RECT wrc = { 0,0,kClientWidth, kClientHeight };
+  //AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU, false);
 
-  HWND hwnd = CreateWindow(
-    wc.lpszClassName,
-    L"CG2",
-    WS_OVERLAPPEDWINDOW, 
-    CW_USEDEFAULT,
-    CW_USEDEFAULT,
-    wrc.right - wrc.left,
-    wrc.bottom - wrc.top,
-    nullptr, 
-    nullptr,
-    wc.hInstance,
-    nullptr
-  );
+  //HWND hwnd = CreateWindow(
+  //  wc.lpszClassName,
+  //  L"CG2",
+  //  WS_OVERLAPPEDWINDOW, 
+  //  CW_USEDEFAULT,
+  //  CW_USEDEFAULT,
+  //  wrc.right - wrc.left,
+  //  wrc.bottom - wrc.top,
+  //  nullptr, 
+  //  nullptr,
+  //  wc.hInstance,
+  //  nullptr
+  //);
 
 
   #ifdef _DEBUG
@@ -310,7 +296,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   #endif
 
-  ShowWindow(hwnd, SW_SHOW);
+  window.Show();
+//  ShowWindow(hwnd, SW_SHOW);
 
 
   //Setup DirectX12
@@ -607,8 +594,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   // ビューポート
   D3D12_VIEWPORT viewport{};
   // クライアント領域のサイズと一緒にして画面全体に表示
-  viewport.Width = kClientWidth;
-  viewport.Height = kClientHeight;
+  viewport.Width = FLOAT(window.GetWidth());
+  viewport.Height = FLOAT(window.GetHeight());
   viewport.TopLeftX = 0;
   viewport.TopLeftY = 0;
   viewport.MinDepth = 0.0f;
@@ -618,22 +605,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   D3D12_RECT scissorRect{};
   // 基本的にビューポートと同じ矩形が構成されるようにする
   scissorRect.left = 0;
-  scissorRect.right = kClientWidth;
+  scissorRect.right = window.GetWidth();
   scissorRect.top = 0;
-  scissorRect.bottom = kClientHeight;
+  scissorRect.bottom = window.GetHeight();
 
   // スワップチェーンを生成する
   IDXGISwapChain4* swapChain = nullptr;
   DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-  swapChainDesc.Width = kClientWidth;     // 画面の幅。ウィンドウのクライアント領域を同じものにしておく
-  swapChainDesc.Height = kClientHeight;   // 画面の高さ。ウィンドウのクライアント領域を同じものにしておく
+  swapChainDesc.Width = window.GetWidth();     // 画面の幅。ウィンドウのクライアント領域を同じものにしておく
+  swapChainDesc.Height = window.GetHeight();   // 画面の高さ。ウィンドウのクライアント領域を同じものにしておく
   swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;  // 色の形式
   swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
   swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // 描画のターゲットとして利用する
   swapChainDesc.BufferCount = 2;  // ダブルバッファ
   swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // モニタにうつしたら、中身を破棄
   // コマンドキュー、ウィンドウハンドル、設定を渡して生成する
-  hr=dxgiFactory->CreateSwapChainForHwnd(commandQueue,hwnd,&swapChainDesc,nullptr,nullptr,reinterpret_cast<IDXGISwapChain1**>(&swapChain));
+  hr=dxgiFactory->CreateSwapChainForHwnd(commandQueue,window.GetWindowHandle(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(&swapChain));
   assert(SUCCEEDED(hr));
 
   //// ディスクリプタヒープの生成
@@ -820,7 +807,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGui::StyleColorsDark();
-  ImGui_ImplWin32_Init(hwnd);
+  ImGui_ImplWin32_Init(window.GetWindowHandle());
   ImGui_ImplDX12_Init(device,
     swapChainDesc.BufferCount,
     rtvDesc.Format,
@@ -878,7 +865,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #ifdef _DEBUG
   debugController->Release();
 #endif
-  CloseWindow(hwnd);
+  window.Close();
 
 
 
