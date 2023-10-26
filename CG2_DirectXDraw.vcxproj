@@ -99,6 +99,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\TextureConverter.cpp" />
     <ClCompile Include="Core\Type\Matrix4x4.cpp" />
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp" />
@@ -127,6 +128,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\TextureConverter.h" />
     <ClInclude Include="Core\Type\Matrix4x4.h" />
     <ClInclude Include="Core\Type\Vector2.h" />
     <ClInclude Include="Core\Type\Vector4.h" />

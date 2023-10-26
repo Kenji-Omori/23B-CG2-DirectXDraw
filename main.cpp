@@ -12,6 +12,8 @@
 #include <Core/Type/Vector4.h>
 #include <Core/Type/Matrix4x4.h>
 
+#include <Core/TextureConverter.h>
+
 
 
 
@@ -165,22 +167,24 @@ ID3D12DescriptorHeap* CreateDescriptorHeap(
   return descriptorHeap;
 }
 
-DirectX::ScratchImage LoadTexture(const std::string& filePath)
-{
-  // テクスチャファイルを読んでプログラムで扱えるようにする
-  DirectX::ScratchImage image{};
-  std::wstring filePathW = ConvertString(filePath);
-  HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
-  assert(SUCCEEDED(hr));
-
-  // ミップマップの作成
-  DirectX::ScratchImage mipImages{};
-  hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
-  assert(SUCCEEDED(hr));
-
-  // ミップマップ付きのデータを返す
-  return mipImages;
-}
+//DirectX::ScratchImage LoadTexture(const std::string& filePath)
+//{
+//  
+//
+//  // テクスチャファイルを読んでプログラムで扱えるようにする
+//  DirectX::ScratchImage image{};
+//  std::wstring filePathW = ConvertString(filePath);
+//  HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+//  assert(SUCCEEDED(hr));
+//
+//  // ミップマップの作成
+//  DirectX::ScratchImage mipImages{};
+//  hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+//  assert(SUCCEEDED(hr));
+//
+//  // ミップマップ付きのデータを返す
+//  return mipImages;
+//}
 
 ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata)
 {
@@ -638,8 +642,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   ID3D12DescriptorHeap* srvDescriptorHeap = CreateDescriptorHeap(device,D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,128,true);
 
 
+
+  TextureConverter textureConverter;
   // Textureを読んで転送する
-  DirectX::ScratchImage mipImages = LoadTexture("./Resources/Texture/uvChecker.png");
+  DirectX::ScratchImage mipImages = textureConverter.LoadTexture("./Resources/Texture/uvChecker.png");
   const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
   ID3D12Resource* textureResource = CreateTextureResource(device, metadata);
   UploadTextureData(textureResource, mipImages);
