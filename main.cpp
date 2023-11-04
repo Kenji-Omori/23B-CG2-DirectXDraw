@@ -252,7 +252,7 @@ void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mip
 
 
 
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 
   CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -825,6 +825,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
   MSG msg{};
+  LPSTR preCmd = lpCmdLine;
+  LPSTR curCmd = lpCmdLine;
   while(msg.message != WM_QUIT)
   {
     if(PeekMessage(&msg, NULL, 0,0,PM_REMOVE))
@@ -834,6 +836,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       continue;
     }
 
+    curCmd = lpCmdLine;
+    if (strcmp(preCmd,curCmd)!=0)
+    {
+      printf("cmd:%s", curCmd);
+      preCmd = curCmd;
+    }
 
     //ImGui_ImplDX12_NewFrame();
     //ImGui_ImplWin32_NewFrame();
