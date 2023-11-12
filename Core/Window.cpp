@@ -11,7 +11,7 @@
 
 void Core::Window::Initialize()
 {
-  SetResolution(720, 720);
+  SetResolution(512, 512);
   wc = {};
   wc.lpfnWndProc = WindowProc;
   wc.lpszClassName = L"CG2WindowClass";

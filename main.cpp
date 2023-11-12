@@ -289,7 +289,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   //);
 
 
-  #ifdef _DEBUG
+#ifdef _DEBUG
   ID3D12Debug1* debugController = nullptr;
   if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
     // デバッグレイヤーを有効化する
@@ -298,13 +298,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     debugController->SetEnableGPUBasedValidation(TRUE);
   }
 
-  #endif
+#endif
 
   window.Show();
-//  ShowWindow(hwnd, SW_SHOW);
+  //  ShowWindow(hwnd, SW_SHOW);
 
 
-  //Setup DirectX12
+    //Setup DirectX12
   IDXGIFactory7* dxgiFactory = nullptr;
   HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
   assert(SUCCEEDED(hr));
@@ -376,7 +376,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     infoQueue->PushStorageFilter(&filter);
 
     // 解放
-    infoQueue->Release(); 
+    infoQueue->Release();
   }
 #endif
 
@@ -555,7 +555,43 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
   assert(SUCCEEDED(hr));
 
-  int vertexNum = 6;
+  struct Plane {
+    Vector2 position;
+    Vector2 size;
+  };
+
+  float onePixel = 2.f/512.f;
+  float texSize = 512;
+  float sizes[]={
+    texSize * onePixel/1.f,
+    texSize * onePixel/2.f,
+    texSize * onePixel/4.f,
+    texSize * onePixel/8.f,
+    texSize * onePixel/16.f,
+    texSize * onePixel/32.f,
+    texSize * onePixel/64.f,
+    texSize * onePixel/128.f,
+    texSize * onePixel/256.f,
+    texSize * onePixel/512.f,
+  };
+
+  Plane planes[] =
+  {
+    {{ 1 - sizes[0], 1-sizes[0] },{ sizes[0], sizes[0]}},
+    {{ 1 - sizes[1], 1-sizes[1] },{ sizes[1], sizes[1]}},
+    {{ 1 - sizes[2], 1-sizes[2] },{ sizes[2], sizes[2]}},
+    {{ 1 - sizes[3], 1-sizes[3] },{ sizes[3], sizes[3]}},
+    {{ 1 - sizes[4], 1-sizes[4] },{ sizes[4], sizes[4]}},
+    {{ 1 - sizes[5], 1-sizes[5] },{ sizes[5], sizes[5]}},
+    {{ 1 - sizes[6], 1-sizes[6] },{ sizes[6], sizes[6]}},
+    {{ 1 - sizes[7], 1-sizes[7] },{ sizes[7], sizes[7]}},
+    {{ 1 - sizes[8], 1-sizes[8] },{ sizes[8], sizes[8]}},
+    {{ 1 - sizes[9], 1-sizes[9] },{ sizes[9], sizes[9]}}
+  };
+
+
+  int planeNum = sizeof(planes) / sizeof(planes[0]);
+  int vertexNum = 3 * 2 * planeNum;
 
   // 頂点リソース用のヒープの設定(関数化)
   ID3D12Resource* vertexResource = CreateBufferResource(device, sizeof(VertexData) * vertexNum);
@@ -573,27 +609,54 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   VertexData* vertexData = nullptr;
   // 書き込むためのアドレスを取得
   vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-  // 左下
-  vertexData[0].position = { -0.5f, -0.5f, 0.0f, 1.0f };
-  vertexData[0].texcoord = { 0.0f, 1.0f };
-  // 上
-  vertexData[1].position = { -0.5f, +0.5f, 0.0f, 1.0f };
-  vertexData[1].texcoord = { 0.0f, 0.0f };
-  // 右下
-  vertexData[2].position = { +0.5f, -0.5f, 0.0f, 1.0f };
-  vertexData[2].texcoord = { 1.0f, 1.0f };
-
-  // 左下
-  vertexData[3].position = { -0.5f, +0.5f, 0.0f, 1.0f };
-  vertexData[3].texcoord = { 0.0f, 0.0f };
-  // 上
-  vertexData[4].position = { +0.5f, +0.5f, 0.0f, 1.0f };
-  vertexData[4].texcoord = { 1.0f, 0.0f };
-  // 右下
-  vertexData[5].position = { +0.5f, -0.5f, 0.0f, 1.0f };
-  vertexData[5].texcoord = { 1.0f, 1.0f };
 
 
+  VertexData* vertexes = new VertexData[vertexNum];
+  for (int i = 0; i < planeNum; i ++)
+  {
+
+    float w = planes[i].size.x;
+    float h = planes[i].size.y;
+    float l = planes[i].position.x;
+    float b = planes[i].position.y;
+    float r = l + w;
+    float t = b + h;
+
+    vertexes[i*6 + 0] = { { l, b, 0.0f, 1.0f },{ 0.0f, 1.0f } };
+    vertexes[i*6 + 1] = { { l, t, 0.0f, 1.0f },{ 0.0f, 0.0f } };
+    vertexes[i*6 + 2] = { { r, b, 0.0f, 1.0f },{ 1.0f, 1.0f } };
+
+    vertexes[i*6 + 3] = { { l, t, 0.0f, 1.0f },{ 0.0f, 0.0f } };
+    vertexes[i*6 + 4] = { { r, t, 0.0f, 1.0f },{ 1.0f, 0.0f } };
+    vertexes[i*6 + 5] = { { r, b, 0.0f, 1.0f },{ 1.0f, 1.0f } };
+
+    // 左下
+    //vertexData[0].position = { -0.5f, -0.5f, 0.0f, 1.0f };
+    //vertexData[0].texcoord = { 0.0f, 1.0f };
+    //// 上
+    //vertexData[1].position = { -0.5f, +0.5f, 0.0f, 1.0f };
+    //vertexData[1].texcoord = { 0.0f, 0.0f };
+    //// 右下
+    //vertexData[2].position = { +0.5f, -0.5f, 0.0f, 1.0f };
+    //vertexData[2].texcoord = { 1.0f, 1.0f };
+
+    //// 左下
+    //vertexData[3].position = { -0.5f, +0.5f, 0.0f, 1.0f };
+    //vertexData[3].texcoord = { 0.0f, 0.0f };
+    //// 上
+    //vertexData[4].position = { +0.5f, +0.5f, 0.0f, 1.0f };
+    //vertexData[4].texcoord = { 1.0f, 0.0f };
+    //// 右下
+    //vertexData[5].position = { +0.5f, -0.5f, 0.0f, 1.0f };
+    //vertexData[5].texcoord = { 1.0f, 1.0f };
+  }
+  for (int v = 0; v < vertexNum; v++)
+  {
+    vertexData[v].position = vertexes[v].position;
+    vertexData[v].texcoord = vertexes[v].texcoord;
+  }
+
+  delete[] vertexes;
 
   // ビューポート
   D3D12_VIEWPORT viewport{};
@@ -624,7 +687,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   swapChainDesc.BufferCount = 2;  // ダブルバッファ
   swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // モニタにうつしたら、中身を破棄
   // コマンドキュー、ウィンドウハンドル、設定を渡して生成する
-  hr=dxgiFactory->CreateSwapChainForHwnd(commandQueue,window.GetWindowHandle(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(&swapChain));
+  hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue, window.GetWindowHandle(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(&swapChain));
   assert(SUCCEEDED(hr));
 
   //// ディスクリプタヒープの生成
@@ -636,16 +699,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   //assert(SUCCEEDED(hr));
 
   // RTV用のヒープでディスクリプタの数は2。RTVはShader内で触るものではないので、ShaderVisibleはfalse
-  ID3D12DescriptorHeap* rtvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV,2, false);
+  ID3D12DescriptorHeap* rtvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 
   // SRV用のヒープでディスクリプタの数は128。SRVはShader内で触るものなので、ShaderVisibleはtrue
-  ID3D12DescriptorHeap* srvDescriptorHeap = CreateDescriptorHeap(device,D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,128,true);
+  ID3D12DescriptorHeap* srvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 
 
 
   TextureConverter textureConverter;
   // Textureを読んで転送する
-  DirectX::ScratchImage mipImages = textureConverter.LoadTexture("./Resources/Texture/uvChecker.png");
+  DirectX::ScratchImage mipImages = textureConverter.LoadTexture("./Resources/Texture/uvChecker2.dds");
   const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
   ID3D12Resource* textureResource = CreateTextureResource(device, metadata);
   UploadTextureData(textureResource, mipImages);
@@ -735,7 +798,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   commandList->RSSetViewports(1, &viewport);  // Viewportを設定
   commandList->RSSetScissorRects(1, &scissorRect);    // Scirssorを設定
   // RootSignatureを設定。PSOに設定しているけど別途設定が必要
-  commandList->SetGraphicsRootSignature(rootSignature); 
+  commandList->SetGraphicsRootSignature(rootSignature);
   commandList->SetPipelineState(graphicsPipelineState);   // PSOを設定
   commandList->IASetVertexBuffers(0, 1, &vertexBufferView);   // VBVを設定
   // 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけば良い
@@ -827,9 +890,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   MSG msg{};
   LPSTR preCmd = lpCmdLine;
   LPSTR curCmd = lpCmdLine;
-  while(msg.message != WM_QUIT)
+  while (msg.message != WM_QUIT)
   {
-    if(PeekMessage(&msg, NULL, 0,0,PM_REMOVE))
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
@@ -837,7 +900,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     curCmd = lpCmdLine;
-    if (strcmp(preCmd,curCmd)!=0)
+    if (strcmp(preCmd, curCmd) != 0)
     {
       printf("cmd:%s", curCmd);
       preCmd = curCmd;
