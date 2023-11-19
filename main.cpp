@@ -7,13 +7,13 @@
 
 #include <Core/Window.h>
 
-#include <Core/Type/String.h>
 #include <Core/Type/Vector2.h>
 #include <Core/Type/Vector4.h>
 #include <Core/Type/Matrix4x4.h>
 
 #include <Core/TextureConverter.h>
-
+#include <Core/DirectXCommon.h>
+//#include <Core/Debug.h>
 
 
 
@@ -44,14 +44,7 @@ typedef struct VertexData {
 }VertexData;
 
 
-void Log(const std::string& message)
-{
-  OutputDebugStringA(message.c_str());
-}
-void Log(const std::wstring& message)
-{
-  OutputDebugStringA(ConvertString(message).c_str());
-}
+
 
 
 IDxcBlob* CompileShader(
@@ -67,7 +60,7 @@ IDxcBlob* CompileShader(
   // ここの中身をこの後書いていく
   // 1. hlslファイルを読む
   // これからシェーダーをコンパイルする旨をログに出す
-  Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
+  //Omory::Debug::Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
   // hlslファイルを読む
   IDxcBlobEncoding* shaderSource = nullptr;
   HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
@@ -107,7 +100,7 @@ IDxcBlob* CompileShader(
   IDxcBlobUtf8* shaderError = nullptr;
   shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
   if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-    Log(shaderError->GetStringPointer());
+    //Omory::Debug::Log(shaderError->GetStringPointer());
     // 警告・エラーダメゼッタイ
     assert(false);
   }
@@ -119,7 +112,7 @@ IDxcBlob* CompileShader(
   hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
   assert(SUCCEEDED(hr));
   // 成功したログを出す
-  Log(ConvertString(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile)));
+  //Omory::Debug::Log(ConvertString(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile)));
   // もう使わないリソースを解放
   shaderSource->Release();
   shaderResult->Release();
@@ -301,57 +294,60 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 #endif
 
   window.Show();
+  HRESULT hr;
+  DirectXCommon common;
+  common.Initialize();
   //  ShowWindow(hwnd, SW_SHOW);
 
 
-    //Setup DirectX12
-  IDXGIFactory7* dxgiFactory = nullptr;
-  HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
-  assert(SUCCEEDED(hr));
+  //  //Setup DirectX12
+  //IDXGIFactory7* dxgiFactory = nullptr;
+  //HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
+  //assert(SUCCEEDED(hr));
 
-  IDXGIAdapter4* useAdapter = nullptr;
-  // 良い順にアダプタを頼む
-  for (UINT i = 0; dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
-    // アダプターの情報を取得する
-    DXGI_ADAPTER_DESC3 adapterDesc{};
-    hr = useAdapter->GetDesc3(&adapterDesc);
-    assert(SUCCEEDED(hr)); // 取得できないのは一大事
-    // ソフトウェアアダプタでなければ採用！
-    if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-      // 採用したアダプタの情報をログに出力。wstringの方なので注意
-      Log(std::format(L"Use Adapater:{}\n", adapterDesc.Description));
-      break;
-    }
-    useAdapter = nullptr; // ソフトウェアアダプタの場合は見なかったことにする
-  }
-  // 適切なアダプタが見つからなかったので起動できない
-  assert(useAdapter != nullptr);
+  //IDXGIAdapter4* useAdapter = nullptr;
+  //// 良い順にアダプタを頼む
+  //for (UINT i = 0; dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
+  //  // アダプターの情報を取得する
+  //  DXGI_ADAPTER_DESC3 adapterDesc{};
+  //  hr = useAdapter->GetDesc3(&adapterDesc);
+  //  assert(SUCCEEDED(hr)); // 取得できないのは一大事
+  //  // ソフトウェアアダプタでなければ採用！
+  //  if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
+  //    // 採用したアダプタの情報をログに出力。wstringの方なので注意
+  //    Log(std::format(L"Use Adapater:{}\n", adapterDesc.Description));
+  //    break;
+  //  }
+  //  useAdapter = nullptr; // ソフトウェアアダプタの場合は見なかったことにする
+  //}
+  //// 適切なアダプタが見つからなかったので起動できない
+  //assert(useAdapter != nullptr);
 
-  ID3D12Device* device = nullptr;
+  //ID3D12Device* device = nullptr;
   // 機能レベルとログ出力用の文字列
-  D3D_FEATURE_LEVEL featureLevels[] = {
-    D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
-  };
-  const char* featureLevelStrings[] = { "12.2", "12.1", "12.0" };
-  // 高い順に生成できるか試していく
-  for (size_t i = 0; i < _countof(featureLevels); ++i) {
-    // 採用したアダプターでデバイスを生成
-    hr = D3D12CreateDevice(useAdapter, featureLevels[i], IID_PPV_ARGS(&device));
-    // 指定した機能レベルでデバイスが生成できたかを確認
-    if (SUCCEEDED(hr)) {
-      // 生成できたのでログ出力を行ってループを抜ける
-      Log(std::format("FeatureLevel : {}\n", featureLevelStrings[i]));
-      break;
-    }
-  }
-  // デバイスの生成がうまくいかなかったので起動できない
-  assert(device != nullptr);
+  //D3D_FEATURE_LEVEL featureLevels[] = {
+  //  D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
+  //};
+  //const char* featureLevelStrings[] = { "12.2", "12.1", "12.0" };
+  //// 高い順に生成できるか試していく
+  //for (size_t i = 0; i < _countof(featureLevels); ++i) {
+  //  // 採用したアダプターでデバイスを生成
+  //  hr = D3D12CreateDevice(useAdapter, featureLevels[i], IID_PPV_ARGS(&device));
+  //  // 指定した機能レベルでデバイスが生成できたかを確認
+  //  if (SUCCEEDED(hr)) {
+  //    // 生成できたのでログ出力を行ってループを抜ける
+  //    Log(std::format("FeatureLevel : {}\n", featureLevelStrings[i]));
+  //    break;
+  //  }
+  //}
+  //// デバイスの生成がうまくいかなかったので起動できない
+  //assert(device != nullptr);
 
-  Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
+  //Omory::Debug::Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
 
 #ifdef _DEBUG
   ID3D12InfoQueue* infoQueue = nullptr;
-  if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+  if (SUCCEEDED(common.GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
     // ヤバイエラー時に止まる
     infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
     // エラー時に止まる
@@ -380,22 +376,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   }
 #endif
 
+  ID3D12Device* device = common.GetDevice();
+
   //コマンドキューを生成する
   ID3D12CommandQueue* commandQueue = nullptr;
   D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
-  hr = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
+  hr = common.GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
   // コマンドキューの生成がうまくいかなかったので起動できない
   assert(SUCCEEDED(hr));
 
   // コマンドアロケータを生成する
   ID3D12CommandAllocator* commandAllocator = nullptr;
-  hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
+  hr = common.GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
   // コマンドアロケータの生成がうまくいかなかったので起動できない
   assert(SUCCEEDED(hr));
 
   // コマンドリストを生成する
   ID3D12GraphicsCommandList* commandList = nullptr;
-  hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, nullptr, IID_PPV_ARGS(&commandList));
+  hr = common.GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, nullptr, IID_PPV_ARGS(&commandList));
   // コマンドリストの生成がうまくいかなかったので起動できない
   assert(SUCCEEDED(hr));
 
@@ -491,7 +489,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   ID3DBlob* errorBlob = nullptr;
   hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
   if (FAILED(hr)) {
-    Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+    //Omory::Debug::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
     assert(false);
   }
   // バイナリを元に生成
@@ -687,7 +685,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   swapChainDesc.BufferCount = 2;  // ダブルバッファ
   swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // モニタにうつしたら、中身を破棄
   // コマンドキュー、ウィンドウハンドル、設定を渡して生成する
-  hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue, window.GetWindowHandle(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(&swapChain));
+
+  hr = common.GetFactory()->CreateSwapChainForHwnd(commandQueue, window.GetWindowHandle(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(&swapChain));
   assert(SUCCEEDED(hr));
 
   //// ディスクリプタヒープの生成
@@ -936,9 +935,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   commandList->Release();
   commandAllocator->Release();
   commandQueue->Release();
-  device->Release();
-  useAdapter->Release();
-  dxgiFactory->Release();
+  common.Release();
 #ifdef _DEBUG
   debugController->Release();
 #endif
@@ -948,12 +945,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
   // リソースリークチェック
-  IDXGIDebug1* debug;
-  if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
-    debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-    debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
-    debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-    debug->Release();
+  IDXGIDebug1* debug_;
+  if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug_)))) {
+    debug_->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+    debug_->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
+    debug_->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
+    debug_->Release();
   }
 
   CoUninitialize();
