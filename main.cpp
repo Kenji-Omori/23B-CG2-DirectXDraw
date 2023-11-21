@@ -37,10 +37,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 
 
-typedef struct VertexData {
-  Vector4 position;
-  Vector2 texcoord;
-}VertexData;
+
 
 
 
@@ -522,63 +519,63 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   //hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
   //assert(SUCCEEDED(hr));
 
-  struct Plane {
-    Vector2 position;
-    Vector2 size;
-  };
+  //struct Plane {
+  //  Vector2 position;
+  //  Vector2 size;
+  //};
 
-  float onePixel = 2.f/512.f;
-  float texSize = 512;
-  float sizes[]={
-    texSize * onePixel/1.f,
-    texSize * onePixel/2.f,
-    texSize * onePixel/4.f,
-    texSize * onePixel/8.f,
-    texSize * onePixel/16.f,
-    texSize * onePixel/32.f,
-    texSize * onePixel/64.f,
-    texSize * onePixel/128.f,
-    texSize * onePixel/256.f,
-    texSize * onePixel/512.f,
-  };
+  //float onePixel = 2.f/512.f;
+  //float texSize = 512;
+  //float sizes[]={
+  //  texSize * onePixel/1.f,
+  //  texSize * onePixel/2.f,
+  //  texSize * onePixel/4.f,
+  //  texSize * onePixel/8.f,
+  //  texSize * onePixel/16.f,
+  //  texSize * onePixel/32.f,
+  //  texSize * onePixel/64.f,
+  //  texSize * onePixel/128.f,
+  //  texSize * onePixel/256.f,
+  //  texSize * onePixel/512.f,
+  //};
 
-  Plane planes[] =
-  {
-    {{ 1 - sizes[0], 1-sizes[0] },{ sizes[0], sizes[0]}},
-    {{ 1 - sizes[1], 1-sizes[1] },{ sizes[1], sizes[1]}},
-    {{ 1 - sizes[2], 1-sizes[2] },{ sizes[2], sizes[2]}},
-    {{ 1 - sizes[3], 1-sizes[3] },{ sizes[3], sizes[3]}},
-    {{ 1 - sizes[4], 1-sizes[4] },{ sizes[4], sizes[4]}},
-    {{ 1 - sizes[5], 1-sizes[5] },{ sizes[5], sizes[5]}},
-    {{ 1 - sizes[6], 1-sizes[6] },{ sizes[6], sizes[6]}},
-    {{ 1 - sizes[7], 1-sizes[7] },{ sizes[7], sizes[7]}},
-    {{ 1 - sizes[8], 1-sizes[8] },{ sizes[8], sizes[8]}},
-    {{ 1 - sizes[9], 1-sizes[9] },{ sizes[9], sizes[9]}}
-  };
+  //Plane planes[] =
+  //{
+  //  {{ 1 - sizes[0], 1-sizes[0] },{ sizes[0], sizes[0]}},
+  //  {{ 1 - sizes[1], 1-sizes[1] },{ sizes[1], sizes[1]}},
+  //  {{ 1 - sizes[2], 1-sizes[2] },{ sizes[2], sizes[2]}},
+  //  {{ 1 - sizes[3], 1-sizes[3] },{ sizes[3], sizes[3]}},
+  //  {{ 1 - sizes[4], 1-sizes[4] },{ sizes[4], sizes[4]}},
+  //  {{ 1 - sizes[5], 1-sizes[5] },{ sizes[5], sizes[5]}},
+  //  {{ 1 - sizes[6], 1-sizes[6] },{ sizes[6], sizes[6]}},
+  //  {{ 1 - sizes[7], 1-sizes[7] },{ sizes[7], sizes[7]}},
+  //  {{ 1 - sizes[8], 1-sizes[8] },{ sizes[8], sizes[8]}},
+  //  {{ 1 - sizes[9], 1-sizes[9] },{ sizes[9], sizes[9]}}
+  //};
 
 
-  int planeNum = sizeof(planes) / sizeof(planes[0]);
-  int vertexNum = 3 * 2 * planeNum;
+  //int planeNum = sizeof(planes) / sizeof(planes[0]);
+  //int vertexNum = 3 * 2 * planeNum;
 
   // 頂点リソース用のヒープの設定(関数化)
-  ID3D12Resource* vertexResource = CreateBufferResource(device, sizeof(VertexData) * vertexNum);
+  //ID3D12Resource* vertexResource = CreateBufferResource(device, sizeof(VertexData) * vertexNum);
 
-  // 頂点バッファビューを作成する
-  D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
-  // リソースの先頭のアドレスから使う
-  vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-  // 使用するリソースのサイズは頂点3つ分のサイズ
-  vertexBufferView.SizeInBytes = sizeof(VertexData) * vertexNum;
-  // 1頂点あたりのサイズ
-  vertexBufferView.StrideInBytes = sizeof(VertexData);
+  //// 頂点バッファビューを作成する
+  //D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+  //// リソースの先頭のアドレスから使う
+  //vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
+  //// 使用するリソースのサイズは頂点3つ分のサイズ
+  //vertexBufferView.SizeInBytes = sizeof(VertexData) * vertexNum;
+  //// 1頂点あたりのサイズ
+  //vertexBufferView.StrideInBytes = sizeof(VertexData);
 
-  // 頂点リソースにデータを書き込む
-  VertexData* vertexData = nullptr;
-  // 書き込むためのアドレスを取得
-  vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+  //// 頂点リソースにデータを書き込む
+  //VertexData* vertexData = nullptr;
+  //// 書き込むためのアドレスを取得
+  //vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 
 
-  VertexData* vertexes = new VertexData[vertexNum];
+ /* VertexData* vertexes = new VertexData[vertexNum];
   for (int i = 0; i < planeNum; i ++)
   {
 
@@ -595,7 +592,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     vertexes[i*6 + 3] = { { l, t, 0.0f, 1.0f },{ 0.0f, 0.0f } };
     vertexes[i*6 + 4] = { { r, t, 0.0f, 1.0f },{ 1.0f, 0.0f } };
-    vertexes[i*6 + 5] = { { r, b, 0.0f, 1.0f },{ 1.0f, 1.0f } };
+    vertexes[i*6 + 5] = { { r, b, 0.0f, 1.0f },{ 1.0f, 1.0f } };*/
 
     // 左下
     //vertexData[0].position = { -0.5f, -0.5f, 0.0f, 1.0f };
@@ -616,14 +613,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //// 右下
     //vertexData[5].position = { +0.5f, -0.5f, 0.0f, 1.0f };
     //vertexData[5].texcoord = { 1.0f, 1.0f };
-  }
-  for (int v = 0; v < vertexNum; v++)
-  {
-    vertexData[v].position = vertexes[v].position;
-    vertexData[v].texcoord = vertexes[v].texcoord;
-  }
+  //}
+  //for (int v = 0; v < vertexNum; v++)
+  //{
+  //  vertexData[v].position = vertexes[v].position;
+  //  vertexData[v].texcoord = vertexes[v].texcoord;
+  //}
 
-  delete[] vertexes;
+  //delete[] vertexes;
 
   // ビューポート
   D3D12_VIEWPORT viewport{};
@@ -698,7 +695,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   device->CreateShaderResourceView(textureResource, &srvDesc, textureSrvHandleCPU);
 
 
-
+  DirectX::XMFLOAT4;
 
   // SwapChainからResourceを引っ張ってくる
   ID3D12Resource* swapChainResources[2] = { nullptr };
