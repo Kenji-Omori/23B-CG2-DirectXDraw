@@ -58,11 +58,11 @@ void DirectXCommon::InitializeDebugController()
 #ifdef _DEBUG
   ID3D12Debug1* debugController = nullptr;
   if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
-  // デバッグレイヤーを有効化する
-  debugController->EnableDebugLayer();
-  // さらにGPU側でもチェックを行うようにする
-  debugController->SetEnableGPUBasedValidation(TRUE);
-}
+    // デバッグレイヤーを有効化する
+    debugController->EnableDebugLayer();
+    // さらにGPU側でもチェックを行うようにする
+    debugController->SetEnableGPUBasedValidation(TRUE);
+  }
 
 #endif
 
@@ -78,25 +78,26 @@ void DirectXCommon::InitializeAdapter()
 {
   // 良い順にアダプタを頼む
   for (UINT i = 0; dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
-  // アダプターの情報を取得する
-  DXGI_ADAPTER_DESC3 adapterDesc{};
-  HRESULT hr = useAdapter->GetDesc3(&adapterDesc);
-  assert(SUCCEEDED(hr)); // 取得できないのは一大事
-  // ソフトウェアアダプタでなければ採用！
-  if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-    // 採用したアダプタの情報をログに出力。wstringの方なので注意
-    //Omory::Debug::Log(std::format(L"Use Adapater:{}\n", adapterDesc.Description));
-    break;
+    // アダプターの情報を取得する
+    DXGI_ADAPTER_DESC3 adapterDesc{};
+    HRESULT hr = useAdapter->GetDesc3(&adapterDesc);
+    assert(SUCCEEDED(hr)); // 取得できないのは一大事
+    // ソフトウェアアダプタでなければ採用！
+    if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
+      // 採用したアダプタの情報をログに出力。wstringの方なので注意
+      //Omory::Debug::Log(std::format(L"Use Adapater:{}\n", adapterDesc.Description));
+      break;
+    }
+    useAdapter = nullptr; // ソフトウェアアダプタの場合は見なかったことにする
   }
-  useAdapter = nullptr; // ソフトウェアアダプタの場合は見なかったことにする
-}
-// 適切なアダプタが見つからなかったので起動できない
-assert(useAdapter != nullptr);
+  // 適切なアダプタが見つからなかったので起動できない
+  assert(useAdapter != nullptr);
 }
 
 void DirectXCommon::InitializeDevice()
-  {  D3D_FEATURE_LEVEL featureLevels[] = {
-    D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
+{
+  D3D_FEATURE_LEVEL featureLevels[] = {
+D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
   };
   const char* featureLevelStrings[] = { "12.2", "12.1", "12.0" };
   // 高い順に生成できるか試していく
@@ -239,6 +240,24 @@ void DirectXCommon::CreateRootSignature()
 
 }
 
+void DirectXCommon::CreateSwapChain()
+{
+  // スワップチェーンを生成する
+  IDXGISwapChain4* swapChain = nullptr;
+  DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
+  swapChainDesc.Width = window.GetWidth();     // 画面の幅。ウィンドウのクライアント領域を同じものにしておく
+  swapChainDesc.Height = window.GetHeight();   // 画面の高さ。ウィンドウのクライアント領域を同じものにしておく
+  swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;  // 色の形式
+  swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
+  swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // 描画のターゲットとして利用する
+  swapChainDesc.BufferCount = 2;  // ダブルバッファ
+  swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // モニタにうつしたら、中身を破棄
+  // コマンドキュー、ウィンドウハンドル、設定を渡して生成する
+
+  hr = common.GetFactory()->CreateSwapChainForHwnd(commandQueue, window.GetWindowHandle(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(&swapChain));
+  assert(SUCCEEDED(hr));
+}
+
 void DirectXCommon::PreRender()
 {
 }
@@ -275,7 +294,7 @@ void DirectXCommon::PostRender()
   }
 
   // 次のフレーム用のコマンドリストを準備
-   hr = commandAllocator->Reset();
+  hr = commandAllocator->Reset();
   assert(SUCCEEDED(hr));
   hr = commandList->Reset(commandAllocator, nullptr);
   assert(SUCCEEDED(hr));

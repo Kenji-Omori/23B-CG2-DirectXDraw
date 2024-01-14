@@ -24,6 +24,7 @@ private:
     void InitializeCompiler();
 
     void CreateRootSignature();
+    void CreateSwapChain();
 
     void PreRender();
     void Render();
@@ -50,6 +51,9 @@ private:
     IDxcCompiler3* dxcCompiler;
     D3D12_BLEND_DESC blendDesc;
     D3D12_RASTERIZER_DESC rasterizerDesc;
+
+
+    IDXGISwapChain4* swapChain;
 
 
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc;
