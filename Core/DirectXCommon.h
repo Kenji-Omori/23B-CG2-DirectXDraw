@@ -2,15 +2,24 @@
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
+#include <vector>
+#include <Core/Window.h>
 
-class DirectXCommon
-{
-public:
-  void Initialize();
-  void Release();
-  IDXGIFactory7* GetFactory();
-  ID3D12Device* GetDevice();
-private:
+struct Plane {
+  Vector2 position;
+  Vector2 size;
+};
+
+namespace Core {
+  class DirectXCommon
+  {
+  public:
+    DirectXCommon(const Window* window);
+    void Initialize();
+    void Release();
+    IDXGIFactory7* GetFactory();
+    ID3D12Device* GetDevice();
+  private:
     void InitializeDebugController();
     void InitializeFactory();
     void InitializeAdapter();
@@ -26,14 +35,18 @@ private:
     void CreateRootSignature();
     void CreateSwapChain();
 
-    void PreRender();
-    void Render();
-    void PostRender();
+    // PreRenderer群
+    void PreRenderer();
+    void CreateVertexResource(int vertexNum);
+    // Renderer群
+    void Renderer();
+    // PostRenderer群
+    void PostRenderer();
 
 
-    IDxcBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile,IDxcUtils* dxcUtils,IDxcCompiler3* dxcCompiler,IDxcIncludeHandler* includeHandler);
+    IDxcBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler);
     void CompileShaders();
-    ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
+    ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
     void CreateGraphicsPipelineStateDesc();
 
     IDXGIFactory7* dxgiFactory;
@@ -44,7 +57,10 @@ private:
     ID3D12CommandQueue* commandQueue;
     D3D12_COMMAND_QUEUE_DESC commandQueueDesc;
     ID3D12CommandAllocator* commandAllocator;
+
+    std::vector<ID3D12CommandList*> commandLists;
     ID3D12GraphicsCommandList* commandList;
+
     ID3D12Fence* fence;
     HANDLE fenceEvent;
     IDxcUtils* dxcUtils;
@@ -63,11 +79,20 @@ private:
     IDxcIncludeHandler* includeHandler;
 
 
+
     D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature;
     D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc;
 
+    ID3D12Resource* vertexResource;
     IDxcBlob* vertexShaderBlob;
     IDxcBlob* pixelShaderBlob;
 
 
-};
+    int planeNum;
+    int vertexNum;
+    VertexData* vertexData;
+    Plane planes[10];
+    const Window* window;
+
+  };
+}
