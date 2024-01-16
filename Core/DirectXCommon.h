@@ -4,6 +4,14 @@
 #include <dxgi1_6.h>
 #include <vector>
 #include <Core/Window.h>
+#include <memory>
+
+class DirectXAdapter;
+class DirectXCommand;
+class DirectXDevice;
+class DirectXFactory;
+class DirectXFence;
+class DirectXInfoQueue;
 
 struct Plane {
   Vector2 position;
@@ -17,19 +25,9 @@ namespace Core {
     DirectXCommon(const Window* window);
     void Initialize();
     void Release();
-    IDXGIFactory7* GetFactory();
-    ID3D12Device* GetDevice();
   private:
     void InitializeDebugController();
-    void InitializeFactory();
-    void InitializeAdapter();
-    void InitializeDevice();
-    void InitializeInfoQueue();
     // new 
-    void InitializeCommandQueue();
-    void InitializeCommandAllocator();
-    void InitializeCommandList();
-    void InitializeFence();
     void InitializeCompiler();
 
     void CreateRootSignature();
@@ -49,6 +47,14 @@ namespace Core {
     ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
     void CreateGraphicsPipelineStateDesc();
 
+    std::unique_ptr<DirectXAdapter> adapter;
+    std::unique_ptr<DirectXCommand> command;
+    std::unique_ptr<DirectXDevice> device;
+    std::unique_ptr<DirectXFactory> factory;
+    std::unique_ptr<DirectXFence> fence;
+    std::unique_ptr<DirectXInfoQueue> infoQueue;
+
+    /*
     IDXGIFactory7* dxgiFactory;
     IDXGIAdapter4* useAdapter;
     ID3D12Device* device;
@@ -86,7 +92,7 @@ namespace Core {
     ID3D12Resource* vertexResource;
     IDxcBlob* vertexShaderBlob;
     IDxcBlob* pixelShaderBlob;
-
+    */
 
     int planeNum;
     int vertexNum;

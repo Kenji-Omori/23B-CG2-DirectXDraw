@@ -9,6 +9,15 @@
 #include <Core/Type/Vector4.h>
 #include <Core/Type/VertexData.h>
 
+#include <Core/DirectX12/DirectXAdapter.h>
+#include <Core/DirectX12/DirectXCommand.h>
+#include <Core/DirectX12/DirectXDevice.h>
+#include <Core/DirectX12/DirectXFactory.h>
+#include <Core/DirectX12/DirectXFence.h>
+#include <Core/DirectX12/DirectXInfoQueue.h>
+
+
+
 namespace Core {
   DirectXCommon::DirectXCommon(const Window* window)
   {
@@ -17,13 +26,12 @@ namespace Core {
   void DirectXCommon::Initialize()
   {
     // Device
-    InitializeFactory();
-    InitializeAdapter();
-    InitializeDebugController();
-    InitializeDevice();
-    InitializeInfoQueue();
+    factory = std::make_unique<DirectXFactory>();
+    adapter = std::make_unique<DirectXAdapter>(factory);
+    device = std::make_unique<DirectXDevice>(adapter);
+    infoQueue = std::make_unique<DirectXInfoQueue>(device);
+    command = std::make_unique<DirectXCommand>(device);
 
-    // Command
     // Swapchain
     // Depth
     // DescripterHeap
@@ -39,21 +47,12 @@ namespace Core {
     //Omory::Debug::Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
   }
 
-  IDXGIFactory7* DirectXCommon::GetFactory()
-  {
-    return dxgiFactory;
-  }
-
-  ID3D12Device* DirectXCommon::GetDevice()
-  {
-    return device;
-  }
 
   void DirectXCommon::Release()
   {
     device->Release();
-    useAdapter->Release();
-    dxgiFactory->Release();
+    adapter->Release();
+    factory->Release();
 #ifdef _DEBUG
     debugController->Release();
 #endif

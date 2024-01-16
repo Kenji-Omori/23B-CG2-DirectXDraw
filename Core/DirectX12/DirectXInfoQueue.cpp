@@ -8,6 +8,7 @@
 
 DirectXInfoQueue::DirectXInfoQueue(DirectXDevice* device)
 {
+  this->device = device;
 #ifdef _DEBUG
   ID3D12InfoQueue* infoQueue = nullptr;
   if (SUCCEEDED(device->Get()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {

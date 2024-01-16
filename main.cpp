@@ -117,7 +117,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 //
 //
 //}
-
+ID3D12Resource resource;
 //ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
 //{
 //  // 頂点リソース用のヒープの設定
