@@ -13,7 +13,7 @@ void DirectXResourceBarrier::InitializeDescs()
 {
   writeModeDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
   writeModeDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-  writeModeDesc.Transition.pResource = m_color
+  //writeModeDesc.Transition.pResource = m_color
 }
 
 void DirectXResourceBarrier::SwitchWriteMode()

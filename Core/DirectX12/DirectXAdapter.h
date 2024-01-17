@@ -1,6 +1,6 @@
 #pragma once
 
-class IDXGIAdapter4;
+struct IDXGIAdapter4;
 class DirectXFactory;
 
 class DirectXAdapter

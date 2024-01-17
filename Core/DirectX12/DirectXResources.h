@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-class ID3D12Resource;
+struct ID3D12Resource;
 class DirectXResources
 {
 public:
@@ -11,6 +11,6 @@ public:
   ID3D12Resource* GetResource(unsigned char index);
 
 private:
-  std::unique_ptr<std::unique_ptr<ID3D12Resource>[]> colorBuffers;
+  //ID3D12Resource* colorBuffers[];
 
 };

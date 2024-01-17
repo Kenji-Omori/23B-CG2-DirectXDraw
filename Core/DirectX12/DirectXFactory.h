@@ -1,6 +1,6 @@
 #pragma once
 
-class IDXGIFactory7;
+struct IDXGIFactory7;
 
 class DirectXFactory
 {

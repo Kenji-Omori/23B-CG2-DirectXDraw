@@ -2,7 +2,7 @@
 #include <format>
 
 class DirectXDevice;
-class ID3D12Fence;
+struct ID3D12Fence;
 class DirectXFence
 {
 public:
@@ -12,5 +12,5 @@ public:
 private:
   DirectXDevice* device;
   ID3D12Fence* fence;
-  HANDLE fenceEvent;
+//  HANDLE fenceEvent;
 };

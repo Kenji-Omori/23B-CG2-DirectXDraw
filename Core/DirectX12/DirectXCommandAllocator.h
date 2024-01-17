@@ -2,7 +2,7 @@
 
 #include <memory>
 class DirectXDevice;
-class ID3D12CommandAllocator;
+struct ID3D12CommandAllocator;
 
 class DirectXCommandAllocator
 {

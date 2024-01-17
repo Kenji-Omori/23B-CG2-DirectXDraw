@@ -8,19 +8,20 @@ DirectXResources::DirectXResources()
 
 DirectXResources::~DirectXResources()
 {
+  //delete[](colorBuffers);
 }
 
 void DirectXResources::CreateColorBuffers(unsigned char bufferNum)
 {
-  colorBuffers = std::make_unique<std::unique_ptr<ID3D12Resource>[]>(bufferNum);
+  //colorBuffers = new ID3D12Resource*[bufferNum];
   for (unsigned char i = 0; i < bufferNum; i++)
   {
-    colorBuffers[i] = std::make_unique<ID3D12Resource>();
+   // colorBuffers[i] = new ID3D12Resource>();
   }
 }
 
 ID3D12Resource* DirectXResources::GetResource(unsigned char index)
 {
-  return colorBuffers[index].get();
+  return nullptr;// colorBuffers[index].get();
 }
 

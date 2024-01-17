@@ -1,9 +1,9 @@
 #pragma once
 
 class DirectXDevice;
-class ID3D12CommandQueue;
-class ID3D12CommandAllocator;
-class ID3D12GraphicsCommandList;
+struct ID3D12CommandQueue;
+struct ID3D12CommandAllocator;
+struct ID3D12GraphicsCommandList;
 
 class DirectXCommand
 {
@@ -20,5 +20,5 @@ private:
 	DirectXDevice* device;
 	ID3D12CommandQueue* queue;
 	ID3D12GraphicsCommandList* list;
-	D3D12_COMMAND_QUEUE_DESC desc;
+	//D3D12_COMMAND_QUEUE_DESC desc;
 };

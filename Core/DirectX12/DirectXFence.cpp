@@ -12,6 +12,10 @@ DirectXFence::DirectXFence(DirectXDevice* device)
   HRESULT hr = device->Get()->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
   assert(SUCCEEDED(hr));
   // FenceのSignalを待つためのイベントを作成する
-  fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+  HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   assert(fenceEvent != nullptr);
+}
+
+DirectXFence::~DirectXFence()
+{
 }

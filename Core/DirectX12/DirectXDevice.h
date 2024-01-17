@@ -1,6 +1,6 @@
 #pragma once
 
-class ID3D12Device;
+struct ID3D12Device;
 class DirectXAdapter;
 
 class DirectXDevice
