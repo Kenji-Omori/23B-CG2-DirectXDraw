@@ -14,8 +14,15 @@ DirectXFence::DirectXFence(DirectXDevice* device)
   // FenceのSignalを待つためのイベントを作成する
   HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   assert(fenceEvent != nullptr);
+
+  fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 DirectXFence::~DirectXFence()
 {
+}
+
+void DirectXFence::Release()
+{
+  fence->Release();
 }

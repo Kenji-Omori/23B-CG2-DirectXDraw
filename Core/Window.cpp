@@ -3,11 +3,24 @@
 
 #include <d3d12.h>
 #include <dxgi1_2.h>
+#include <Core/Type/Vector2Int.h>
 //#include <Externals/imgui/imgui.h>
 
 
 //extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+
+Core::Window::Window()
+{
+  msg = {};
+  rect = { 1024,720 };
+  wc = {};
+  hwnd = {};
+}
+
+Core::Window::~Window()
+{
+}
 
 void Core::Window::Initialize()
 {
@@ -31,7 +44,6 @@ void Core::Window::Initialize()
     wc.hInstance,
     nullptr
   );
-
 }
 
 void Core::Window::SetResolution(int width, int height)
@@ -50,19 +62,36 @@ void Core::Window::Close()
   CloseWindow(hwnd);
 }
 
-int Core::Window::GetWidth()
+Vector2Int Core::Window::GetResolution()
 {
-  return rect.right - rect.left;
+  return {
+    rect.right - rect.left,
+    rect.bottom - rect.top
+  };
 }
 
-int Core::Window::GetHeight()
+float Core::Window::GerResolutionRate()
 {
-  return rect.bottom - rect.top;
+  Vector2Int resolution = GetResolution();
+  return float(resolution.x) / resolution.y;
 }
 
 const HWND& Core::Window::GetWindowHandle()
 {
   return hwnd;
+}
+
+bool Core::Window::IsCallCloseMessage()
+{
+  if (!PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) { return false; }
+  TranslateMessage(&msg);
+  DispatchMessage(&msg);
+  return true;
+}
+
+bool Core::Window::IsCallQuitMessage()
+{
+  return msg.message == WM_QUIT;
 }
 
 

@@ -103,6 +103,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Core\DirectX12\DirectXAdapter.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommand.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommandAllocator.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXCommandList.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommandQueue.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXFactory.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXFence.cpp" />
@@ -145,6 +146,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Core\DirectX12\DirectXAdapter.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommand.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommandAllocator.h" />
+    <ClInclude Include="Core\DirectX12\DirectXCommandList.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommandQueue.h" />
     <ClInclude Include="Core\DirectX12\DirectXFence.h" />
     <ClInclude Include="Core\DirectX12\DirectXInfoQueue.h" />
@@ -157,6 +159,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Core\TextureConverter.h" />
     <ClInclude Include="Core\Type\Matrix4x4.h" />
     <ClInclude Include="Core\Type\Vector2.h" />
+    <ClInclude Include="Core\Type\Vector2Int.h" />
     <ClInclude Include="Core\Type\Vector4.h" />
     <ClInclude Include="Core\Type\VertexData.h" />
     <ClInclude Include="Core\Window.h" />

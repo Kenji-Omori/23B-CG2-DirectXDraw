@@ -4,20 +4,27 @@
 
 //#include <Externals/imgui/imgui_impl_dx12.h>
 //#include <Externals/imgui/imgui_impl_win32.h>
+#include <Core/Type/Vector2.h>
 
-
+struct Vector2Int;
 
 namespace Core {
   class Window
   {
   public:
+    Window();
+    ~Window();
     void Initialize();
     void SetResolution(int width, int height);
     void Show();
     void Close();
-    int GetWidth();
-    int GetHeight();
+    Vector2Int GetResolution();
+    float GerResolutionRate();
+
     const HWND& GetWindowHandle();
+    bool IsCallCloseMessage();
+    bool IsCallQuitMessage();
+
 
   private:
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
@@ -25,5 +32,6 @@ namespace Core {
     WNDCLASS wc;
     RECT rect;
     HWND hwnd;
+    MSG msg;
   };
 }

@@ -2,8 +2,9 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
-
+#include <Core/Debug.h>
 #include <Core/DirectX12/DirectXAdapter.h>
+#include <format>
 
 DirectXDevice::DirectXDevice(DirectXAdapter* adapter)
 {
@@ -18,10 +19,12 @@ DirectXDevice::DirectXDevice(DirectXAdapter* adapter)
     // 指定した機能レベルでデバイスが生成できたかを確認
     if (SUCCEEDED(hr)) {
       // 生成できたのでログ出力を行ってループを抜ける
-      //Omory::Debug::Log(std::format("FeatureLevel : {}\n", featureLevelStrings[i]));
+      Core::Debug::Log(std::format("FeatureLevel : {}\n", featureLevelStrings[i]));
       break;
     }
   }
+  Core::Debug::Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
+
   // デバイスの生成がうまくいかなかったので起動できない
   assert(device != nullptr);
   }
@@ -40,4 +43,5 @@ ID3D12Device* DirectXDevice::Get() const
 void DirectXDevice::Release()
 {
   device->Release();
+  device = nullptr;
 }

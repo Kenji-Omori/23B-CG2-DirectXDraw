@@ -40,4 +40,5 @@ IDXGIAdapter4* DirectXAdapter::Get() const
 void DirectXAdapter::Release()
 {
   adapter->Release();
+  adapter = nullptr;
 }

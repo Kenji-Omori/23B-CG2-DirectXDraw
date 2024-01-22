@@ -2,18 +2,16 @@
 #include <d3d12.h>
 #include <memory>
 class DirectXDevice;
-class DirectXCommandAllocator;
-
+struct ID3D12CommandQueue;
 class DirectXCommandQueue
 {
 public:
-	DirectXCommandQueue(DirectXDevice* device, DirectXCommandAllocator* allocator);
+	DirectXCommandQueue(DirectXDevice* device);
 	~DirectXCommandQueue();
+	void Release();
 
 private:
+	ID3D12CommandQueue* commandQueue;
 	DirectXDevice* device;
-	DirectXCommandAllocator* allocator;
-//	D3D12_COMMAND_QUEUE_DESC desc;
-//	unsigned char allocatorNum;
 };
 

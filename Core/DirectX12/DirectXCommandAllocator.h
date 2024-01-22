@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <memory>
@@ -7,12 +8,11 @@ struct ID3D12CommandAllocator;
 class DirectXCommandAllocator
 {
 public:
-	DirectXCommandAllocator(DirectXDevice* device, unsigned char allocatorNum);
+	DirectXCommandAllocator(DirectXDevice* device);
 	~DirectXCommandAllocator();
-	ID3D12CommandAllocator* GetAllocator(unsigned char index);
+	ID3D12CommandAllocator* GetAllocator();
+	void Release();
 private:
 	DirectXDevice* device;
-	std::unique_ptr<ID3D12CommandAllocator* []> allocators;
-
-	unsigned char allocatorNum;
+	ID3D12CommandAllocator*  allocator;
 };
