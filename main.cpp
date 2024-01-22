@@ -167,25 +167,6 @@ ID3D12DescriptorHeap* CreateDescriptorHeap(
   return descriptorHeap;
 }
 
-//DirectX::ScratchImage LoadTexture(const std::string& filePath)
-//{
-//  
-//
-//  // テクスチャファイルを読んでプログラムで扱えるようにする
-//  DirectX::ScratchImage image{};
-//  std::wstring filePathW = ConvertString(filePath);
-//  HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
-//  assert(SUCCEEDED(hr));
-//
-//  // ミップマップの作成
-//  DirectX::ScratchImage mipImages{};
-//  hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
-//  assert(SUCCEEDED(hr));
-//
-//  // ミップマップ付きのデータを返す
-//  return mipImages;
-//}
-
 ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata)
 {
   // 1. metadataを基にResourceの設定
@@ -261,33 +242,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   OutputDebugStringA("Hello, DirectX!\n");
   Core::Window window;
   window.Initialize();
-  //WNDCLASS wc{};
-  //wc.lpfnWndProc = WindowProc;
-  //wc.lpszClassName = L"CG2WindowClass";
-  //wc.hInstance = GetModuleHandle(nullptr);
-  //wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-  //RegisterClass(&wc);
-
-
-  //const int32_t kClientWidth = 720;
-  //const int32_t kClientHeight = 720;
-  //RECT wrc = { 0,0,kClientWidth, kClientHeight };
-  //AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU, false);
-
-  //HWND hwnd = CreateWindow(
-  //  wc.lpszClassName,
-  //  L"CG2",
-  //  WS_OVERLAPPEDWINDOW, 
-  //  CW_USEDEFAULT,
-  //  CW_USEDEFAULT,
-  //  wrc.right - wrc.left,
-  //  wrc.bottom - wrc.top,
-  //  nullptr, 
-  //  nullptr,
-  //  wc.hInstance,
-  //  nullptr
-  //);
-
 
 #ifdef _DEBUG
   ID3D12Debug1* debugController = nullptr;
@@ -305,10 +259,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
     //Setup DirectX12
+#pragma region Facgory
   IDXGIFactory7* dxgiFactory = nullptr;
   HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
   assert(SUCCEEDED(hr));
-
+#pragma endregion
+#pragma region Adapter
   IDXGIAdapter4* useAdapter = nullptr;
   // 良い順にアダプタを頼む
   for (UINT i = 0; dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
@@ -327,6 +283,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   // 適切なアダプタが見つからなかったので起動できない
   assert(useAdapter != nullptr);
 
+#pragma endregion
+#pragma region Device
   ID3D12Device* device = nullptr;
   // 機能レベルとログ出力用の文字列
   D3D_FEATURE_LEVEL featureLevels[] = {
@@ -349,6 +307,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
 
+#pragma endregion
+#pragma region InfoQueue
 #ifdef _DEBUG
   ID3D12InfoQueue* infoQueue = nullptr;
   if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
@@ -379,7 +339,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     infoQueue->Release();
   }
 #endif
-
+#pragma endregion
+#pragma region CommandQueue
   //コマンドキューを生成する
   ID3D12CommandQueue* commandQueue = nullptr;
   D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
@@ -906,6 +867,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
       preCmd = curCmd;
     }
 
+#pragma region IMGUI_Comment
     //ImGui_ImplDX12_NewFrame();
     //ImGui_ImplWin32_NewFrame();
     //ImGui::NewFrame();
@@ -916,7 +878,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //// ImGuiの内部コマンドを生成する
     //ImGui::Render();
 
-
+#pragma endregion
 
 
 
