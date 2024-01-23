@@ -1,13 +1,13 @@
 #pragma once
-
+#include <wrl.h>
 class DirectXDevice;
 
 class DirectXInfoQueue
 {
 public:
-	DirectXInfoQueue(DirectXDevice* device);
-	~DirectXInfoQueue();
+  DirectXInfoQueue(Microsoft::WRL::ComPtr<DirectXDevice> device);
+  ~DirectXInfoQueue();
 
 private:
-	DirectXDevice* device;
+  Microsoft::WRL::ComPtr<DirectXDevice> device;
 };

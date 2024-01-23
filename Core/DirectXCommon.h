@@ -1,9 +1,10 @@
 #pragma once
 
-#include <d3d12.h>
-#include <dxgi1_6.h>
+// #include <d3d12.h>
+// #include <dxgi1_6.h>
+//#include <Core/Window.h>
+#include <wrl.h>
 #include <vector>
-#include <Core/Window.h>
 #include <memory>
 
 class DirectXAdapter;
@@ -15,14 +16,14 @@ class DirectXInfoQueue;
 class DirectXCommandQueue;
 class DirectXCommandAllocator;
 class DirectXCommandList;
-
+class Window;
 
 
 namespace Core {
   class DirectXCommon
   {
   public:
-    DirectXCommon(Window* window);
+    DirectXCommon(Microsoft::WRL::ComPtr<Window> window);
     ~DirectXCommon();
     void Initialize();
     void Release();
@@ -34,16 +35,16 @@ namespace Core {
 
 
 
-    DirectXFactory* factory;
-    DirectXAdapter* adapter;
-    DirectXDevice* device;
-    DirectXInfoQueue* infoQueue;
-    DirectXCommandQueue* commandQueue;
-    DirectXCommandAllocator* allocator;
-    DirectXCommandList* commandList;
-    DirectXFence* fence;
+    Microsoft::WRL::ComPtr<DirectXFactory> factory;
+    Microsoft::WRL::ComPtr<DirectXAdapter> adapter;
+    Microsoft::WRL::ComPtr<DirectXDevice> device;
+    Microsoft::WRL::ComPtr<DirectXInfoQueue> infoQueue;
+    Microsoft::WRL::ComPtr<DirectXCommandQueue> commandQueue;
+    Microsoft::WRL::ComPtr<DirectXCommandAllocator> allocator;
+    Microsoft::WRL::ComPtr<DirectXCommandList> commandList;
+    Microsoft::WRL::ComPtr<DirectXFence> fence;
 
-    Window* window;
+    Microsoft::WRL::ComPtr<Window> window;
 
   };
 }

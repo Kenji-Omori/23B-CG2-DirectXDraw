@@ -1,15 +1,19 @@
 #pragma once
+#include <wrl.h>
+
 
 class DirectXDevice;
+class DirectXCommandAllocator;
 struct ID3D12GraphicsCommandList;
 class DirectXCommandList
 {
 public:
-	DirectXCommandList(DirectXDevice* device);
+	DirectXCommandList(Microsoft::WRL::ComPtr<DirectXDevice> device, Microsoft::WRL::ComPtr<DirectXCommandAllocator> allocator);
 	~DirectXCommandList();
 	void Release();
 
 private:
-	ID3D12GraphicsCommandList* commandList;
-	DirectXDevice* device;
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList;
+	Microsoft::WRL::ComPtr<DirectXDevice> device;
+	Microsoft::WRL::ComPtr<DirectXCommandAllocator> allocator;
 };

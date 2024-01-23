@@ -1,17 +1,18 @@
 #pragma once
-
+#include <wrl.h>
 struct IDXGIAdapter4;
 class DirectXFactory;
 
 class DirectXAdapter
 {
 public:
-	DirectXAdapter(DirectXFactory* factory);
+	DirectXAdapter(Microsoft::WRL::ComPtr<DirectXFactory> factory);
 	~DirectXAdapter();
 
-	IDXGIAdapter4* Get() const;
+	Microsoft::WRL::ComPtr<IDXGIAdapter4> Get() const;
+	IDXGIAdapter4* GetRaw() const;
 	void Release();
 
 private:
-	IDXGIAdapter4* adapter;
+	Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter;
 };

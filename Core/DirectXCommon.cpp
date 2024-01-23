@@ -27,12 +27,18 @@
 
 
 namespace Core {
-  DirectXCommon::DirectXCommon(Window* window)
+  DirectXCommon::DirectXCommon(Microsoft::WRL::ComPtr<Window> window)
   {
     this->window = window;
     factory = nullptr;
     adapter = nullptr;
     device = nullptr;
+    allocator = nullptr;
+    commandList = nullptr;
+    commandQueue = nullptr;
+    fence = nullptr;
+    infoQueue = nullptr;
+
   }
 
   DirectXCommon::~DirectXCommon()
@@ -48,7 +54,7 @@ namespace Core {
     infoQueue = new DirectXInfoQueue(device);
     commandQueue = new DirectXCommandQueue(device);
     allocator = new DirectXCommandAllocator(device);
-    commandList = new DirectXCommandList(device);
+    commandList = new DirectXCommandList(device, allocator);
     fence = new DirectXFence(device);
 
 
@@ -59,19 +65,12 @@ namespace Core {
   void DirectXCommon::Release()
   {
     fence->Release();
-    delete(fence);
     commandList->Release();
-    delete(commandList);
     allocator->Release();
-    delete(allocator);
     commandQueue->Release();
-    delete(commandQueue);
     device->Release();
-    delete(device);
     adapter->Release();
-    delete(adapter);
     factory->Release();
-    delete(factory);
 
 #ifdef _DEBUG
     //debugController->Release();

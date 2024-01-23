@@ -2,10 +2,9 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
-
-
 #include <Core/DirectX12/DirectXDevice.h>
-DirectXFence::DirectXFence(DirectXDevice* device)
+
+DirectXFence::DirectXFence(Microsoft::WRL::ComPtr<DirectXDevice> device)
 {
   this->device = device;
   uint64_t fenceValue = 0;
@@ -15,7 +14,7 @@ DirectXFence::DirectXFence(DirectXDevice* device)
   HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   assert(fenceEvent != nullptr);
 
-  fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+  //fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 DirectXFence::~DirectXFence()

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <wrl.h>
 struct IDXGIFactory7;
 
 class DirectXFactory
@@ -8,8 +8,8 @@ public:
 	DirectXFactory();
 	~DirectXFactory();
 	void Release();
-	IDXGIFactory7* Get() const;
+	Microsoft::WRL::ComPtr<IDXGIFactory7> Get() const;
 
 private:
-	IDXGIFactory7* factory;
+ Microsoft::WRL::ComPtr<IDXGIFactory7> factory;
 };

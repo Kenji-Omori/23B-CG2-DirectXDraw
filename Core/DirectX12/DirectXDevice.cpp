@@ -6,7 +6,7 @@
 #include <Core/DirectX12/DirectXAdapter.h>
 #include <format>
 
-DirectXDevice::DirectXDevice(DirectXAdapter* adapter)
+DirectXDevice::DirectXDevice(Microsoft::WRL::ComPtr <DirectXAdapter> adapter)
 {
   {  D3D_FEATURE_LEVEL featureLevels[] = {
     D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
@@ -15,7 +15,7 @@ DirectXDevice::DirectXDevice(DirectXAdapter* adapter)
   // 高い順に生成できるか試していく
   for (size_t i = 0; i < _countof(featureLevels); ++i) {
     // 採用したアダプターでデバイスを生成
-    HRESULT hr = D3D12CreateDevice(adapter->Get(), featureLevels[i], IID_PPV_ARGS(&device));
+    HRESULT hr = D3D12CreateDevice(adapter->GetRaw(), featureLevels[i], IID_PPV_ARGS(&device));
     // 指定した機能レベルでデバイスが生成できたかを確認
     if (SUCCEEDED(hr)) {
       // 生成できたのでログ出力を行ってループを抜ける
@@ -35,7 +35,7 @@ DirectXDevice::~DirectXDevice()
   assert(device == nullptr);
 }
 
-ID3D12Device* DirectXDevice::Get() const
+Microsoft::WRL::ComPtr <ID3D12Device> DirectXDevice::Get() const
 {
   return device;
 }
@@ -43,5 +43,4 @@ ID3D12Device* DirectXDevice::Get() const
 void DirectXDevice::Release()
 {
   device->Release();
-  device = nullptr;
 }

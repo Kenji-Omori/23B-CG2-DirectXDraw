@@ -5,7 +5,7 @@
 #include <Core/DirectX12/DirectXFactory.h>
 
 
-DirectXAdapter::DirectXAdapter(DirectXFactory* factory)
+DirectXAdapter::DirectXAdapter(Microsoft::WRL::ComPtr<DirectXFactory> factory)
 {
   // 良い順にアダプタを頼む
   for (UINT i = 0; factory->Get()->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&adapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
@@ -32,13 +32,17 @@ DirectXAdapter::~DirectXAdapter()
   assert(adapter == nullptr);
 }
 
-IDXGIAdapter4* DirectXAdapter::Get() const
+Microsoft::WRL::ComPtr <IDXGIAdapter4> DirectXAdapter::Get() const
 {
   return adapter;
+}
+
+IDXGIAdapter4* DirectXAdapter::GetRaw() const
+{
+  return adapter.Get();
 }
 
 void DirectXAdapter::Release()
 {
   adapter->Release();
-  adapter = nullptr;
 }
