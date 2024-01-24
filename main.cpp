@@ -720,7 +720,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 
-
+#pragma region PreDraw
   // これから書き込むバックバッファのインデックスを取得
   UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
@@ -752,18 +752,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap };
   commandList->SetDescriptorHeaps(1, descriptorHeaps);
 
-
-
-
-
   commandList->RSSetViewports(1, &viewport);  // Viewportを設定
   commandList->RSSetScissorRects(1, &scissorRect);    // Scirssorを設定
+
+#pragma endregion
+#pragma region Draw
+
+
+
+  //シェーダごと
+  // 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけば良い
+  commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
   // RootSignatureを設定。PSOに設定しているけど別途設定が必要
   commandList->SetGraphicsRootSignature(rootSignature);
   commandList->SetPipelineState(graphicsPipelineState);   // PSOを設定
+
+
+
+  //以下オブジェクトごと
+
   commandList->IASetVertexBuffers(0, 1, &vertexBufferView);   // VBVを設定
-  // 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけば良い
-  commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
   commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
   // wvp用のCBufferの場所を設定
@@ -777,12 +787,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   // 描画！（DrawCall/ドローコール）。3頂点で1つのインスタンス。インスタンスについては今後
   commandList->DrawInstanced(vertexNum, 1, 0, 0);
 
+#pragma endregion
   // 実際のcommandListのImGuiの描画コマンドを積む
 //  ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
 
 
 
-
+#pragma region PostDraw
 
   // 今回はRenderTargetからPresentにする
   barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -824,7 +835,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   assert(SUCCEEDED(hr));
 
 
-
+#pragma endregion
 
   // comment テスト
 
