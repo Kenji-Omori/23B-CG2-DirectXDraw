@@ -7,23 +7,35 @@
 #include <vector>
 #include <memory>
 
-class DirectXAdapter;
-class DirectXCommand;
-class DirectXDevice;
-class DirectXFactory;
-class DirectXFence;
-class DirectXInfoQueue;
-class DirectXCommandQueue;
-class DirectXCommandAllocator;
-class DirectXCommandList;
+//class DirectXAdapter;
+//class DirectXCommand;
+//class DirectXDevice;
+//class DirectXFactory;
+//class DirectXFence;
+//class DirectXInfoQueue;
+//class DirectXCommandQueue;
+//class DirectXCommandAllocator;
+//class DirectXCommandList;
 class Window;
+
+#include <Core/Window.h>
+#include <Core/DirectX12/DirectXAdapter.h>
+#include <Core/DirectX12/DirectXCommand.h>
+#include <Core/DirectX12/DirectXDevice.h>
+#include <Core/DirectX12/DirectXFactory.h>
+#include <Core/DirectX12/DirectXFence.h>
+#include <Core/DirectX12/DirectXInfoQueue.h>
+#include <Core/DirectX12/DirectXSwapChain.h>
+#include <Core/DirectX12/DirectXCommandQueue.h>
+#include <Core/DirectX12/DirectXCommandAllocator.h>
+#include <Core/DirectX12/DirectXCommandList.h>
 
 
 namespace Core {
   class DirectXCommon
   {
   public:
-    DirectXCommon(Microsoft::WRL::ComPtr<Window> window);
+    DirectXCommon(Window* window);
     ~DirectXCommon();
     void Initialize();
     void Release();
@@ -35,16 +47,16 @@ namespace Core {
 
 
 
-    Microsoft::WRL::ComPtr<DirectXFactory> factory;
-    Microsoft::WRL::ComPtr<DirectXAdapter> adapter;
-    Microsoft::WRL::ComPtr<DirectXDevice> device;
-    Microsoft::WRL::ComPtr<DirectXInfoQueue> infoQueue;
-    Microsoft::WRL::ComPtr<DirectXCommandQueue> commandQueue;
-    Microsoft::WRL::ComPtr<DirectXCommandAllocator> allocator;
-    Microsoft::WRL::ComPtr<DirectXCommandList> commandList;
-    Microsoft::WRL::ComPtr<DirectXFence> fence;
+    DirectXFactory* factory;
+    DirectXAdapter* adapter;
+    DirectXDevice* device;
+    DirectXInfoQueue* infoQueue;
+    DirectXCommandQueue* commandQueue;
+    DirectXCommandAllocator* allocator;
+    DirectXCommandList* commandList;
+    DirectXFence* fence;
 
-    Microsoft::WRL::ComPtr<Window> window;
+    Window* window;
 
   };
 }

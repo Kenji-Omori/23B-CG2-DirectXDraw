@@ -36,8 +36,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   assert(SUCCEEDED(result));
 
   OutputDebugStringA("Hello, DirectX!\n");
-  Microsoft::WRL::ComPtr<Core::Window> window;
-  Microsoft::WRL::ComPtr<Core::DirectXCommon> renderer;
+  Core::Window* window;
+  Core::DirectXCommon* renderer;
   
   window = new Core::Window();
   window->Initialize();
@@ -54,6 +54,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   }
 
   renderer->Release();
+  delete(renderer);
+  delete(window);
   CoUninitialize();
   return 0;
 }

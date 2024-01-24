@@ -6,7 +6,7 @@
 
 #include <Core/DirectX12/DirectXDevice.h>
 
-DirectXInfoQueue::DirectXInfoQueue(Microsoft::WRL::ComPtr<DirectXDevice> device)
+DirectXInfoQueue::DirectXInfoQueue(DirectXDevice* device)
 {
   this->device = device;
 #ifdef _DEBUG

@@ -6,12 +6,12 @@ struct ID3D12CommandQueue;
 class DirectXCommandQueue
 {
 public:
-	DirectXCommandQueue(Microsoft::WRL::ComPtr<DirectXDevice> device);
+	DirectXCommandQueue(DirectXDevice* device);
 	~DirectXCommandQueue();
 	void Release();
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue;
-	Microsoft::WRL::ComPtr<DirectXDevice> device;
+	DirectXDevice* device;
 };
 

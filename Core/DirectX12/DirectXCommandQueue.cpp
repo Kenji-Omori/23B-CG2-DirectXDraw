@@ -3,7 +3,7 @@
 #include <cassert>
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
-DirectXCommandQueue::DirectXCommandQueue(Microsoft::WRL::ComPtr<DirectXDevice> device)
+DirectXCommandQueue::DirectXCommandQueue(DirectXDevice* device)
 {
   this->device = device;
   commandQueue = nullptr;

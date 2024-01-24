@@ -9,6 +9,7 @@
 #include <Core/Type/Vector4.h>
 #include <Core/Type/VertexData.h>
 
+#include <Core/Window.h>
 #include <Core/DirectX12/DirectXAdapter.h>
 #include <Core/DirectX12/DirectXCommand.h>
 #include <Core/DirectX12/DirectXDevice.h>
@@ -26,89 +27,108 @@
 #pragma comment(lib, "dxcompiler.lib")
 
 
-namespace Core {
-  DirectXCommon::DirectXCommon(Microsoft::WRL::ComPtr<Window> window)
-  {
-    this->window = window;
-    factory = nullptr;
-    adapter = nullptr;
-    device = nullptr;
-    allocator = nullptr;
-    commandList = nullptr;
-    commandQueue = nullptr;
-    fence = nullptr;
-    infoQueue = nullptr;
-
-  }
-
-  DirectXCommon::~DirectXCommon()
-  {
-  }
-
-  void DirectXCommon::Initialize()
-  {
-    // Device
-    factory = new DirectXFactory();
-    adapter = new DirectXAdapter(factory);
-    device = new DirectXDevice(adapter);
-    infoQueue = new DirectXInfoQueue(device);
-    commandQueue = new DirectXCommandQueue(device);
-    allocator = new DirectXCommandAllocator(device);
-    commandList = new DirectXCommandList(device, allocator);
-    fence = new DirectXFence(device);
 
 
-    Debug::Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
-  }
+Core::DirectXCommon::DirectXCommon(Window* window)
+{
+  this->window = window;
+  factory = nullptr;
+  adapter = nullptr;
+  device = nullptr;
+  allocator = nullptr;
+  commandList = nullptr;
+  commandQueue = nullptr;
+  fence = nullptr;
+  infoQueue = nullptr;
+
+}
+
+Core::DirectXCommon::~DirectXCommon()
+{
+}
+
+void Core::DirectXCommon::Initialize()
+{
+  // Device
+  factory = new DirectXFactory();
+  adapter = new DirectXAdapter(factory);
+  device = new DirectXDevice(adapter);
+  infoQueue = new DirectXInfoQueue(device);
+  commandQueue = new DirectXCommandQueue(device);
+  allocator = new DirectXCommandAllocator(device);
+  commandList = new DirectXCommandList(device, allocator);
+  fence = new DirectXFence(device);
 
 
-  void DirectXCommon::Release()
-  {
-    fence->Release();
-    commandList->Release();
-    allocator->Release();
-    commandQueue->Release();
-    device->Release();
-    adapter->Release();
-    factory->Release();
+  //swapchain * 1;
+  //descriptor(Resources) * (rtv, srv, dsv)
+  //pipeline * ShaderNum;
+  //rootSignature * pipeline
+
+
+
+  //PreDraw
+  //pipeline更新
+  //rootSignature 更新
+  //descriptor(Resources) 更新
+
+  //Draw
+  //各描画処理
+
+
+  //PostDraw
+  //
+
+  Debug::Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
+}
+
+
+void Core::DirectXCommon::Release()
+{
+  delete(fence);
+  delete(commandList);
+  delete(allocator);
+  delete(commandQueue);
+  delete(device);
+  delete(adapter);
+  delete(factory);
 
 #ifdef _DEBUG
-    //debugController->Release();
+  //debugController->Release();
 #endif
-  }
-
-  void DirectXCommon::Draw()
-  {
-    PreRenderer();
-    Renderer();
-    PostRenderer();
-  }
-
-  void DirectXCommon::PreRenderer()
-  {
-
-    float onePixel = 2.f / 512.f;
-    float texSize = 512;
-    float sizes[] = {
-      texSize * onePixel / 1.f,
-      texSize * onePixel / 2.f,
-      texSize * onePixel / 4.f,
-      texSize * onePixel / 8.f,
-      texSize * onePixel / 16.f,
-      texSize * onePixel / 32.f,
-      texSize * onePixel / 64.f,
-      texSize * onePixel / 128.f,
-      texSize * onePixel / 256.f,
-      texSize * onePixel / 512.f,
-    };
-  }
-  void DirectXCommon::Renderer()
-  {
-
- 
-    }
-  void DirectXCommon::PostRenderer()
-  {
-  }
 }
- 
+
+void Core::DirectXCommon::Draw()
+{
+  PreRenderer();
+  Renderer();
+  PostRenderer();
+}
+
+void Core::DirectXCommon::PreRenderer()
+{
+
+  float onePixel = 2.f / 512.f;
+  float texSize = 512;
+  float sizes[] = {
+    texSize * onePixel / 1.f,
+    texSize * onePixel / 2.f,
+    texSize * onePixel / 4.f,
+    texSize * onePixel / 8.f,
+    texSize * onePixel / 16.f,
+    texSize * onePixel / 32.f,
+    texSize * onePixel / 64.f,
+    texSize * onePixel / 128.f,
+    texSize * onePixel / 256.f,
+    texSize * onePixel / 512.f,
+  };
+}
+void Core::DirectXCommon::Renderer()
+{
+
+
+}
+void Core::DirectXCommon::PostRenderer()
+{
+}
+

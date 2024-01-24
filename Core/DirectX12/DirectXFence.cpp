@@ -4,7 +4,7 @@
 #include <cassert>
 #include <Core/DirectX12/DirectXDevice.h>
 
-DirectXFence::DirectXFence(Microsoft::WRL::ComPtr<DirectXDevice> device)
+DirectXFence::DirectXFence(DirectXDevice* device)
 {
   this->device = device;
   uint64_t fenceValue = 0;

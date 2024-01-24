@@ -8,12 +8,12 @@ struct ID3D12GraphicsCommandList;
 class DirectXCommandList
 {
 public:
-	DirectXCommandList(Microsoft::WRL::ComPtr<DirectXDevice> device, Microsoft::WRL::ComPtr<DirectXCommandAllocator> allocator);
+	DirectXCommandList(DirectXDevice* device, DirectXCommandAllocator* allocator);
 	~DirectXCommandList();
 	void Release();
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList;
-	Microsoft::WRL::ComPtr<DirectXDevice> device;
-	Microsoft::WRL::ComPtr<DirectXCommandAllocator> allocator;
+	DirectXDevice* device;
+	DirectXCommandAllocator* allocator;
 };

@@ -5,9 +5,9 @@ class DirectXDevice;
 class DirectXInfoQueue
 {
 public:
-  DirectXInfoQueue(Microsoft::WRL::ComPtr<DirectXDevice> device);
+  DirectXInfoQueue(DirectXDevice* device);
   ~DirectXInfoQueue();
 
 private:
-  Microsoft::WRL::ComPtr<DirectXDevice> device;
+  DirectXDevice* device;
 };

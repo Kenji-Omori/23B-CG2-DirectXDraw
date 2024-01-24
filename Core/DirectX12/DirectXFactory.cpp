@@ -12,7 +12,6 @@ DirectXFactory::DirectXFactory()
 
 DirectXFactory::~DirectXFactory()
 {
-  assert(factory == nullptr);
 }
 
 void DirectXFactory::Release()
@@ -24,3 +23,6 @@ Microsoft::WRL::ComPtr<IDXGIFactory7> DirectXFactory::Get() const
 {
   return factory;
 }
+
+
+

@@ -4,7 +4,7 @@
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 
-DirectXCommandList::DirectXCommandList(Microsoft::WRL::ComPtr<DirectXDevice> device, Microsoft::WRL::ComPtr<DirectXCommandAllocator> allocator)
+DirectXCommandList::DirectXCommandList(DirectXDevice* device, DirectXCommandAllocator* allocator)
 {
   this->device = device;
   this->allocator = allocator;

@@ -6,7 +6,7 @@ class DirectXFactory;
 class DirectXAdapter
 {
 public:
-	DirectXAdapter(Microsoft::WRL::ComPtr<DirectXFactory> factory);
+	DirectXAdapter(DirectXFactory* factory);
 	~DirectXAdapter();
 
 	Microsoft::WRL::ComPtr<IDXGIAdapter4> Get() const;
@@ -14,5 +14,6 @@ public:
 	void Release();
 
 private:
+	DirectXFactory* factory;
 	Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter;
 };

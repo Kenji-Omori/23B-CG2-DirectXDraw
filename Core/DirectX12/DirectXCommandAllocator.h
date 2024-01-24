@@ -8,12 +8,12 @@ struct ID3D12CommandAllocator;
 class DirectXCommandAllocator
 {
 public:
-	DirectXCommandAllocator(Microsoft::WRL::ComPtr<DirectXDevice> device);
+	DirectXCommandAllocator(DirectXDevice* device);
 	~DirectXCommandAllocator();
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> Get();
 	ID3D12CommandAllocator* GetRaw();
 	void Release();
 private:
-	Microsoft::WRL::ComPtr<DirectXDevice> device;
+	DirectXDevice* device;
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator>  allocator;
 };

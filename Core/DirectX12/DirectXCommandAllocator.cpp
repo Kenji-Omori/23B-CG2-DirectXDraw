@@ -2,7 +2,7 @@
 #include <d3d12.h>
 #include <cassert>
 #include <Core/DirectX12/DirectXDevice.h>
-DirectXCommandAllocator::DirectXCommandAllocator(Microsoft::WRL::ComPtr<DirectXDevice> device)
+DirectXCommandAllocator::DirectXCommandAllocator(DirectXDevice* device)
 {
   this->device = device;
   HRESULT hr = device->Get()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&allocator));
@@ -11,7 +11,6 @@ DirectXCommandAllocator::DirectXCommandAllocator(Microsoft::WRL::ComPtr<DirectXD
 
 DirectXCommandAllocator::~DirectXCommandAllocator()
 {
-  assert(allocator == nullptr);
 }
 
 Microsoft::WRL::ComPtr<ID3D12CommandAllocator> DirectXCommandAllocator::Get()

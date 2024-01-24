@@ -5,8 +5,9 @@
 #include <Core/DirectX12/DirectXFactory.h>
 
 
-DirectXAdapter::DirectXAdapter(Microsoft::WRL::ComPtr<DirectXFactory> factory)
+DirectXAdapter::DirectXAdapter(DirectXFactory* factory)
 {
+  this->factory = factory;
   // 良い順にアダプタを頼む
   for (UINT i = 0; factory->Get()->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&adapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
     // アダプターの情報を取得する
@@ -29,7 +30,6 @@ DirectXAdapter::DirectXAdapter(Microsoft::WRL::ComPtr<DirectXFactory> factory)
 
 DirectXAdapter::~DirectXAdapter()
 {
-  assert(adapter == nullptr);
 }
 
 Microsoft::WRL::ComPtr <IDXGIAdapter4> DirectXAdapter::Get() const
