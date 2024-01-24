@@ -619,23 +619,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   delete[] vertexes;
 
-  // ビューポート
-  D3D12_VIEWPORT viewport{};
-  // クライアント領域のサイズと一緒にして画面全体に表示
-  viewport.Width = FLOAT(window.GetWidth());
-  viewport.Height = FLOAT(window.GetHeight());
-  viewport.TopLeftX = 0;
-  viewport.TopLeftY = 0;
-  viewport.MinDepth = 0.0f;
-  viewport.MaxDepth = 1.0f;
 
-  // シザー矩形
-  D3D12_RECT scissorRect{};
-  // 基本的にビューポートと同じ矩形が構成されるようにする
-  scissorRect.left = 0;
-  scissorRect.right = window.GetWidth();
-  scissorRect.top = 0;
-  scissorRect.bottom = window.GetHeight();
 
   // スワップチェーンを生成する
   IDXGISwapChain4* swapChain = nullptr;
@@ -751,6 +735,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   // 描画用のDescriptorHeapの設定
   ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap };
   commandList->SetDescriptorHeaps(1, descriptorHeaps);
+
+
+
+  // ビューポート
+  D3D12_VIEWPORT viewport{};
+  // クライアント領域のサイズと一緒にして画面全体に表示
+  viewport.Width = FLOAT(window.GetWidth());
+  viewport.Height = FLOAT(window.GetHeight());
+  viewport.TopLeftX = 0;
+  viewport.TopLeftY = 0;
+  viewport.MinDepth = 0.0f;
+  viewport.MaxDepth = 1.0f;
+
+  // シザー矩形
+  D3D12_RECT scissorRect{};
+  // 基本的にビューポートと同じ矩形が構成されるようにする
+  scissorRect.left = 0;
+  scissorRect.right = window.GetWidth();
+  scissorRect.top = 0;
+  scissorRect.bottom = window.GetHeight();
 
   commandList->RSSetViewports(1, &viewport);  // Viewportを設定
   commandList->RSSetScissorRects(1, &scissorRect);    // Scirssorを設定
