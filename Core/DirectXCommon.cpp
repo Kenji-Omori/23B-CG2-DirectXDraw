@@ -20,6 +20,7 @@
 #include <Core/DirectX12/DirectXCommandQueue.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 #include <Core/DirectX12/DirectXCommandList.h>
+#include <Core/DirectX12/DirectXSwapChain.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -40,6 +41,7 @@ Core::DirectXCommon::DirectXCommon(Window* window)
   commandQueue = nullptr;
   fence = nullptr;
   infoQueue = nullptr;
+  swapChain = nullptr;
 
 }
 
@@ -58,6 +60,7 @@ void Core::DirectXCommon::Initialize()
   allocator = new DirectXCommandAllocator(device);
   commandList = new DirectXCommandList(device, allocator);
   fence = new DirectXFence(device);
+  swapChain = new DirectXSwapChain(window, factory, commandQueue);
 
 
   //swapchain * 1;

@@ -22,3 +22,13 @@ void DirectXCommandQueue::Release()
   commandQueue->Release();
 }
 
+Microsoft::WRL::ComPtr<ID3D12CommandQueue> DirectXCommandQueue::Get()
+{
+    return commandQueue;
+}
+
+ID3D12CommandQueue* DirectXCommandQueue::GetRaw()
+{
+  return commandQueue.Get();
+}
+

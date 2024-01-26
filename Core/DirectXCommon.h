@@ -16,6 +16,7 @@
 //class DirectXCommandQueue;
 //class DirectXCommandAllocator;
 //class DirectXCommandList;
+class DirectXSwapChain;
 class Window;
 
 #include <Core/Window.h>
@@ -55,6 +56,7 @@ namespace Core {
     DirectXCommandAllocator* allocator;
     DirectXCommandList* commandList;
     DirectXFence* fence;
+    DirectXSwapChain* swapChain;
 
     Window* window;
 
