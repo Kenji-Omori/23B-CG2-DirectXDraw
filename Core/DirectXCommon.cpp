@@ -60,10 +60,10 @@ void Core::DirectXCommon::Initialize()
   allocator = new DirectXCommandAllocator(device);
   commandList = new DirectXCommandList(device, allocator);
   fence = new DirectXFence(device);
-  swapChain = new DirectXSwapChain(window, factory, commandQueue);
-
-
   //swapchain * 1;
+  swapChain = new DirectXSwapChain(window, factory, commandQueue,2);
+
+
   //descriptor(Resources) * (rtv, srv, dsv)
   //pipeline * ShaderNum;
   //rootSignature * pipeline

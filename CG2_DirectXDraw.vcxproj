@@ -109,7 +109,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Core\DirectX12\DirectXFence.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXInfoQueue.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXResourceBarrier.cpp" />
-    <ClCompile Include="Core\DirectX12\DirectXResources.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXResource.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXResourceConstBuffer.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXResourceTexture.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXSwapChain.cpp" />
     <ClCompile Include="Core\DirectXCommon.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXDevice.cpp" />
@@ -152,7 +154,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Core\DirectX12\DirectXFence.h" />
     <ClInclude Include="Core\DirectX12\DirectXInfoQueue.h" />
     <ClInclude Include="Core\DirectX12\DirectXResourceBarrier.h" />
-    <ClInclude Include="Core\DirectX12\DirectXResources.h" />
+    <ClInclude Include="Core\DirectX12\DirectXResource.h" />
+    <ClInclude Include="Core\DirectX12\DirectXResourceConstBuffer.h" />
+    <ClInclude Include="Core\DirectX12\DirectXResourceTexture.h" />
     <ClInclude Include="Core\DirectX12\DirectXSwapChain.h" />
     <ClInclude Include="Core\DirectXCommon.h" />
     <ClInclude Include="Core\DirectX12\DirectXDevice.h" />

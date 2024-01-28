@@ -78,7 +78,7 @@
     <ClCompile Include="Core\DirectX12\DirectXResourceBarrier.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\DirectX12\DirectXResources.cpp">
+    <ClCompile Include="Core\DirectX12\DirectXResource.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Core\DirectX12\DirectXCommandAllocator.cpp">
@@ -91,6 +91,12 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Objects\GameObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\DirectX12\DirectXResourceConstBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\DirectX12\DirectXResourceTexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -178,7 +184,7 @@
     <ClInclude Include="Core\DirectX12\DirectXResourceBarrier.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Core\DirectX12\DirectXResources.h">
+    <ClInclude Include="Core\DirectX12\DirectXResource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Core\DirectX12\DirectXCommandAllocator.h">
@@ -194,6 +200,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Objects\GameObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\DirectX12\DirectXResourceConstBuffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\DirectX12\DirectXResourceTexture.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

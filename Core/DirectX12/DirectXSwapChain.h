@@ -9,7 +9,7 @@ namespace Core {
 	class DirectXSwapChain
 	{
 	public:
-		DirectXSwapChain(Window* window, DirectXFactory* factory, DirectXCommandQueue* commandQueue);
+		DirectXSwapChain(Window* window, DirectXFactory* factory, DirectXCommandQueue* commandQueue, int bufferNum);
 		~DirectXSwapChain();
 		int GetBufferNum();
 
@@ -17,10 +17,9 @@ namespace Core {
 		void Setup();
 
 		Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain;
-		DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
 		DirectXFactory* factory;
 		DirectXCommandQueue* resources;
-		unsigned char bufferNum;
+		int bufferNum;
 	};
 
 }
