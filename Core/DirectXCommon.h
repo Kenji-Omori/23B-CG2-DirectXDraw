@@ -30,7 +30,9 @@ class Window;
 #include <Core/DirectX12/DirectXCommandQueue.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 #include <Core/DirectX12/DirectXCommandList.h>
-
+#include <Core/DirectX12/DirectXDescriptorHeapRTV.h>
+#include <Core/DirectX12/DirectXDescriptorHeapSRV.h>
+#include <Core/DirectX12/DirectXResourceTexture.h>
 
 namespace Core {
   class DirectXCommon
@@ -57,6 +59,11 @@ namespace Core {
     DirectXCommandList* commandList;
     DirectXFence* fence;
     DirectXSwapChain* swapChain;
+    DirectXDescriptorHeapRTV* rtvDescriptorHeap;
+    DirectXDescriptorHeapSRV* srvDescriptorHeap;
+    DirectXResourceTexture* resourceTexture;
+
+
 
     Window* window;
 

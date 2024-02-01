@@ -63,8 +63,18 @@ void Core::DirectXCommon::Initialize()
   //swapchain * 1;
   swapChain = new DirectXSwapChain(window, factory, commandQueue,2);
 
-
   //descriptor(Resources) * (rtv, srv, dsv)
+  rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, 2);
+  srvDescriptorHeap = new DirectXDescriptorHeapSRV(device, 128);
+  //dsv用のDescriptorHeapも
+
+  resourceTexture = new DirectXResourceTexture(device);
+  resourceTexture->LoadTexture("./Resources/Texture/uvChecker2.dds");
+
+  
+
+
+
   //pipeline * ShaderNum;
   //rootSignature * pipeline
 
@@ -88,6 +98,9 @@ void Core::DirectXCommon::Initialize()
 
 void Core::DirectXCommon::Release()
 {
+  delete(resourceTexture);
+  delete(srvDescriptorHeap);
+  delete(rtvDescriptorHeap);
   delete(fence);
   delete(commandList);
   delete(allocator);

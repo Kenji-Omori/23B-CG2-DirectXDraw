@@ -99,6 +99,15 @@
     <ClCompile Include="Core\DirectX12\DirectXResourceTexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeap.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapRTV.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapSRV.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shader\Object3d.PS.hlsl">
@@ -206,6 +215,15 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Core\DirectX12\DirectXResourceTexture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeap.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapRTV.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapSRV.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

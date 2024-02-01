@@ -11,11 +11,14 @@ public:
   DirectXResource(DirectXDevice* device,const D3D12_RESOURCE_DESC& desc, const D3D12_HEAP_PROPERTIES& properties);
   ~DirectXResource();
   void CreateColorBuffers();
+  DirectXDevice* GetDevice();
   ID3D12Resource* GetResource();
 
-private:
-  DirectXDevice* device;
+protected:
   ID3D12Resource* resource;
   D3D12_RESOURCE_DESC desc;
   D3D12_HEAP_PROPERTIES properties;
+
+private:
+  DirectXDevice* device;
 };

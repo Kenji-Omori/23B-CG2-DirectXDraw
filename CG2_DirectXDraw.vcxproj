@@ -105,6 +105,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Core\DirectX12\DirectXCommandAllocator.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommandList.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommandQueue.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeap.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapRTV.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapSRV.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXFactory.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXFence.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXInfoQueue.cpp" />
@@ -151,6 +154,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Core\DirectX12\DirectXCommandAllocator.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommandList.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommandQueue.h" />
+    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeap.h" />
+    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapRTV.h" />
+    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapSRV.h" />
     <ClInclude Include="Core\DirectX12\DirectXFence.h" />
     <ClInclude Include="Core\DirectX12\DirectXInfoQueue.h" />
     <ClInclude Include="Core\DirectX12\DirectXResourceBarrier.h" />

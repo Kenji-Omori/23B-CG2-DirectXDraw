@@ -1,6 +1,6 @@
 #include "DirectXResource.h"
 
-#include <d3d12.h>
+
 #include <cassert>
 #include <Core/DirectX12/DirectXDevice.h>
 
@@ -23,8 +23,13 @@ void DirectXResource::CreateColorBuffers()
 
 }
 
+DirectXDevice* DirectXResource::GetDevice()
+{
+  return device;
+}
+
 ID3D12Resource* DirectXResource::GetResource()
 {
-  return nullptr;
+  return resource;
 }
 
