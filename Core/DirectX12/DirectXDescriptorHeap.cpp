@@ -31,3 +31,8 @@ void DirectXDescriptorHeap::Create()
   HRESULT hr = device->Get()->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
   assert(SUCCEEDED(hr));
 }
+
+DirectXDevice* DirectXDescriptorHeap::GetDevice()
+{
+  return device;
+}

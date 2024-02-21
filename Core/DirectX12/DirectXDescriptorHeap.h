@@ -14,6 +14,7 @@ public:
 	ID3D12DescriptorHeap* Get();
 protected:
   void Create();
+	DirectXDevice* GetDevice();
 	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc;
 private:
 	DirectXDevice* device;

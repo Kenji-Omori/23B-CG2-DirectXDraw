@@ -1,4 +1,5 @@
 #include "DirectXDescriptorHeapSRV.h"
+#include <Core/DirectX12/DirectXResourceTexture.h>
 
 DirectXDescriptorHeapSRV::DirectXDescriptorHeapSRV(DirectXDevice* device, UINT num):
   DirectXDescriptorHeap(device)
@@ -15,4 +16,17 @@ DirectXDescriptorHeapSRV::DirectXDescriptorHeapSRV(DirectXDevice* device, UINT n
 
 DirectXDescriptorHeapSRV::~DirectXDescriptorHeapSRV()
 {
+  for (auto t : textures)
+  {
+    delete(t);
+  }
+  textures.clear();
+}
+
+int DirectXDescriptorHeapSRV::LoadTexture(const std::string& filePath)
+{
+  DirectXResourceTexture* texture = new DirectXResourceTexture(GetDevice());
+  texture->LoadTexture(filePath);
+  textures.push_back(texture);
+  return textures.size();
 }

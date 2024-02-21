@@ -1,9 +1,10 @@
 #include "GameObject.h"
 
-#include<Core/Type/VertexData.h>
-
-GameObject::GameObject()
+#include <Core/Type/VertexData.h>
+#include <Core/DirectX12/DirectXDevice.h>
+GameObject::GameObject(DirectXDevice* device)
 {
+  this->device = device;
 	Vector2 center = {0,0};
 	float size = 0.5f;
   vertexes = new VertexData[6];

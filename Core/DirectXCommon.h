@@ -47,7 +47,17 @@ namespace Core {
     void PreRenderer();
     void Renderer();
     void PostRenderer();
-
+    IDxcBlob* CompileShader(
+      // CompilerするShaderファイルへのパス
+      const std::wstring& filePath,
+      // Compilerに使用するProfile
+      const wchar_t* profile,
+      // 初期化で生成したものを3つ
+      IDxcUtils* dxcUtils,
+      IDxcCompiler3* dxcCompiler,
+      IDxcIncludeHandler* includeHandler);
+    void ShaderSetup();
+    void ModelSetup();
 
 
     DirectXFactory* factory;
