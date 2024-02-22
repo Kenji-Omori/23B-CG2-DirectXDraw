@@ -173,6 +173,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Core\Type\Vector2Int.h" />
     <ClInclude Include="Core\Type\Vector4.h" />
     <ClInclude Include="Core\Type\VertexData.h" />
+    <ClInclude Include="Core\Utilitys.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Externals\imgui\imconfig.h" />
     <ClInclude Include="Externals\imgui\imgui.h" />

@@ -226,6 +226,9 @@
     <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapSRV.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utilitys.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Externals\imgui\LICENSE.txt">
