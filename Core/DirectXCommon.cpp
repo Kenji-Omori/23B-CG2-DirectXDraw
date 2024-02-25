@@ -21,6 +21,7 @@
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 #include <Core/DirectX12/DirectXCommandList.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
+#include <Core/Utilitys.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -162,7 +163,7 @@ IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const
   // ここの中身をこの後書いていく
   // 1. hlslファイルを読む
   // これからシェーダーをコンパイルする旨をログに出す
-  Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
+  Utilitys::Log(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile));
   // hlslファイルを読む
   IDxcBlobEncoding* shaderSource = nullptr;
   HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
@@ -202,7 +203,7 @@ IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const
   IDxcBlobUtf8* shaderError = nullptr;
   shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
   if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-    Log(shaderError->GetStringPointer());
+    Utilitys::Log(shaderError->GetStringPointer());
     // 警告・エラーダメゼッタイ
     assert(false);
   }
@@ -214,7 +215,7 @@ IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const
   hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
   assert(SUCCEEDED(hr));
   // 成功したログを出す
-  Log(ConvertString(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile)));
+  Utilitys::Log(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile));
   // もう使わないリソースを解放
   shaderSource->Release();
   shaderResult->Release();
@@ -225,10 +226,38 @@ IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const
 
 void Core::DirectXCommon::ShaderSetup()
 {
+  // Shaderをコンパイルする
+  IDxcBlob* vertexShaderBlob = CompileShader(L"./Resources/Shader/Object3D.VS.hlsl", L"vs_6_0", dxcUtils, dxcCompiler, includeHandler);
+  assert(vertexShaderBlob != nullptr);
+
+  IDxcBlob* pixelShaderBlob = CompileShader(L"./Resources/Shader/Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includeHandler);
+  assert(pixelShaderBlob != nullptr);
+
+  D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
+  graphicsPipelineStateDesc.pRootSignature = rootSignature;// RootSignature
+  graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;// InputLayout
+  graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };// VertexShader
+  graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };// PixelShader
+  graphicsPipelineStateDesc.BlendState = blendDesc;// BlendState
+  graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;// RasterizerState
+  // 書き込むRTVの情報
+  graphicsPipelineStateDesc.NumRenderTargets = 1;
+  graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+  // 利用するトポロジ（形状）のタイプ。三角形
+  graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+  // どのように画面に色を打ち込むかの設定（気にしなくて良い）
+  graphicsPipelineStateDesc.SampleDesc.Count = 1;
+  graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+  // 実際に生成
+  ID3D12PipelineState* graphicsPipelineState = nullptr;
+
+  HRESULT hr = device->Get()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+  assert(SUCCEEDED(hr));
 
 }
 
 void Core::DirectXCommon::ModelSetup()
 {
+
 }
 

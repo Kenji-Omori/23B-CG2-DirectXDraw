@@ -9,6 +9,6 @@ void Core::Debug::Log(const std::string& message)
 }
 void Core::Debug::Log(const std::wstring& message)
 {
-  OutputDebugStringA(ConvertString(message).c_str());
+  OutputDebugStringA(WStrToStr(message).c_str());
 }
 

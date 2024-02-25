@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <string>
 
-std::wstring ConvertString(const std::string& str)
+std::wstring StrToWStr(const std::string& str)
 {
   if (str.empty())
   {
@@ -20,7 +20,7 @@ std::wstring ConvertString(const std::string& str)
   return result;
 }
 
-std::string ConvertString(const std::wstring& str)
+std::string WStrToStr(const std::wstring& str)
 {
   if (str.empty())
   {
