@@ -100,7 +100,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\Debug.cpp" />
-    <ClCompile Include="Core\DirectX12\DirectX12Shader.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXShader.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXAdapter.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommand.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommandAllocator.cpp" />
@@ -151,7 +151,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Debug.h" />
-    <ClInclude Include="Core\DirectX12\DirectX12Shader.h" />
+    <ClInclude Include="Core\DirectX12\DirectXShader.h" />
     <ClInclude Include="Core\DirectX12\DirectXAdapter.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommand.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommandAllocator.h" />

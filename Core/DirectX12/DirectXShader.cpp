@@ -1,9 +1,12 @@
-#include "DirectX12Shader.h"
+#include "DirectXShader.h"
 
 #include <cassert>
 #include <algorithm>
 #include <dxcapi.h>
+#include <format>
+
 #include <Core/Type/String.h>
+#include <Core/Utilitys.h>
 #include <Core/DirectX12/DirectXDevice.h>
 
 DirectXShader::DirectXShader(DirectXDevice* device)
@@ -119,4 +122,88 @@ void DirectXShader::SetRasterizerDesc()
   rasterizerDesc = {};
   rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
   rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+}
+
+IDxcBlob* DirectXShader::CompileShader(const std::string& filePath, ShaderType shaderType)
+{
+
+  std::wstring wFilePath = StrToWStr(filePath);
+  const wchar_t* profile;
+
+  switch (shaderType)
+  {
+  case DirectXShader::ShaderType::VertexShader:
+    profile = L"vs_6_0";
+    break;
+  case DirectXShader::ShaderType::PixelShader:
+    profile = L"ps_6_0";
+    break;
+  default:
+    assert(false);
+    break;
+  }
+
+
+
+  IDxcBlobEncoding* shaderSource = nullptr;
+  Utilitys::Log(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile));
+  HRESULT hr = dxcUtils->LoadFile(wFilePath.c_str(), nullptr, &shaderSource);
+  // 読めなかったら止める
+  assert(SUCCEEDED(hr));
+  // 呼んだシェーダファイルの設定
+  DxcBuffer shaderSourceBuffer;
+  shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
+  shaderSourceBuffer.Size = shaderSource->GetBufferSize();
+  shaderSourceBuffer.Encoding = DXC_CP_UTF8; // UTF8の文字コードであることを通知
+
+
+
+
+  LPCWSTR arguments[] = {
+    wFilePath.c_str(), // コンパイル対象のhlslファイル名
+    L"-E", L"main", // エントリーポイントの指定。基本的にmain以外にはしない
+    L"-T", profile, // ShaderProfileの設定
+    L"-Zi", L"-Qembed_debug",   // デバッグ用の情報を埋め込む
+    L"-Od",     // 最適化を外しておく
+    L"-Zpr",    // メモリレイアウトは行優先
+  };
+
+  // 実際にShaderをコンパイルする
+  IDxcResult* compiledResult = nullptr;
+  hr = dxcCompiler->Compile(
+    &shaderSourceBuffer,    // 読み込んだファイル
+    arguments,              // コンパイルオプション
+    _countof(arguments),    // コンパイルオプションの数
+    includeHandler,         // includeが含まれた諸々
+    IID_PPV_ARGS(&compiledResult) // コンパイル結果
+  );
+  // コンパイルエラーではなくdxcが起動できないなど致命的な状況
+  assert(SUCCEEDED(hr));
+  bool isError = CheckIsCompileError(compiledResult);
+  if (!isError) {
+    Utilitys::Log(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile));
+
+  }
+  IDxcBlob* shaderBlob = nullptr;
+  hr = compiledResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
+  assert(SUCCEEDED(hr));
+
+  shaderSource->Release();
+  compiledResult->Release();
+  return shaderBlob;
+}
+
+bool DirectXShader::CheckIsCompileError(IDxcResult* result)
+{
+  // 3. 警告・エラーがでていないか確認する
+// 警告・エラーが出てたらログに出して止める
+  IDxcBlobUtf8* shaderError = nullptr;
+  result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+  if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
+    Utilitys::Log(shaderError->GetStringPointer());
+    // 警告・エラーダメゼッタイ
+    assert(false);
+    return true;
+  }
+  return false;
 }

@@ -11,6 +11,12 @@ class DirectXDevice;
 class DirectXShader
 {
 public:
+	enum class ShaderType
+	{
+		VertexShader,
+		PixelShader
+	};
+public:
 	DirectXShader(DirectXDevice* device);
 	~DirectXShader();
 
@@ -42,7 +48,8 @@ private:
 	void CreateRootSignature();
 	void SetBlendDesc();
 	void SetRasterizerDesc();
-
+	IDxcBlob* CompileShader(const std::string& filePath, ShaderType shaderType);
+	bool CheckIsCompileError(IDxcResult* result);
 
 	DirectXDevice* device;
 	IDxcUtils* dxcUtils;
