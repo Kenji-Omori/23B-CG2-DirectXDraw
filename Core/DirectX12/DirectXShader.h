@@ -16,6 +16,13 @@ public:
 		VertexShader,
 		PixelShader
 	};
+
+	struct PipelinePair
+	{
+		Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineSate;
+
+	};
 public:
 	DirectXShader(DirectXDevice* device);
 	~DirectXShader();
@@ -42,7 +49,7 @@ public:
 		D3D12_INPUT_CLASSIFICATION inputSlotClass,
 		UINT instanceDataStepRate
 	);
-	void Compile();
+	void CreateGraphicPipeline();
 
 private:
 	void CreateRootSignature();

@@ -73,7 +73,7 @@ int DirectXShader::AddElemet(LPCSTR semanticName, UINT semanticIndex, DXGI_FORMA
   });
 }
 
-void DirectXShader::Compile()
+void DirectXShader::CreateGraphicPipeline()
 {
   
   D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = 
@@ -140,6 +140,7 @@ IDxcBlob* DirectXShader::CompileShader(const std::string& filePath, ShaderType s
     break;
   default:
     assert(false);
+    profile = nullptr;
     break;
   }
 
