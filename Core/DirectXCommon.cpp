@@ -224,37 +224,37 @@ IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const
 }
 
 
-void Core::DirectXCommon::ShaderSetup()
-{
-  // Shaderをコンパイルする
-  IDxcBlob* vertexShaderBlob = CompileShader(L"./Resources/Shader/Object3D.VS.hlsl", L"vs_6_0", dxcUtils, dxcCompiler, includeHandler);
-  assert(vertexShaderBlob != nullptr);
-
-  IDxcBlob* pixelShaderBlob = CompileShader(L"./Resources/Shader/Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includeHandler);
-  assert(pixelShaderBlob != nullptr);
-
-  D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-  graphicsPipelineStateDesc.pRootSignature = rootSignature;// RootSignature
-  graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;// InputLayout
-  graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };// VertexShader
-  graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };// PixelShader
-  graphicsPipelineStateDesc.BlendState = blendDesc;// BlendState
-  graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;// RasterizerState
-  // 書き込むRTVの情報
-  graphicsPipelineStateDesc.NumRenderTargets = 1;
-  graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-  // 利用するトポロジ（形状）のタイプ。三角形
-  graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-  // どのように画面に色を打ち込むかの設定（気にしなくて良い）
-  graphicsPipelineStateDesc.SampleDesc.Count = 1;
-  graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-  // 実際に生成
-  ID3D12PipelineState* graphicsPipelineState = nullptr;
-
-  HRESULT hr = device->Get()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
-  assert(SUCCEEDED(hr));
-
-}
+//void Core::DirectXCommon::ShaderSetup()
+//{
+//  // Shaderをコンパイルする
+//  IDxcBlob* vertexShaderBlob = CompileShader(L"./Resources/Shader/Object3D.VS.hlsl", L"vs_6_0", dxcUtils, dxcCompiler, includeHandler);
+//  assert(vertexShaderBlob != nullptr);
+//
+//  IDxcBlob* pixelShaderBlob = CompileShader(L"./Resources/Shader/Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includeHandler);
+//  assert(pixelShaderBlob != nullptr);
+//
+//  D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
+//  graphicsPipelineStateDesc.pRootSignature = rootSignature;// RootSignature
+//  graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;// InputLayout
+//  graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };// VertexShader
+//  graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };// PixelShader
+//  graphicsPipelineStateDesc.BlendState = blendDesc;// BlendState
+//  graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;// RasterizerState
+//  // 書き込むRTVの情報
+//  graphicsPipelineStateDesc.NumRenderTargets = 1;
+//  graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+//  // 利用するトポロジ（形状）のタイプ。三角形
+//  graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+//  // どのように画面に色を打ち込むかの設定（気にしなくて良い）
+//  graphicsPipelineStateDesc.SampleDesc.Count = 1;
+//  graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+//  // 実際に生成
+//  ID3D12PipelineState* graphicsPipelineState = nullptr;
+//
+//  HRESULT hr = device->Get()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+//  assert(SUCCEEDED(hr));
+//
+//}
 
 void Core::DirectXCommon::ModelSetup()
 {

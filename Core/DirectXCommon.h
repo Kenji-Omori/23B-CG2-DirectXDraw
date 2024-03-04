@@ -34,6 +34,10 @@ class Window;
 #include <Core/DirectX12/DirectXDescriptorHeapSRV.h>
 #include <Core/DirectX12/DirectXResourceTexture.h>
 
+struct IDxcIncludeHandler;
+struct IDxcCompiler3;
+struct IDxcUtils;
+struct IDxcBlob;
 namespace Core {
   class DirectXCommon
   {
@@ -56,7 +60,7 @@ namespace Core {
       IDxcUtils* dxcUtils,
       IDxcCompiler3* dxcCompiler,
       IDxcIncludeHandler* includeHandler);
-    void ShaderSetup();
+   // void ShaderSetup();
     void ModelSetup();
 
 

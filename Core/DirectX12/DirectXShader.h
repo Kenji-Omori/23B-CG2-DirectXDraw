@@ -4,6 +4,8 @@
 #include <d3d12.h>
 #include <vector>
 #include <string>
+#include <wrl.h>
+#include <dxcapi.h>
 struct IDxcBlob;
 struct IDxcUtils;
 struct IDxcCompiler3;
