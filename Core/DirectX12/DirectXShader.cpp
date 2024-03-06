@@ -5,13 +5,13 @@
 #include <dxcapi.h>
 #include <format>
 
-#include <Core/Type/String.h>
-#include <Core/Utilitys.h>
+#include <Core/Utility/String.h>
 #include <Core/DirectX12/DirectXDevice.h>
+#include <Core/Utility/Debug.h>
 
-DirectXShader::DirectXShader(DirectXDevice* device)
+Core::DirectXShader::DirectXShader(DirectXDevice* device)
 {
-  this->device  = device;
+  this->device = device;
   HRESULT hr;
   // Utilsの初期化
   hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
@@ -24,19 +24,19 @@ DirectXShader::DirectXShader(DirectXDevice* device)
   assert(SUCCEEDED(hr));
 }
 
-DirectXShader::~DirectXShader()
+Core::DirectXShader::~DirectXShader()
 {
 
 }
 
-void DirectXShader::LoadVertexShader(const std::string& path)
+void Core::DirectXShader::LoadVertexShader(const std::string& path)
 {
   IDxcBlobEncoding* shaderSource = nullptr;
-  HRESULT hr = dxcUtils->LoadFile( StrToWStr(path).c_str(), nullptr, &shaderSource);
+  HRESULT hr = dxcUtils->LoadFile(Utility::String::StrToWStr(path).c_str(), nullptr, &shaderSource);
   assert(SUCCEEDED(hr));
 
   // 読み込んだファイルの内容を設定する
-  DxcBuffer shaderSourceBuffer;
+  DxcBuffer shaderSourceBuffer = {};
   shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
   shaderSourceBuffer.Size = shaderSource->GetBufferSize();
   shaderSourceBuffer.Encoding = DXC_CP_UTF8; // UTF8の文字コードであることを通知
@@ -46,21 +46,21 @@ void DirectXShader::LoadVertexShader(const std::string& path)
 
 }
 
-void DirectXShader::LoadPixelShader(const std::string& path)
+void Core::DirectXShader::LoadPixelShader(const std::string& path)
 {
 
 }
 
-int DirectXShader::AddElemet(D3D12_INPUT_ELEMENT_DESC desc)
+int Core::DirectXShader::AddElemet(const D3D12_INPUT_ELEMENT_DESC& desc)
 {
-  assert(MAX_ELEMENT_NUM < variableElementsIndex);
+  assert(MAX_ELEMENT_NUM > variableElementsIndex);
   elementsArray[variableElementsIndex] = desc;
   variableElementsIndex++;
-  return variableElementsIndex-1;
+  return variableElementsIndex - 1;
 }
 
 
-int DirectXShader::AddElemet(LPCSTR semanticName, UINT semanticIndex, DXGI_FORMAT format, UINT inputSlot, UINT alignedByteOffset, D3D12_INPUT_CLASSIFICATION inputSlotClass, UINT instanceDataStepRate)
+int Core::DirectXShader::AddElemet(LPCSTR semanticName, UINT semanticIndex, DXGI_FORMAT format, UINT inputSlot, UINT alignedByteOffset, D3D12_INPUT_CLASSIFICATION inputSlotClass, UINT instanceDataStepRate)
 {
   return AddElemet({
     semanticName,
@@ -70,16 +70,16 @@ int DirectXShader::AddElemet(LPCSTR semanticName, UINT semanticIndex, DXGI_FORMA
     alignedByteOffset,
     inputSlotClass,
     instanceDataStepRate
-  });
+    });
 }
 
-void DirectXShader::CreateGraphicPipeline()
+void Core::DirectXShader::CreateGraphicPipeline()
 {
-  
-  D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = 
+
+  D3D12_INPUT_LAYOUT_DESC inputLayoutDesc =
   {
     elementsArray,
-    variableElementsIndex+1
+    variableElementsIndex + 1
   };
   SetBlendDesc();
   SetRasterizerDesc();
@@ -105,29 +105,29 @@ void DirectXShader::CreateGraphicPipeline()
   assert(SUCCEEDED(hr));
 }
 
-void DirectXShader::CreateRootSignature()
+void Core::DirectXShader::CreateRootSignature()
 {
   HRESULT hr = device->Get()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
   assert(SUCCEEDED(hr));
 }
 
-void DirectXShader::SetBlendDesc()
+void Core::DirectXShader::SetBlendDesc()
 {
   blendDesc = {};
   blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 }
 
-void DirectXShader::SetRasterizerDesc()
+void Core::DirectXShader::SetRasterizerDesc()
 {
   rasterizerDesc = {};
   rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
   rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 }
 
-IDxcBlob* DirectXShader::CompileShader(const std::string& filePath, ShaderType shaderType)
+IDxcBlob* Core::DirectXShader::CompileShader(const std::string& filePath, ShaderType shaderType)
 {
 
-  std::wstring wFilePath = StrToWStr(filePath);
+  std::wstring wFilePath = Utility::String::StrToWStr(filePath);
   const wchar_t* profile;
 
   switch (shaderType)
@@ -147,12 +147,12 @@ IDxcBlob* DirectXShader::CompileShader(const std::string& filePath, ShaderType s
 
 
   IDxcBlobEncoding* shaderSource = nullptr;
-  Utilitys::Log(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile));
+  //Utilitys::Log(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile));
   HRESULT hr = dxcUtils->LoadFile(wFilePath.c_str(), nullptr, &shaderSource);
   // 読めなかったら止める
   assert(SUCCEEDED(hr));
   // 呼んだシェーダファイルの設定
-  DxcBuffer shaderSourceBuffer;
+  DxcBuffer shaderSourceBuffer = {};
   shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
   shaderSourceBuffer.Size = shaderSource->GetBufferSize();
   shaderSourceBuffer.Encoding = DXC_CP_UTF8; // UTF8の文字コードであることを通知
@@ -182,7 +182,7 @@ IDxcBlob* DirectXShader::CompileShader(const std::string& filePath, ShaderType s
   assert(SUCCEEDED(hr));
   bool isError = CheckIsCompileError(compiledResult);
   if (!isError) {
-    Utilitys::Log(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile));
+    //Utilitys::Log(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile));
 
   }
   IDxcBlob* shaderBlob = nullptr;
@@ -194,14 +194,14 @@ IDxcBlob* DirectXShader::CompileShader(const std::string& filePath, ShaderType s
   return shaderBlob;
 }
 
-bool DirectXShader::CheckIsCompileError(IDxcResult* result)
+bool Core::DirectXShader::CheckIsCompileError(IDxcResult* result)
 {
   // 3. 警告・エラーがでていないか確認する
 // 警告・エラーが出てたらログに出して止める
   IDxcBlobUtf8* shaderError = nullptr;
   result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
   if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-    Utilitys::Log(shaderError->GetStringPointer());
+    Utility::Debug::Log(shaderError->GetStringPointer());
     // 警告・エラーダメゼッタイ
     assert(false);
     return true;

@@ -6,7 +6,7 @@
 
 #include <Core/DirectX12/DirectXDevice.h>
 
-DirectXInfoQueue::DirectXInfoQueue(DirectXDevice* device)
+Core::DirectXInfoQueue::DirectXInfoQueue(DirectXDevice* device)
 {
   this->device = device;
 #ifdef _DEBUG
@@ -41,6 +41,6 @@ DirectXInfoQueue::DirectXInfoQueue(DirectXDevice* device)
 #endif
 }
 
-DirectXInfoQueue::~DirectXInfoQueue()
+Core::DirectXInfoQueue::~DirectXInfoQueue()
 {
 }

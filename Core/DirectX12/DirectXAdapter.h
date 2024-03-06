@@ -1,19 +1,20 @@
 #pragma once
 #include <wrl.h>
 struct IDXGIAdapter4;
-class DirectXFactory;
+namespace Core {
+  class DirectXFactory;
+  class DirectXAdapter
+  {
+  public:
+    DirectXAdapter(DirectXFactory* factory);
+    ~DirectXAdapter();
 
-class DirectXAdapter
-{
-public:
-	DirectXAdapter(DirectXFactory* factory);
-	~DirectXAdapter();
+    Microsoft::WRL::ComPtr<IDXGIAdapter4> Get() const;
+    IDXGIAdapter4* GetRaw() const;
+    void Release();
 
-	Microsoft::WRL::ComPtr<IDXGIAdapter4> Get() const;
-	IDXGIAdapter4* GetRaw() const;
-	void Release();
-
-private:
-	DirectXFactory* factory;
-	Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter;
-};
+  private:
+    DirectXFactory* factory;
+    Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter;
+  };
+}

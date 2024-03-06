@@ -4,20 +4,19 @@
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 
-DirectXCommandList::DirectXCommandList(DirectXDevice* device, DirectXCommandAllocator* allocator)
+Core::DirectXCommandList::DirectXCommandList(DirectXDevice* device, DirectXCommandAllocator* allocator)
 {
-  this->device = device;
   this->allocator = allocator;
   HRESULT hr = device->Get()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, allocator->GetRaw() , nullptr, IID_PPV_ARGS(&commandList));
   // コマンドリストの生成がうまくいかなかったので起動できない
   assert(SUCCEEDED(hr));
 }
 
-DirectXCommandList::~DirectXCommandList()
+Core::DirectXCommandList::~DirectXCommandList()
 {
 }
 
-void DirectXCommandList::Release()
+void Core::DirectXCommandList::Release()
 {
   commandList->Release();
 }

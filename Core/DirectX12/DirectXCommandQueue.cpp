@@ -3,7 +3,7 @@
 #include <cassert>
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
-DirectXCommandQueue::DirectXCommandQueue(DirectXDevice* device)
+Core::DirectXCommandQueue::DirectXCommandQueue(DirectXDevice* device)
 {
   this->device = device;
   commandQueue = nullptr;
@@ -13,21 +13,21 @@ DirectXCommandQueue::DirectXCommandQueue(DirectXDevice* device)
   assert(SUCCEEDED(hr));
 }
 
-DirectXCommandQueue::~DirectXCommandQueue()
+Core::DirectXCommandQueue::~DirectXCommandQueue()
 {
 }
 
-void DirectXCommandQueue::Release()
+void Core::DirectXCommandQueue::Release()
 {
   commandQueue->Release();
 }
 
-Microsoft::WRL::ComPtr<ID3D12CommandQueue> DirectXCommandQueue::Get()
+Microsoft::WRL::ComPtr<ID3D12CommandQueue> Core::DirectXCommandQueue::Get()
 {
     return commandQueue;
 }
 
-ID3D12CommandQueue* DirectXCommandQueue::GetRaw()
+ID3D12CommandQueue* Core::DirectXCommandQueue::GetRaw()
 {
   return commandQueue.Get();
 }

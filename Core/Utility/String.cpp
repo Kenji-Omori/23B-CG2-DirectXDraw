@@ -1,9 +1,6 @@
-#pragma once
+#include "String.h"
 
-#include <Windows.h>
-#include <string>
-
-std::wstring StrToWStr(const std::string& str)
+std::wstring Utility::String::StrToWStr(const std::string& str)
 {
   if (str.empty())
   {
@@ -20,7 +17,7 @@ std::wstring StrToWStr(const std::string& str)
   return result;
 }
 
-std::string WStrToStr(const std::wstring& str)
+std::string Utility::String::WStrToStr(const std::wstring& str)
 {
   if (str.empty())
   {

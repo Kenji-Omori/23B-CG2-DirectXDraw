@@ -1,6 +1,6 @@
 #include "DirectXDescriptorHeapRTV.h"
 
-DirectXDescriptorHeapRTV::DirectXDescriptorHeapRTV(DirectXDevice* device, UINT num): DirectXDescriptorHeap(device)
+Core::DirectXDescriptorHeapRTV::DirectXDescriptorHeapRTV(DirectXDevice* device, UINT num): DirectXDescriptorHeap(device)
 {
   descriptorHeapDesc = { // D3D12_DESCRIPTOR_HEAP_DESC
     D3D12_DESCRIPTOR_HEAP_TYPE_RTV,   // D3D12_DESCRIPTOR_HEAP_TYPE  Type;
@@ -11,6 +11,6 @@ DirectXDescriptorHeapRTV::DirectXDescriptorHeapRTV(DirectXDevice* device, UINT n
   Create();
 }
 
-DirectXDescriptorHeapRTV::~DirectXDescriptorHeapRTV()
+Core::DirectXDescriptorHeapRTV::~DirectXDescriptorHeapRTV()
 {
 }

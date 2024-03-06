@@ -45,13 +45,13 @@
     <ClCompile Include="Core\Window.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\TextureConverter.cpp">
+    <ClCompile Include="Core\Utility\TextureConverter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Core\DirectXCommon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Debug.cpp">
+    <ClCompile Include="Core\Utility\Debug.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Core\DirectX12\DirectXDevice.cpp">
@@ -108,10 +108,10 @@
     <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapSRV.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Utilitys.cpp">
+    <ClCompile Include="Core\DirectX12\DirectXShader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\DirectX12\DirectXShader.cpp">
+    <ClCompile Include="Core\Utility\String.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -148,7 +148,7 @@
     <ClInclude Include="Externals\imgui\imgui_impl_win32.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Type\String.h">
+    <ClInclude Include="Core\Utility\String.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Core\Type\Vector2.h">
@@ -163,13 +163,13 @@
     <ClInclude Include="Core\Window.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Core\TextureConverter.h">
+    <ClInclude Include="Core\Utility\TextureConverter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Core\DirectXCommon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Debug.h">
+    <ClInclude Include="Core\Utility\Debug.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Core\DirectX12\DirectXDevice.h">
@@ -230,9 +230,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapSRV.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Utilitys.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Core\DirectX12\DirectXShader.h">

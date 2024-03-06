@@ -4,7 +4,7 @@
 #include <dxcapi.h>
 #include <format>
 #include <cassert>
-#include <Core/Debug.h>
+#include <Core/Utility/Debug.h>
 #include <Core/Type/Matrix4x4.h>
 #include <Core/Type/Vector4.h>
 #include <Core/Type/VertexData.h>
@@ -21,7 +21,6 @@
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 #include <Core/DirectX12/DirectXCommandList.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
-#include <Core/Utilitys.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -43,7 +42,9 @@ Core::DirectXCommon::DirectXCommon(Window* window)
   fence = nullptr;
   infoQueue = nullptr;
   swapChain = nullptr;
-
+  resourceTexture = nullptr;
+  rtvDescriptorHeap = nullptr;
+  srvDescriptorHeap = nullptr;
 }
 
 Core::DirectXCommon::~DirectXCommon()
@@ -102,7 +103,7 @@ void Core::DirectXCommon::Initialize()
   //PostDraw
   //
 
-  Debug::Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
+  Utility::Debug::Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
 }
 
 
@@ -163,14 +164,14 @@ IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const
   // ここの中身をこの後書いていく
   // 1. hlslファイルを読む
   // これからシェーダーをコンパイルする旨をログに出す
-  Utilitys::Log(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile));
+  //Utilitys::Log(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile));
   // hlslファイルを読む
   IDxcBlobEncoding* shaderSource = nullptr;
   HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
   // 読めなかったら止める
   assert(SUCCEEDED(hr));
   // 読み込んだファイルの内容を設定する
-  DxcBuffer shaderSourceBuffer;
+  DxcBuffer shaderSourceBuffer = {};
   shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
   shaderSourceBuffer.Size = shaderSource->GetBufferSize();
   shaderSourceBuffer.Encoding = DXC_CP_UTF8; // UTF8の文字コードであることを通知
@@ -203,7 +204,7 @@ IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const
   IDxcBlobUtf8* shaderError = nullptr;
   shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
   if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-    Utilitys::Log(shaderError->GetStringPointer());
+    Utility::Debug::Log(shaderError->GetStringPointer());
     // 警告・エラーダメゼッタイ
     assert(false);
   }
@@ -215,7 +216,7 @@ IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const
   hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
   assert(SUCCEEDED(hr));
   // 成功したログを出す
-  Utilitys::Log(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile));
+  //Utilitys::Log(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile));
   // もう使わないリソースを解放
   shaderSource->Release();
   shaderResult->Release();

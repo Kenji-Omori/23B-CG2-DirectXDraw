@@ -2,7 +2,7 @@
 #include <Core/DirectX12/DirectXDevice.h>
 using namespace DirectX;
 
-DirectXResourceTexture::DirectXResourceTexture(DirectXDevice* device)
+Core::DirectXResourceTexture::DirectXResourceTexture(DirectXDevice* device)
   :DirectXResource( 
     device,
     { // D3D12_RESOURCE_DESC
@@ -32,11 +32,11 @@ DirectXResourceTexture::DirectXResourceTexture(DirectXDevice* device)
   metaData_ = {};
 }
 
-DirectXResourceTexture::~DirectXResourceTexture()
+Core::DirectXResourceTexture::~DirectXResourceTexture()
 {
 }
 
-void DirectXResourceTexture::LoadTexture(const std::string& filePath)
+void Core::DirectXResourceTexture::LoadTexture(const std::string& filePath)
 {
   // テクスチャファイルを読んでプログラムで扱えるようにする
   //  DirectX::ScratchImage image{};
@@ -75,7 +75,7 @@ void DirectXResourceTexture::LoadTexture(const std::string& filePath)
 
 }
 
-void DirectXResourceTexture::ConvertTextureWICToDDS(const std::string& filePath)
+void Core::DirectXResourceTexture::ConvertTextureWICToDDS(const std::string& filePath)
 {
   //①テクスチャファイルを読み込む
   LoadWICTextureFromFile(filePath);
@@ -84,7 +84,7 @@ void DirectXResourceTexture::ConvertTextureWICToDDS(const std::string& filePath)
   SaveDDSTextureToFile();
 }
 
-std::wstring DirectXResourceTexture::ConvertMultiByteStringToWideString(const std::string& mString)
+std::wstring Core::DirectXResourceTexture::ConvertMultiByteStringToWideString(const std::string& mString)
 {
   int filePathBufferSize = MultiByteToWideChar(CP_ACP, 0, mString.c_str(), -1, nullptr, 0);
   std::wstring wString;
@@ -94,7 +94,7 @@ std::wstring DirectXResourceTexture::ConvertMultiByteStringToWideString(const st
   return wString;
 }
 
-void DirectXResourceTexture::LoadWICTextureFromFile(const std::string& filePath)
+void Core::DirectXResourceTexture::LoadWICTextureFromFile(const std::string& filePath)
 {
   // ①ファイルパスをワイド文字列に変換
   std::wstring wFilePath = ConvertMultiByteStringToWideString(filePath);
@@ -107,7 +107,7 @@ void DirectXResourceTexture::LoadWICTextureFromFile(const std::string& filePath)
   SeparateFilePath(wFilePath);
 }
 
-void DirectXResourceTexture::SeparateFilePath(const std::wstring& filePath)
+void Core::DirectXResourceTexture::SeparateFilePath(const std::wstring& filePath)
 {
   size_t pos1;
   std::wstring exceptExt;
@@ -151,7 +151,7 @@ void DirectXResourceTexture::SeparateFilePath(const std::wstring& filePath)
   fileName_ = exceptExt;
 }
 
-void DirectXResourceTexture::SaveDDSTextureToFile()
+void Core::DirectXResourceTexture::SaveDDSTextureToFile()
 {
   metaData_.format = MakeSRGB(metaData_.format);
 
@@ -161,10 +161,10 @@ void DirectXResourceTexture::SaveDDSTextureToFile()
   assert(SUCCEEDED(result));
 }
 
-void DirectXResourceTexture::CreateTextureResource()
+void Core::DirectXResourceTexture::CreateTextureResource()
 {
   assert(GetDevice()!=nullptr);
-  assert(metaData_ != {});
+  assert(metaData_.width >= MIN_WIDTH && metaData_.height >= MIN_HEIGHT);
 
   D3D12_RESOURCE_DESC resourceDesc{};
   resourceDesc.Width = UINT(metaData_.width); // Textureの幅
@@ -196,7 +196,7 @@ void DirectXResourceTexture::CreateTextureResource()
   assert(SUCCEEDED(hr));
 }
 
-void DirectXResourceTexture::UploadTextureData()
+void Core::DirectXResourceTexture::UploadTextureData()
 {
   assert(resource != nullptr);
   // Meta情報を取得

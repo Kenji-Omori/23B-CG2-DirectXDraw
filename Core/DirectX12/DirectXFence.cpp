@@ -4,7 +4,7 @@
 #include <cassert>
 #include <Core/DirectX12/DirectXDevice.h>
 
-DirectXFence::DirectXFence(DirectXDevice* device)
+Core::DirectXFence::DirectXFence(DirectXDevice* device)
 {
   this->device = device;
   uint64_t fenceValue = 0;
@@ -17,11 +17,11 @@ DirectXFence::DirectXFence(DirectXDevice* device)
   //fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
-DirectXFence::~DirectXFence()
+Core::DirectXFence::~DirectXFence()
 {
 }
 
-void DirectXFence::Release()
+void Core::DirectXFence::Release()
 {
   fence->Release();
 }

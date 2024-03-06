@@ -4,22 +4,22 @@
 #include <dxgi1_6.h>
 #include <cassert>
 
-DirectXFactory::DirectXFactory()
+Core::DirectXFactory::DirectXFactory()
 {
   HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&factory));
   assert(SUCCEEDED(hr));
 }
 
-DirectXFactory::~DirectXFactory()
+Core::DirectXFactory::~DirectXFactory()
 {
 }
 
-void DirectXFactory::Release()
+void Core::DirectXFactory::Release()
 {
   factory->Release();
 }
 
-Microsoft::WRL::ComPtr<IDXGIFactory7> DirectXFactory::Get() const
+Microsoft::WRL::ComPtr<IDXGIFactory7> Core::DirectXFactory::Get() const
 {
   return factory;
 }

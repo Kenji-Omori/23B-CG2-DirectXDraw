@@ -1,6 +1,6 @@
 #include "DirectXResourceConstBuffer.h"
 
-DirectXResourceConstBuffer::DirectXResourceConstBuffer(DirectXDevice* device, size_t size)
+Core::DirectXResourceConstBuffer::DirectXResourceConstBuffer(DirectXDevice* device, size_t size)
   :DirectXResource( 
     device,
     { // D3D12_RESOURCE_DESC
@@ -29,6 +29,6 @@ DirectXResourceConstBuffer::DirectXResourceConstBuffer(DirectXDevice* device, si
 {
 }
 
-DirectXResourceConstBuffer::~DirectXResourceConstBuffer()
+Core::DirectXResourceConstBuffer::~DirectXResourceConstBuffer()
 {
 }

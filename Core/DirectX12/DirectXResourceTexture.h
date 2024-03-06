@@ -3,64 +3,70 @@
 #include <Core/DirectX12/DirectXResource.h>
 #include <string>
 
-class DirectXResourceTexture:DirectXResource
-{
-public:
-	DirectXResourceTexture(DirectXDevice* device);
-	~DirectXResourceTexture();
-  void LoadTexture(const std::string& filePath);
+namespace Core {
+  class DirectXResourceTexture :DirectXResource
+  {
+  public:
+    DirectXResourceTexture(DirectXDevice* device);
+    ~DirectXResourceTexture();
+    void LoadTexture(const std::string& filePath);
 
-  /// <summary>
-  /// テクスチャをWICからDDSに変換する
-  /// </summary>
-  /// <param name="filePath">ファイルパス</param>
-  void ConvertTextureWICToDDS(const std::string& filePath);
+    /// <summary>
+    /// テクスチャをWICからDDSに変換する
+    /// </summary>
+    /// <param name="filePath">ファイルパス</param>
+    void ConvertTextureWICToDDS(const std::string& filePath);
 
-private:
-  /// <summary>
-  /// マルチバイト文字列をワイド文字列に変換
-  /// </summary>
-  /// <param name="mString">マルチバイト文字列</param>
-  /// <returns>ワイド文字列</returns>
-  static std::wstring ConvertMultiByteStringToWideString(const std::string& mString);
+    // 最小テクスチャサイズ
+    static const int MIN_WIDTH = 4;
+    static const int MIN_HEIGHT = 4;
 
-
-  /// <summary>
-  /// テクスチャファイル読み込み
-  /// </summary>
-  /// <param name="filePath">ファイルパス</param>
-  void LoadWICTextureFromFile(const std::string& filePath);
-
-  /// <summary>
-  /// フォルダパスとファイル名を分離する
-  /// </summary>
-  /// <param name="filePath">ファイルパス</param>
-  void SeparateFilePath(const std::wstring& filePath);
+  private:
+    /// <summary>
+    /// マルチバイト文字列をワイド文字列に変換
+    /// </summary>
+    /// <param name="mString">マルチバイト文字列</param>
+    /// <returns>ワイド文字列</returns>
+    static std::wstring ConvertMultiByteStringToWideString(const std::string& mString);
 
 
-  /// <summary>
-  /// DDSテクスチャとしてファイル書き出し
-  /// </summary>
-  void SaveDDSTextureToFile();
+    /// <summary>
+    /// テクスチャファイル読み込み
+    /// </summary>
+    /// <param name="filePath">ファイルパス</param>
+    void LoadWICTextureFromFile(const std::string& filePath);
 
-  /// <summary>
-  /// DirectXDeviceとmetadataからID3D12Resourceデータを生成する。
-  /// </summary>
-  void CreateTextureResource();
-
-  /// <summary>
-  /// Resrouceを作成したのち、unMapのImageにSubresourceする(？？？)
-  /// </summary>
-  void UploadTextureData();
-
-	DirectX::ScratchImage mipImages;
-
-  DirectX::TexMetadata metaData_;
-  DirectX::ScratchImage scratchImage_;
+    /// <summary>
+    /// フォルダパスとファイル名を分離する
+    /// </summary>
+    /// <param name="filePath">ファイルパス</param>
+    void SeparateFilePath(const std::wstring& filePath);
 
 
-  std::wstring directoryPath_;
-  std::wstring fileName_;
-  std::wstring fileExt_;
-};
+    /// <summary>
+    /// DDSテクスチャとしてファイル書き出し
+    /// </summary>
+    void SaveDDSTextureToFile();
 
+    /// <summary>
+    /// DirectXDeviceとmetadataからID3D12Resourceデータを生成する。
+    /// </summary>
+    void CreateTextureResource();
+
+    /// <summary>
+    /// Resrouceを作成したのち、unMapのImageにSubresourceする(？？？)
+    /// </summary>
+    void UploadTextureData();
+
+    DirectX::ScratchImage mipImages;
+
+    DirectX::TexMetadata metaData_;
+    DirectX::ScratchImage scratchImage_;
+
+
+    std::wstring directoryPath_;
+    std::wstring fileName_;
+    std::wstring fileExt_;
+  };
+
+}

@@ -5,7 +5,7 @@
 #include <Core/DirectX12/DirectXFactory.h>
 
 
-DirectXAdapter::DirectXAdapter(DirectXFactory* factory)
+Core::DirectXAdapter::DirectXAdapter(DirectXFactory* factory)
 {
   this->factory = factory;
   // 良い順にアダプタを頼む
@@ -28,21 +28,21 @@ DirectXAdapter::DirectXAdapter(DirectXFactory* factory)
 
 }
 
-DirectXAdapter::~DirectXAdapter()
+Core::DirectXAdapter::~DirectXAdapter()
 {
 }
 
-Microsoft::WRL::ComPtr <IDXGIAdapter4> DirectXAdapter::Get() const
+Microsoft::WRL::ComPtr <IDXGIAdapter4> Core::DirectXAdapter::Get() const
 {
   return adapter;
 }
 
-IDXGIAdapter4* DirectXAdapter::GetRaw() const
+IDXGIAdapter4* Core::DirectXAdapter::GetRaw() const
 {
   return adapter.Get();
 }
 
-void DirectXAdapter::Release()
+void Core::DirectXAdapter::Release()
 {
   adapter->Release();
 }

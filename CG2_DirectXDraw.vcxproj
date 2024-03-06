@@ -44,16 +44,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir);$(SolutionDir)Externals</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir);$(SolutionDir)Externals</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_ITERATOR_DEBUG_LEVEL=2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -99,7 +99,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Core\Debug.cpp" />
+    <ClCompile Include="Core\Utility\String.cpp" />
+    <ClCompile Include="Core\Utility\Debug.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXShader.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXAdapter.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommand.cpp" />
@@ -119,9 +120,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Core\DirectX12\DirectXSwapChain.cpp" />
     <ClCompile Include="Core\DirectXCommon.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXDevice.cpp" />
-    <ClCompile Include="Core\TextureConverter.cpp" />
+    <ClCompile Include="Core\Utility\TextureConverter.cpp" />
     <ClCompile Include="Core\Type\Matrix4x4.cpp" />
-    <ClCompile Include="Core\Utilitys.cpp" />
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp" />
     <ClCompile Include="Externals\imgui\imgui_draw.cpp" />
@@ -150,7 +150,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\Debug.h" />
+    <ClInclude Include="Core\Utility\Debug.h" />
     <ClInclude Include="Core\DirectX12\DirectXShader.h" />
     <ClInclude Include="Core\DirectX12\DirectXAdapter.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommand.h" />
@@ -170,13 +170,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Core\DirectXCommon.h" />
     <ClInclude Include="Core\DirectX12\DirectXDevice.h" />
     <ClInclude Include="Core\DirectX12\DirectXFactory.h" />
-    <ClInclude Include="Core\TextureConverter.h" />
+    <ClInclude Include="Core\Utility\TextureConverter.h" />
     <ClInclude Include="Core\Type\Matrix4x4.h" />
     <ClInclude Include="Core\Type\Vector2.h" />
     <ClInclude Include="Core\Type\Vector2Int.h" />
     <ClInclude Include="Core\Type\Vector4.h" />
     <ClInclude Include="Core\Type\VertexData.h" />
-    <ClInclude Include="Core\Utilitys.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Externals\imgui\imconfig.h" />
     <ClInclude Include="Externals\imgui\imgui.h" />
@@ -186,7 +185,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Core\Type\String.h" />
+    <ClInclude Include="Core\Utility\String.h" />
     <ClInclude Include="Objects\GameObject.h" />
   </ItemGroup>
   <ItemGroup>

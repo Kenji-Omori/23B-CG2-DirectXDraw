@@ -4,15 +4,16 @@
 #include <vector>
 #include <string>
 
+namespace Core {
+	class DirectXResourceTexture;
+	class DirectXDescriptorHeapSRV :DirectXDescriptorHeap
+	{
+	public:
+		DirectXDescriptorHeapSRV(DirectXDevice* device, UINT num);
+		~DirectXDescriptorHeapSRV();
 
-class DirectXResourceTexture;
-class DirectXDescriptorHeapSRV:DirectXDescriptorHeap
-{
-public:
-	DirectXDescriptorHeapSRV(DirectXDevice* device, UINT num);
-	~DirectXDescriptorHeapSRV();
-
-	int LoadTexture( const std::string& filePath);
-private:
-	std::vector<DirectXResourceTexture*> textures;
-};
+		int LoadTexture(const std::string& filePath);
+	private:
+		std::vector<DirectXResourceTexture*> textures;
+	};
+}

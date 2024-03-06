@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <string>
 
-namespace Core{
+namespace Utility{
   class Debug
   {
   public:

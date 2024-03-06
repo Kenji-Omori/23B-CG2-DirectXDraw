@@ -4,7 +4,7 @@
 #include <cassert>
 #include <Core/DirectX12/DirectXDevice.h>
 
-DirectXResource::DirectXResource(DirectXDevice* device,const D3D12_RESOURCE_DESC& desc, const D3D12_HEAP_PROPERTIES& properties)
+Core::DirectXResource::DirectXResource(DirectXDevice* device,const D3D12_RESOURCE_DESC& desc, const D3D12_HEAP_PROPERTIES& properties)
 {
   this->device = device;
   this->desc = desc;
@@ -13,22 +13,22 @@ DirectXResource::DirectXResource(DirectXDevice* device,const D3D12_RESOURCE_DESC
   assert(SUCCEEDED(hr));
 }
 
-DirectXResource::~DirectXResource()
+Core::DirectXResource::~DirectXResource()
 {
 
 }
 
-void DirectXResource::CreateColorBuffers()
+void Core::DirectXResource::CreateColorBuffers()
 {
 
 }
 
-DirectXDevice* DirectXResource::GetDevice()
+Core::DirectXDevice* Core::DirectXResource::GetDevice()
 {
   return device;
 }
 
-ID3D12Resource* DirectXResource::GetResource()
+ID3D12Resource* Core::DirectXResource::GetResource()
 {
   return resource;
 }
