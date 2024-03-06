@@ -8,13 +8,16 @@ namespace Core {
   class DirectXResource
   {
   public:
+    DirectXResource(DirectXDevice* device);
     DirectXResource(DirectXDevice* device, const D3D12_RESOURCE_DESC& desc, const D3D12_HEAP_PROPERTIES& properties);
     ~DirectXResource();
-    void CreateColorBuffers();
     DirectXDevice* GetDevice();
     ID3D12Resource* GetResource();
 
   protected:
+    void SetResourceDesc(const D3D12_RESOURCE_DESC& desc);
+    void SetProperties(const D3D12_HEAP_PROPERTIES& properties);
+    void CreateCommittedResource();
     ID3D12Resource* resource;
     D3D12_RESOURCE_DESC desc;
     D3D12_HEAP_PROPERTIES properties;

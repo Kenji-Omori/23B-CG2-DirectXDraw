@@ -2,12 +2,12 @@
 #include <Externals/DirectXTex/DirectXTex.h>
 #include <Core/DirectX12/DirectXResource.h>
 #include <string>
-
+namespace DirectX { struct TexMetaData; };
 namespace Core {
   class DirectXResourceTexture :DirectXResource
   {
   public:
-    DirectXResourceTexture(DirectXDevice* device);
+    DirectXResourceTexture(DirectXDevice* device, const DirectX::TexMetadata& metaData);
     ~DirectXResourceTexture();
     void LoadTexture(const std::string& filePath);
 
@@ -60,7 +60,7 @@ namespace Core {
 
     DirectX::ScratchImage mipImages;
 
-    DirectX::TexMetadata metaData_;
+    DirectX::TexMetadata metaData;
     DirectX::ScratchImage scratchImage_;
 
 

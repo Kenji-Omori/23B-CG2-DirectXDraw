@@ -1,14 +1,14 @@
 #include "DirectXResourceTexture.h"
 #include <Core/DirectX12/DirectXDevice.h>
-using namespace DirectX;
+#include <Externals/DirectXTex/DirectXTex.h>
 
-Core::DirectXResourceTexture::DirectXResourceTexture(DirectXDevice* device)
+Core::DirectXResourceTexture::DirectXResourceTexture(DirectXDevice* device, const DirectX::TexMetadata& metaData)
   :DirectXResource( 
     device,
     { // D3D12_RESOURCE_DESC
       D3D12_RESOURCE_DIMENSION_BUFFER,  // D3D12_RESOURCE_DIMENSION Dimension
       0,                                // UINT64 Alignment
-      0,                             // UINT64 width
+      16,                             // UINT64 width
       1,                                // UINT height
       1,                                // UINTR16 DepthOrArraySize
       1,                                // UINT16 MipLevels
@@ -29,7 +29,7 @@ Core::DirectXResourceTexture::DirectXResourceTexture(DirectXDevice* device)
     }
   )
 {
-  metaData_ = {};
+  this->metaData = metaData;
 }
 
 Core::DirectXResourceTexture::~DirectXResourceTexture()
@@ -50,11 +50,11 @@ void Core::DirectXResourceTexture::LoadTexture(const std::string& filePath)
 
   if(result == 0)
   {
-    hr = LoadFromDDSFile(wFilePath.c_str(), DDS_FLAGS_NONE, &metaData_, scratchImage_);
+    hr = LoadFromDDSFile(wFilePath.c_str(), DDS_FLAGS_NONE, &metaData, scratchImage_);
   }
   else
   {
-    hr = LoadFromWICFile(wFilePath.c_str(), WIC_FLAGS_NONE, &metaData_, scratchImage_);
+    hr = LoadFromWICFile(wFilePath.c_str(), WIC_FLAGS_NONE, &metaData, scratchImage_);
   }
 
   assert(SUCCEEDED(hr));
@@ -66,7 +66,7 @@ void Core::DirectXResourceTexture::LoadTexture(const std::string& filePath)
 
   // ミップマップ付きのデータを返す;
   mipImages = std::move(scratchImage_);
-  metaData_ = mipImages.GetMetadata();
+  metaData = mipImages.GetMetadata();
 
   // DeviceとmetaDataの準備ができたのでResrouceを作る
   CreateTextureResource();
@@ -100,7 +100,7 @@ void Core::DirectXResourceTexture::LoadWICTextureFromFile(const std::string& fil
   std::wstring wFilePath = ConvertMultiByteStringToWideString(filePath);
   // ②テクスチャを読み込む
   //WICテクスチャのロード
-  HRESULT result = LoadFromWICFile(wFilePath.c_str(), WIC_FLAGS_NONE, &metaData_, scratchImage_);
+  HRESULT result = LoadFromWICFile(wFilePath.c_str(), WIC_FLAGS_NONE, &metaData, scratchImage_);
   assert(SUCCEEDED(result));
 
   // フォルダパスとファイル名を分離する
@@ -153,27 +153,27 @@ void Core::DirectXResourceTexture::SeparateFilePath(const std::wstring& filePath
 
 void Core::DirectXResourceTexture::SaveDDSTextureToFile()
 {
-  metaData_.format = MakeSRGB(metaData_.format);
+  metaData.format = MakeSRGB(metaData.format);
 
   std::wstring filePath = directoryPath_ + fileName_ + L".dds";
 
-  HRESULT result = SaveToDDSFile(scratchImage_.GetImages(), scratchImage_.GetImageCount(), metaData_, DDS_FLAGS_NONE, filePath.c_str());
+  HRESULT result = SaveToDDSFile(scratchImage_.GetImages(), scratchImage_.GetImageCount(), metaData, DDS_FLAGS_NONE, filePath.c_str());
   assert(SUCCEEDED(result));
 }
 
 void Core::DirectXResourceTexture::CreateTextureResource()
 {
   assert(GetDevice()!=nullptr);
-  assert(metaData_.width >= MIN_WIDTH && metaData_.height >= MIN_HEIGHT);
+  assert(metaData.width >= MIN_WIDTH && metaData.height >= MIN_HEIGHT);
 
   D3D12_RESOURCE_DESC resourceDesc{};
-  resourceDesc.Width = UINT(metaData_.width); // Textureの幅
-  resourceDesc.Height = UINT(metaData_.height); // Textureの高さ
-  resourceDesc.MipLevels = UINT16(metaData_.mipLevels); // mipmapの数
-  resourceDesc.DepthOrArraySize = UINT16(metaData_.arraySize); // 奥行き or 配列Textureの配列数
-  resourceDesc.Format = metaData_.format; // TextureのFormat
+  resourceDesc.Width = UINT(metaData.width); // Textureの幅
+  resourceDesc.Height = UINT(metaData.height); // Textureの高さ
+  resourceDesc.MipLevels = UINT16(metaData.mipLevels); // mipmapの数
+  resourceDesc.DepthOrArraySize = UINT16(metaData.arraySize); // 奥行き or 配列Textureの配列数
+  resourceDesc.Format = metaData.format; // TextureのFormat
   resourceDesc.SampleDesc.Count = 1; // サンプリングカウント。1固定。
-  resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metaData_.dimension); // Textureの次元数。普段使っているのは2次元
+  resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metaData.dimension); // Textureの次元数。普段使っているのは2次元
 
 
 

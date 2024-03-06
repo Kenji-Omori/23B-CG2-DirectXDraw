@@ -25,6 +25,8 @@ Core::DirectXDescriptorHeapSRV::~DirectXDescriptorHeapSRV()
 
 int Core::DirectXDescriptorHeapSRV::LoadTexture(const std::string& filePath)
 {
+
+
   DirectXResourceTexture* texture = new DirectXResourceTexture(GetDevice());
   texture->LoadTexture(filePath);
   textures.push_back(texture);
