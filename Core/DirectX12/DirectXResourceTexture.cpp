@@ -2,34 +2,34 @@
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Externals/DirectXTex/DirectXTex.h>
 
-Core::DirectXResourceTexture::DirectXResourceTexture(DirectXDevice* device, const DirectX::TexMetadata& metaData)
+Core::DirectXResourceTexture::DirectXResourceTexture(DirectXDevice* device,  const std::string& filePath)
   :DirectXResource( 
-    device,
-    { // D3D12_RESOURCE_DESC
-      D3D12_RESOURCE_DIMENSION_BUFFER,  // D3D12_RESOURCE_DIMENSION Dimension
-      0,                                // UINT64 Alignment
-      16,                             // UINT64 width
-      1,                                // UINT height
-      1,                                // UINTR16 DepthOrArraySize
-      1,                                // UINT16 MipLevels
-      DXGI_FORMAT_UNKNOWN,              // DXGI_FORMAT Format
-    {                                 // DXGI_SAMPLE_DESC SampleDesc
-      1,                                // UINT count
-      0                                 // UINT Quality
-    },
-    D3D12_TEXTURE_LAYOUT_ROW_MAJOR,   // D3D12_TEXTURE_LAYOUT Layout
-    D3D12_RESOURCE_FLAG_NONE          // D3D12_RESOURCE_FLAGS Flags
-    },
-    { // D3D12_HEAP_PROPERTIES
-      D3D12_HEAP_TYPE_UPLOAD,           // D3D12_HEAP_TYPE Type
-      D3D12_CPU_PAGE_PROPERTY_UNKNOWN,  // D3D12_CPU_PAGE_PROPERTY CPUPageProperty;
-      D3D12_MEMORY_POOL_UNKNOWN,        // D3D12_MEMORY_POOL MemoryPoolPreference;
-      0,                                // UINT CreationNodeMask;
-      0                                 // UINT VisibleNodeMask;
-    }
+    device
+    //{ // D3D12_RESOURCE_DESC
+    //  D3D12_RESOURCE_DIMENSION_BUFFER,  // D3D12_RESOURCE_DIMENSION Dimension
+    //  0,                                // UINT64 Alignment
+    //  16,                             // UINT64 width
+    //  1,                                // UINT height
+    //  1,                                // UINTR16 DepthOrArraySize
+    //  1,                                // UINT16 MipLevels
+    //  DXGI_FORMAT_UNKNOWN,              // DXGI_FORMAT Format
+    //{                                 // DXGI_SAMPLE_DESC SampleDesc
+    //  1,                                // UINT count
+    //  0                                 // UINT Quality
+    //},
+    //D3D12_TEXTURE_LAYOUT_ROW_MAJOR,   // D3D12_TEXTURE_LAYOUT Layout
+    //D3D12_RESOURCE_FLAG_NONE          // D3D12_RESOURCE_FLAGS Flags
+    //},
+    //{ // D3D12_HEAP_PROPERTIES
+    //  D3D12_HEAP_TYPE_UPLOAD,           // D3D12_HEAP_TYPE Type
+    //  D3D12_CPU_PAGE_PROPERTY_UNKNOWN,  // D3D12_CPU_PAGE_PROPERTY CPUPageProperty;
+    //  D3D12_MEMORY_POOL_UNKNOWN,        // D3D12_MEMORY_POOL MemoryPoolPreference;
+    //  0,                                // UINT CreationNodeMask;
+    //  0                                 // UINT VisibleNodeMask;
+    //}
   )
-{
-  this->metaData = metaData;
+{ 
+  LoadTexture(filePath);
 }
 
 Core::DirectXResourceTexture::~DirectXResourceTexture()
@@ -46,15 +46,15 @@ void Core::DirectXResourceTexture::LoadTexture(const std::string& filePath)
   HRESULT hr;
 
 
-  int result = wcscmp(fileExt_.c_str(), L"dds");
+  int result = wcscmp(fileExt.c_str(), L"dds");
 
   if(result == 0)
   {
-    hr = LoadFromDDSFile(wFilePath.c_str(), DDS_FLAGS_NONE, &metaData, scratchImage_);
+    hr = LoadFromDDSFile(wFilePath.c_str(), DirectX::DDS_FLAGS_NONE, &metaData, scratchImage);
   }
   else
   {
-    hr = LoadFromWICFile(wFilePath.c_str(), WIC_FLAGS_NONE, &metaData, scratchImage_);
+    hr = LoadFromWICFile(wFilePath.c_str(), DirectX::WIC_FLAGS_NONE, &metaData, scratchImage);
   }
 
   assert(SUCCEEDED(hr));
@@ -65,12 +65,12 @@ void Core::DirectXResourceTexture::LoadTexture(const std::string& filePath)
   //assert(SUCCEEDED(hr));
 
   // ミップマップ付きのデータを返す;
-  mipImages = std::move(scratchImage_);
+  mipImages = std::move(scratchImage);
   metaData = mipImages.GetMetadata();
 
   // DeviceとmetaDataの準備ができたのでResrouceを作る
   CreateTextureResource();
-  UploadTextureData();
+  WriteMipMaps();
 
 
 }
@@ -100,7 +100,7 @@ void Core::DirectXResourceTexture::LoadWICTextureFromFile(const std::string& fil
   std::wstring wFilePath = ConvertMultiByteStringToWideString(filePath);
   // ②テクスチャを読み込む
   //WICテクスチャのロード
-  HRESULT result = LoadFromWICFile(wFilePath.c_str(), WIC_FLAGS_NONE, &metaData, scratchImage_);
+  HRESULT result = LoadFromWICFile(wFilePath.c_str(), DirectX::WIC_FLAGS_NONE, &metaData, scratchImage);
   assert(SUCCEEDED(result));
 
   // フォルダパスとファイル名を分離する
@@ -115,12 +115,12 @@ void Core::DirectXResourceTexture::SeparateFilePath(const std::wstring& filePath
   pos1 = filePath.rfind('.');
   if (pos1 != std::wstring::npos)
   {
-    fileExt_ = filePath.substr(pos1 + 1, filePath.size() - pos1 - 1);
+    fileExt = filePath.substr(pos1 + 1, filePath.size() - pos1 - 1);
     exceptExt = filePath.substr(0, pos1);
   }
   else
   {
-    fileExt_ = L"";
+    fileExt = L"";
     exceptExt = filePath;
   }
 
@@ -128,9 +128,9 @@ void Core::DirectXResourceTexture::SeparateFilePath(const std::wstring& filePath
   pos1 = exceptExt.rfind('\\');
   if (pos1 != std::wstring::npos) {
     // 区切り文字の前までをディレクトリパスとして保存
-    directoryPath_ = exceptExt.substr(0, pos1 + 1);
+    directoryPath = exceptExt.substr(0, pos1 + 1);
     // 区切り文字の後ろをファイル名として保存
-    fileName_ = exceptExt.substr(pos1 + 1, exceptExt.size() - pos1 - 1);
+    fileName = exceptExt.substr(pos1 + 1, exceptExt.size() - pos1 - 1);
     return;
   }
 
@@ -139,25 +139,25 @@ void Core::DirectXResourceTexture::SeparateFilePath(const std::wstring& filePath
   if (pos1 != std::wstring::npos) {
 
     // 区切り文字の前までをディレクトリパスとして保存
-    directoryPath_ = exceptExt.substr(0, pos1 + 1);
+    directoryPath = exceptExt.substr(0, pos1 + 1);
     // 区切り文字の後ろをファイル名として保存
-    fileName_ = exceptExt.substr(pos1 + 1, exceptExt.size() - pos1 - 1);
+    fileName = exceptExt.substr(pos1 + 1, exceptExt.size() - pos1 - 1);
 
 
 
   }
   // 区切り文字がないのでファイル名のみとして扱う
-  directoryPath_ = L"";
-  fileName_ = exceptExt;
+  directoryPath = L"";
+  fileName = exceptExt;
 }
 
 void Core::DirectXResourceTexture::SaveDDSTextureToFile()
 {
-  metaData.format = MakeSRGB(metaData.format);
+  metaData.format = DirectX::MakeSRGB(metaData.format);
 
-  std::wstring filePath = directoryPath_ + fileName_ + L".dds";
+  std::wstring filePath = directoryPath + fileName + L".dds";
 
-  HRESULT result = SaveToDDSFile(scratchImage_.GetImages(), scratchImage_.GetImageCount(), metaData, DDS_FLAGS_NONE, filePath.c_str());
+  HRESULT result = SaveToDDSFile(scratchImage.GetImages(), scratchImage.GetImageCount(), metaData, DirectX::DDS_FLAGS_NONE, filePath.c_str());
   assert(SUCCEEDED(result));
 }
 
@@ -196,7 +196,7 @@ void Core::DirectXResourceTexture::CreateTextureResource()
   assert(SUCCEEDED(hr));
 }
 
-void Core::DirectXResourceTexture::UploadTextureData()
+void Core::DirectXResourceTexture::WriteMipMaps()
 {
   assert(resource != nullptr);
   // Meta情報を取得
@@ -215,4 +215,9 @@ void Core::DirectXResourceTexture::UploadTextureData()
     );
     assert(SUCCEEDED(hr));
   }
+}
+
+const DirectX::TexMetadata& Core::DirectXResourceTexture::GetMetaData() const
+{
+  return metaData;
 }

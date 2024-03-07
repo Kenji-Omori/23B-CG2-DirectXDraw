@@ -9,6 +9,6 @@ namespace Core {
 		~DirectXResourceConstBuffer();
 
 	private:
-
+		void CreateCommittedResource();
 	};
 }

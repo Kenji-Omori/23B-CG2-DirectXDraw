@@ -2,12 +2,11 @@
 #include <Externals/DirectXTex/DirectXTex.h>
 #include <Core/DirectX12/DirectXResource.h>
 #include <string>
-namespace DirectX { struct TexMetaData; };
 namespace Core {
   class DirectXResourceTexture :DirectXResource
   {
   public:
-    DirectXResourceTexture(DirectXDevice* device, const DirectX::TexMetadata& metaData);
+    DirectXResourceTexture(DirectXDevice* device, const std::string& filePath);
     ~DirectXResourceTexture();
     void LoadTexture(const std::string& filePath);
 
@@ -16,6 +15,12 @@ namespace Core {
     /// </summary>
     /// <param name="filePath">ファイルパス</param>
     void ConvertTextureWICToDDS(const std::string& filePath);
+
+    /// <summary>
+    /// metaDataを取得する
+    /// </summary>
+    /// <returns></returns>
+    const DirectX::TexMetadata& GetMetaData() const;
 
     // 最小テクスチャサイズ
     static const int MIN_WIDTH = 4;
@@ -56,17 +61,18 @@ namespace Core {
     /// <summary>
     /// Resrouceを作成したのち、unMapのImageにSubresourceする(？？？)
     /// </summary>
-    void UploadTextureData();
+    void WriteMipMaps();
+    
 
     DirectX::ScratchImage mipImages;
 
     DirectX::TexMetadata metaData;
-    DirectX::ScratchImage scratchImage_;
+    DirectX::ScratchImage scratchImage;
 
 
-    std::wstring directoryPath_;
-    std::wstring fileName_;
-    std::wstring fileExt_;
+    std::wstring directoryPath;
+    std::wstring fileName;
+    std::wstring fileExt;
   };
 
 }

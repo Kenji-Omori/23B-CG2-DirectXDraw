@@ -17,7 +17,6 @@ namespace Core {
   protected:
     void SetResourceDesc(const D3D12_RESOURCE_DESC& desc);
     void SetProperties(const D3D12_HEAP_PROPERTIES& properties);
-    void CreateCommittedResource();
     ID3D12Resource* resource;
     D3D12_RESOURCE_DESC desc;
     D3D12_HEAP_PROPERTIES properties;

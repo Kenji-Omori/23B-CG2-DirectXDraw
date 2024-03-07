@@ -1,4 +1,6 @@
 #include "DirectXResourceConstBuffer.h"
+#include <Core/DirectX12/DirectXDevice.h>
+#include <cassert>
 
 Core::DirectXResourceConstBuffer::DirectXResourceConstBuffer(DirectXDevice* device, size_t size)
   :DirectXResource( 
@@ -32,3 +34,10 @@ Core::DirectXResourceConstBuffer::DirectXResourceConstBuffer(DirectXDevice* devi
 Core::DirectXResourceConstBuffer::~DirectXResourceConstBuffer()
 {
 }
+
+void Core::DirectXResourceConstBuffer::CreateCommittedResource()
+{
+  HRESULT hr = GetDevice()->Get()->CreateCommittedResource(&properties, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+  assert(SUCCEEDED(hr));
+}
+
