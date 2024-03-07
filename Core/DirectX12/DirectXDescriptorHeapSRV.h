@@ -16,12 +16,12 @@ namespace Core {
 		int LoadTexture(const std::string& filePath);
 	private:
 		void CreateShaderResourceView();
-		void CreateDescriptorHeap();
+		//void CreateDescriptorHeap();
 
 		UINT descriptorHandleIncrementSize = 0;
 		int nextResourceIndex = 0;
 
 		DirectXResourceTexture* resources[DESCRIPTOR_NUM];
-		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap;
+		//Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap;
 	};
 }

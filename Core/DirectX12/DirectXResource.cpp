@@ -36,13 +36,12 @@ void Core::DirectXResource::SetProperties(const D3D12_HEAP_PROPERTIES& propertie
 {
   this->properties = properties;
 }
-
-void Core::DirectXResource::CreateCommittedResource()
-{
-  HRESULT hr = device->Get()->CreateCommittedResource(&properties, D3D12_HEAP_FLAG_NONE,&desc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
-  assert(SUCCEEDED(hr));
-
-}
+//
+//void Core::DirectXResource::CreateCommittedResource()
+//{
+//  HRESULT hr = device->Get()->CreateCommittedResource(&properties, D3D12_HEAP_FLAG_NONE,&desc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+//  assert(SUCCEEDED(hr));
+//}
 
 Core::DirectXDevice* Core::DirectXResource::GetDevice()
 {

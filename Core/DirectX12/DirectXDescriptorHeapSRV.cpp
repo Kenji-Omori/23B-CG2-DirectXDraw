@@ -36,6 +36,8 @@ int Core::DirectXDescriptorHeapSRV::LoadTexture(const std::string& filePath)
 
 void Core::DirectXDescriptorHeapSRV::CreateShaderResourceView()
 {
+  assert(false);//この関数使うな
+
   UINT incrementSize = GetDevice()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
   for (int i = 0; i < nextResourceIndex; i++)
   {
@@ -49,32 +51,34 @@ void Core::DirectXDescriptorHeapSRV::CreateShaderResourceView()
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
     srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
-    // SRVを作成するDescriptorHeapの場所を決める
-    D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = CD3DX12_CPU_DESCRIPTOR_HANDLE(descriptorHeap->GetCPUDescriptorHandleForHeapStart(),i,incrementSize);
-    D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = CD3DX12_GPU_DESCRIPTOR_HANDLE(descriptorHeap->GetGPUDescriptorHandleForHeapStart(),i,incrementSize);
-    // 先頭はImGuiが使っているのでその次を使う
-    //textureSrvHandleCPU.ptr += GetDevice()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-    //textureSrvHandleGPU.ptr += GetDevice()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-    // SRVの生成
-    GetDevice()->Get()->CreateShaderResourceView(textureResource, &srvDesc, textureSrvHandleCPU);
+
+
+    //// SRVを作成するDescriptorHeapの場所を決める
+    //D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = CD3DX12_CPU_DESCRIPTOR_HANDLE(descriptorHeap->GetCPUDescriptorHandleForHeapStart(),i,incrementSize);
+    //D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = CD3DX12_GPU_DESCRIPTOR_HANDLE(descriptorHeap->GetGPUDescriptorHandleForHeapStart(),i,incrementSize);
+    //// 先頭はImGuiが使っているのでその次を使う
+    ////textureSrvHandleCPU.ptr += GetDevice()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    ////textureSrvHandleGPU.ptr += GetDevice()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    //// SRVの生成
+    //GetDevice()->Get()->CreateShaderResourceView(textureResource, &srvDesc, textureSrvHandleCPU);
   }
 }
 
-void Core::DirectXDescriptorHeapSRV::CreateDescriptorHeap()
-{
-  HRESULT result = S_FALSE;
-
-
-
-    D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-    descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-    descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; //シェーダから見えるように
-    descHeapDesc.NumDescriptors = UINT(DESCRIPTOR_NUM); // シェーダーリソースビューの数
-    result = GetDevice()->Get()->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap)); //生成
-    assert(SUCCEEDED(result));
-  }
-
-  // デスクリプタサイズを取得
-  descriptorHandleIncrementSize =
-    device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-}
+//void Core::DirectXDescriptorHeapSRV::CreateDescriptorHeap()
+//{
+//  HRESULT result = S_FALSE;
+//
+//
+//
+//    D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+//    descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+//    descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; //シェーダから見えるように
+//    descHeapDesc.NumDescriptors = UINT(DESCRIPTOR_NUM); // シェーダーリソースビューの数
+//    result = GetDevice()->Get()->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap)); //生成
+//    assert(SUCCEEDED(result));
+//  }
+//
+//  // デスクリプタサイズを取得
+//  descriptorHandleIncrementSize =
+//    device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+//}
