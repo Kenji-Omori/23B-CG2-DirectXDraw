@@ -51,6 +51,7 @@ namespace Core {
     void PreRenderer();
     void Renderer();
     void PostRenderer();
+    void CreateCommandClasses();
     IDxcBlob* CompileShader(
       // CompilerするShaderファイルへのパス
       const std::wstring& filePath,

@@ -150,6 +150,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\Type\Transform.h" />
+    <ClInclude Include="Core\Type\Vector3.h" />
     <ClInclude Include="Core\Utility\Debug.h" />
     <ClInclude Include="Core\DirectX12\DirectXShader.h" />
     <ClInclude Include="Core\DirectX12\DirectXAdapter.h" />

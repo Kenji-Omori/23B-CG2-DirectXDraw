@@ -58,14 +58,14 @@ void Core::DirectXCommon::Initialize()
   adapter = new DirectXAdapter(factory);
   device = new DirectXDevice(adapter);
   infoQueue = new DirectXInfoQueue(device);
-  commandQueue = new DirectXCommandQueue(device);
+
+
+  CreateCommandClasses();
 
 
 
 
 
-  allocator = new DirectXCommandAllocator(device);
-  commandList = new DirectXCommandList(device, allocator);
   fence = new DirectXFence(device);
   //swapchain * 1;
   swapChain = new DirectXSwapChain(window, factory, commandQueue,2);
@@ -157,6 +157,13 @@ void Core::DirectXCommon::Renderer()
 }
 void Core::DirectXCommon::PostRenderer()
 {
+}
+
+void Core::DirectXCommon::CreateCommandClasses()
+{
+  allocator = new DirectXCommandAllocator(device);
+  commandList = new DirectXCommandList(device, allocator);
+  commandQueue = new DirectXCommandQueue(device);
 }
 
 IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler)
