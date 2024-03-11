@@ -4,10 +4,10 @@
 #include <dxcapi.h>
 #include <format>
 #include <cassert>
-#include <Core/Utility/Debug.h>
-#include <Core/Type/Matrix4x4.h>
-#include <Core/Type/Vector4.h>
-#include <Core/Type/VertexData.h>
+#include <Utility/Debug.h>
+#include <Utility/Type/Matrix4x4.h>
+#include <Utility/Type/Vector4.h>
+#include <Utility/Type/VertexData.h>
 
 #include <Core/Window.h>
 #include <Core/DirectX12/DirectXAdapter.h>
@@ -53,6 +53,7 @@ Core::DirectXCommon::~DirectXCommon()
 
 void Core::DirectXCommon::Initialize()
 {
+
   // Device
   factory = new DirectXFactory();
   adapter = new DirectXAdapter(factory);

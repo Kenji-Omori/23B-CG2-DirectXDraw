@@ -14,6 +14,8 @@ namespace Core {
 
     void Setup();
 
+
+          
   private:
     void CreateQueue();
     void CreateList();
@@ -23,4 +25,4 @@ namespace Core {
     ID3D12GraphicsCommandList* list;
     //D3D12_COMMAND_QUEUE_DESC desc;
   };
-}
+}               

@@ -3,7 +3,7 @@
 
 #include <d3d12.h>
 #include <dxgi1_2.h>
-#include <Core/Type/Vector2Int.h>
+#include <Utility/Type/Vector2Int.h>
 //#include <Externals/imgui/imgui.h>
 
 

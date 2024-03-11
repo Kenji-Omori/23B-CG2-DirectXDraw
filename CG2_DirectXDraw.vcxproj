@@ -99,8 +99,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Core\Utility\String.cpp" />
-    <ClCompile Include="Core\Utility\Debug.cpp" />
+    <ClCompile Include="Utility\String.cpp" />
+    <ClCompile Include="Utility\Debug.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXShader.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXAdapter.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXCommand.cpp" />
@@ -120,8 +120,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Core\DirectX12\DirectXSwapChain.cpp" />
     <ClCompile Include="Core\DirectXCommon.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXDevice.cpp" />
-    <ClCompile Include="Core\Utility\TextureConverter.cpp" />
-    <ClCompile Include="Core\Type\Matrix4x4.cpp" />
+    <ClCompile Include="Utility\TextureConverter.cpp" />
+    <ClCompile Include="Utility\Type\Matrix4x4.cpp" />
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp" />
     <ClCompile Include="Externals\imgui\imgui_draw.cpp" />
@@ -150,9 +150,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\Type\Transform.h" />
-    <ClInclude Include="Core\Type\Vector3.h" />
-    <ClInclude Include="Core\Utility\Debug.h" />
+    <ClInclude Include="Utility\Type\Transform.h" />
+    <ClInclude Include="Utility\Type\Vector3.h" />
+    <ClInclude Include="Utility\Debug.h" />
     <ClInclude Include="Core\DirectX12\DirectXShader.h" />
     <ClInclude Include="Core\DirectX12\DirectXAdapter.h" />
     <ClInclude Include="Core\DirectX12\DirectXCommand.h" />
@@ -172,12 +172,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Core\DirectXCommon.h" />
     <ClInclude Include="Core\DirectX12\DirectXDevice.h" />
     <ClInclude Include="Core\DirectX12\DirectXFactory.h" />
-    <ClInclude Include="Core\Utility\TextureConverter.h" />
-    <ClInclude Include="Core\Type\Matrix4x4.h" />
-    <ClInclude Include="Core\Type\Vector2.h" />
-    <ClInclude Include="Core\Type\Vector2Int.h" />
-    <ClInclude Include="Core\Type\Vector4.h" />
-    <ClInclude Include="Core\Type\VertexData.h" />
+    <ClInclude Include="Utility\TextureConverter.h" />
+    <ClInclude Include="Utility\Type\Matrix4x4.h" />
+    <ClInclude Include="Utility\Type\Vector2.h" />
+    <ClInclude Include="Utility\Type\Vector2Int.h" />
+    <ClInclude Include="Utility\Type\Vector4.h" />
+    <ClInclude Include="Utility\Type\VertexData.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Externals\imgui\imconfig.h" />
     <ClInclude Include="Externals\imgui\imgui.h" />
@@ -187,7 +187,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Core\Utility\String.h" />
+    <ClInclude Include="Utility\String.h" />
     <ClInclude Include="Objects\GameObject.h" />
   </ItemGroup>
   <ItemGroup>

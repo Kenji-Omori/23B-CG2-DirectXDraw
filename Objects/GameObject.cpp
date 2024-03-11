@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-#include <Core/Type/VertexData.h>
+#include <Utility/Type/VertexData.h>
 #include <Core/DirectX12/DirectXDevice.h>
 GameObject::GameObject(DirectXDevice* device)
 {

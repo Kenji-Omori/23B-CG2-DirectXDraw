@@ -4,9 +4,9 @@
 
 //#include <Externals/imgui/imgui_impl_dx12.h>
 //#include <Externals/imgui/imgui_impl_win32.h>
-#include <Core/Type/Vector2.h>
+#include <Utility/Type/Vector2.h>
 
-#include <Core/Type/Vector2Int.h>
+#include <Utility/Type/Vector2Int.h>
 
 namespace Core {
   class Window

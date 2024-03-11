@@ -5,9 +5,9 @@
 #include <dxcapi.h>
 #include <format>
 
-#include <Core/Utility/String.h>
 #include <Core/DirectX12/DirectXDevice.h>
-#include <Core/Utility/Debug.h>
+#include <Utility/String.h>
+#include <Utility/Debug.h>
 
 Core::DirectXShader::DirectXShader(DirectXDevice* device)
 {

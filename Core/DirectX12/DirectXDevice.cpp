@@ -2,7 +2,7 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
-#include <Core/Utility/Debug.h>
+#include <Utility/Debug.h>
 #include <Core/DirectX12/DirectXAdapter.h>
 #include <format>
 

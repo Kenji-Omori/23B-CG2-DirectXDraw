@@ -9,9 +9,9 @@
 #include <memory>
 #include <Core/Window.h>
 
-#include <Core/Type/Vector2.h>
-#include <Core/Type/Vector4.h>
-#include <Core/Type/Matrix4x4.h>
+#include <Utility/Type/Vector2.h>
+#include <Utility/Type/Vector4.h>
+#include <Utility/Type/Matrix4x4.h>
 #include <Core/DirectXCommon.h>
 
 
