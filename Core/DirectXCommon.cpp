@@ -17,10 +17,13 @@
 #include <Core/DirectX12/DirectXFence.h>
 #include <Core/DirectX12/DirectXInfoQueue.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
+#include <Core/DirectX12/DirectXDescriptorHeapBackBuffers.h>
 #include <Core/DirectX12/DirectXCommandQueue.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 #include <Core/DirectX12/DirectXCommandList.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
+#include <Core/DirectX12/DirectXDescriptorHeapRTV.h>
+#include <Core/DirectX12/DirectXDescriptorHeapSRV.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -42,7 +45,7 @@ Core::DirectXCommon::DirectXCommon(Window* window)
   fence = nullptr;
   infoQueue = nullptr;
   swapChain = nullptr;
-  resourceTexture = nullptr;
+  //resourceTexture = nullptr;
   rtvDescriptorHeap = nullptr;
   srvDescriptorHeap = nullptr;
 }
@@ -72,6 +75,8 @@ void Core::DirectXCommon::Initialize()
 
 
   swapChain = new DirectXSwapChain(window, factory, commandQueue,SWAP_CHAIN_BUFFER_NUM);
+  backBuffers = new DirectXDescriptorHeapBackBuffers(device, swapChain);
+
   rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, swapChain->GetBufferNum());
   //swapchain * 1;
   fence = new DirectXFence(device);
@@ -114,7 +119,7 @@ void Core::DirectXCommon::Initialize()
 
 void Core::DirectXCommon::Release()
 {
-  delete(resourceTexture);
+  //delete(resourceTexture);
   delete(srvDescriptorHeap);
   delete(rtvDescriptorHeap);
   delete(fence);

@@ -4,6 +4,8 @@
 #include <d3d12.h>
 #include <cassert>
 #include <dxgi1_6.h>
+#include <Externals/DirectXTex/d3dx12.h>
+
 
 Core::DirectXDescriptorHeapBackBuffers::DirectXDescriptorHeapBackBuffers(DirectXDevice* device, DirectXSwapChain* swapChain) :DirectXDescriptorHeap(device)
 {
@@ -31,21 +33,18 @@ Core::DirectXDescriptorHeapBackBuffers::DirectXDescriptorHeapBackBuffers(DirectX
     result = swapChain->Get()->GetBuffer(i, IID_PPV_ARGS(&backBuffers[i]));
     assert(SUCCEEDED(result));
 
-
-  //  // ディスクリプタヒープのハンドルを取得
-  //  D3D12_CPU_DESCRIPTOR_HANDLE handle = D3D12_CPU_DESCRIPTOR_HANDLE(
-  //    descriptorHeap->GetCPUDescriptorHandleForHeapStart(), i,
-  //    device->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
-  //  // レンダーターゲットビューの設定
-  //  D3D12_RENDER_TARGET_VIEW_DESC renderTargetViewDesc{};
-  //  // シェーダーの計算結果をSRGBに変換して書き込む
-  //  renderTargetViewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-  //  renderTargetViewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-  //  // レンダーターゲットビューの生成
-  //  device_->CreateRenderTargetView(backBuffers_[i].Get(), &renderTargetViewDesc, handle);
+    // ディスクリプタヒープのハンドルを取得
+    CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+      descriptorHeap->GetCPUDescriptorHandleForHeapStart(), i,
+      device->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
+    // レンダーターゲットビューの設定
+    D3D12_RENDER_TARGET_VIEW_DESC renderTargetViewDesc{};
+    // シェーダーの計算結果をSRGBに変換して書き込む
+    renderTargetViewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    renderTargetViewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+    // レンダーターゲットビューの生成
+    device->Get()->CreateRenderTargetView(backBuffers[i].Get(), &renderTargetViewDesc, handle);
   }
-
-
 }
 
 Core::DirectXDescriptorHeapBackBuffers::~DirectXDescriptorHeapBackBuffers()
