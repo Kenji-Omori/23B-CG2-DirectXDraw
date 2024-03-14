@@ -2,7 +2,6 @@
 
 #include <d3d12.h>
 
-
 struct ID3D12DescriptorHeap;
 
 namespace Core {
@@ -15,12 +14,12 @@ namespace Core {
 		~DirectXDescriptorHeap();
 		ID3D12DescriptorHeap* Get();
 	protected:
-		void Create();
+		void CreateDescriptorHeap();
 		DirectXDevice* GetDevice() const;
 		D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc;
+		ID3D12DescriptorHeap* descriptorHeap;
 	private:
 		DirectXDevice* device;
-		ID3D12DescriptorHeap* descriptorHeap;
 
 	};
 }

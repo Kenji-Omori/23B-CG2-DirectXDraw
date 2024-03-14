@@ -7,7 +7,7 @@ Core::DirectXDescriptorHeap::DirectXDescriptorHeap(DirectXDevice* device, D3D12_
 {
   this->device = device;
   this->descriptorHeapDesc = descriptorHeapDesc;
-  Create();
+  CreateDescriptorHeap();
 }
 
 Core::DirectXDescriptorHeap::DirectXDescriptorHeap(DirectXDevice* device)
@@ -26,7 +26,7 @@ ID3D12DescriptorHeap* Core::DirectXDescriptorHeap::Get()
   return descriptorHeap;
 }
 
-void Core::DirectXDescriptorHeap::Create()
+void Core::DirectXDescriptorHeap::CreateDescriptorHeap()
 {
   HRESULT hr = device->Get()->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
   assert(SUCCEEDED(hr));

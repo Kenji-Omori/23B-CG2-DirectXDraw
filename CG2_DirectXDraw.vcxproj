@@ -99,6 +99,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapBackBuffers.cpp" />
     <ClCompile Include="Utility\String.cpp" />
     <ClCompile Include="Utility\Debug.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXShader.cpp" />
@@ -150,6 +151,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapBackBuffers.h" />
     <ClInclude Include="Utility\Type\Transform.h" />
     <ClInclude Include="Utility\Type\Vector3.h" />
     <ClInclude Include="Utility\Debug.h" />

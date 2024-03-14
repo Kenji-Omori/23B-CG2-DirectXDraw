@@ -55,10 +55,14 @@ void Core::DirectXCommon::Initialize()
 {
 
   // Device
-  factory = new DirectXFactory();
+  factory = new DirectXFactory(window);
   adapter = new DirectXAdapter(factory);
   device = new DirectXDevice(adapter);
+
+
   infoQueue = new DirectXInfoQueue(device);
+
+
 
 
   CreateCommandClasses();
@@ -67,12 +71,12 @@ void Core::DirectXCommon::Initialize()
 
 
 
-  fence = new DirectXFence(device);
+  swapChain = new DirectXSwapChain(window, factory, commandQueue,SWAP_CHAIN_BUFFER_NUM);
+  rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, swapChain->GetBufferNum());
   //swapchain * 1;
-  swapChain = new DirectXSwapChain(window, factory, commandQueue,2);
+  fence = new DirectXFence(device);
 
   //descriptor(Resources) * (rtv, srv, dsv)
-  rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, 2);
   srvDescriptorHeap = new DirectXDescriptorHeapSRV(device, 128);
 
   //dsv(Depth stencil view)用のDescriptorHeapも

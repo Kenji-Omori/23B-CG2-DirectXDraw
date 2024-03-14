@@ -8,7 +8,9 @@ Core::DirectXDescriptorHeapRTV::DirectXDescriptorHeapRTV(DirectXDevice* device, 
     D3D12_DESCRIPTOR_HEAP_FLAG_NONE,  // D3D12_DESCRIPTOR_HEAP_FLAGS Flags;
     0                                 // UINT                        NodeMask;
   };
-  Create();
+  CreateDescriptorHeap();
+
+
 }
 
 Core::DirectXDescriptorHeapRTV::~DirectXDescriptorHeapRTV()

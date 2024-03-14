@@ -81,6 +81,6 @@ namespace Core {
 
 
     Window* window;
-
+    static const int SWAP_CHAIN_BUFFER_NUM = 2;
   };
 }

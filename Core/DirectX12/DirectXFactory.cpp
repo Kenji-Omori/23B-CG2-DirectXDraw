@@ -1,10 +1,10 @@
 #include "DirectXFactory.h"
 
+#include <Core/Window.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
-
-Core::DirectXFactory::DirectXFactory()
+Core::DirectXFactory::DirectXFactory(Window* window)
 {
 #ifdef _DEBUG
 	EnableDebugLayer();
@@ -12,21 +12,8 @@ Core::DirectXFactory::DirectXFactory()
 	HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&factory));
   assert(SUCCEEDED(hr));
 
-
-
-	D3D_FEATURE_LEVEL levels[] = {
-	D3D_FEATURE_LEVEL_12_1,
-	D3D_FEATURE_LEVEL_12_0,
-	D3D_FEATURE_LEVEL_11_1,
-	D3D_FEATURE_LEVEL_11_0,
-	};
-
-
-
-
-
-
-
+	// ウィンドウサイズ変更とAlt＋Enterのフルスクリーンの禁止
+	factory->MakeWindowAssociation(window->GetWindowHandle(), DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER);
 
 }
 

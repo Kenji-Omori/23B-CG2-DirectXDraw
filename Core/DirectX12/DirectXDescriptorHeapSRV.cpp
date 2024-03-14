@@ -13,7 +13,7 @@ Core::DirectXDescriptorHeapSRV::DirectXDescriptorHeapSRV(DirectXDevice* device, 
       D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,  // D3D12_DESCRIPTOR_HEAP_FLAGS Flags;
       0                                           // UINT                        NodeMask;
   };
-  Create();
+  CreateDescriptorHeap();
 }
 
 Core::DirectXDescriptorHeapSRV::~DirectXDescriptorHeapSRV()
