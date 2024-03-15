@@ -1,4 +1,4 @@
-#include "DirectXDescriptorHeapBackBuffers.h"
+#include "DirectXDescriptorHeapSwapChainBuffers.h"
 #include <Core/DirectX12/DirectXSwapChain.h>
 #include <Core/DirectX12/DirectXDevice.h>
 #include <d3d12.h>
@@ -7,7 +7,7 @@
 #include <Externals/DirectXTex/d3dx12.h>
 
 
-Core::DirectXDescriptorHeapBackBuffers::DirectXDescriptorHeapBackBuffers(DirectXDevice* device, DirectXSwapChain* swapChain) :DirectXDescriptorHeap(device)
+Core::DirectXDescriptorHeapSwapChainBuffers::DirectXDescriptorHeapSwapChainBuffers(DirectXDevice* device, DirectXSwapChain* swapChain) :DirectXDescriptorHeap(device)
 {
   HRESULT result = S_FALSE;
 
@@ -47,6 +47,6 @@ Core::DirectXDescriptorHeapBackBuffers::DirectXDescriptorHeapBackBuffers(DirectX
   }
 }
 
-Core::DirectXDescriptorHeapBackBuffers::~DirectXDescriptorHeapBackBuffers()
+Core::DirectXDescriptorHeapSwapChainBuffers::~DirectXDescriptorHeapSwapChainBuffers()
 {
 }

@@ -17,7 +17,7 @@
 #include <Core/DirectX12/DirectXFence.h>
 #include <Core/DirectX12/DirectXInfoQueue.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
-#include <Core/DirectX12/DirectXDescriptorHeapBackBuffers.h>
+#include <Core/DirectX12/DirectXDescriptorHeapSwapChainBuffers.h>
 #include <Core/DirectX12/DirectXCommandQueue.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 #include <Core/DirectX12/DirectXCommandList.h>
@@ -75,7 +75,7 @@ void Core::DirectXCommon::Initialize()
 
 
   swapChain = new DirectXSwapChain(window, factory, commandQueue,SWAP_CHAIN_BUFFER_NUM);
-  backBuffers = new DirectXDescriptorHeapBackBuffers(device, swapChain);
+  backBuffers = new DirectXDescriptorHeapSwapChainBuffers(device, swapChain);
 
   rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, swapChain->GetBufferNum());
   //swapchain * 1;

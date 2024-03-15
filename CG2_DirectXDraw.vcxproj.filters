@@ -114,7 +114,13 @@
     <ClCompile Include="Utility\String.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapBackBuffers.cpp">
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapSwapChainBuffers.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapDepthBuffer.h">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapDepthBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -244,7 +250,7 @@
     <ClInclude Include="Utility\Type\Vector3.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapBackBuffers.h">
+    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapSwapChainBuffers.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
