@@ -6,7 +6,9 @@
 #include <dxgi1_6.h>
 #include <cassert>
 #include <Externals/imgui/imgui.h>
-
+#include <Externals/imgui/imgui_impl_dx12.h>
+#include <Externals/imgui/imgui_impl_win32.h>
+#include <Core/Window.h>
 Core::ImGuiWrap::ImGuiWrap(DirectXDevice* device, DirectXSwapChain* swapChain)
 { 
 	HRESULT result = S_FALSE;
@@ -27,13 +29,19 @@ Core::ImGuiWrap::ImGuiWrap(DirectXDevice* device, DirectXSwapChain* swapChain)
 	if (ImGui::CreateContext() == nullptr) {
 		assert(0);
 	}
-	if (!ImGui_ImplWin32_Init(device->GetWindow()->GetHwnd())) {
+	auto w = device->GetWindow();
+	auto h = w->GetWindowHandle();
+	if (!ImGui_ImplWin32_Init(device->GetWindow()->GetWindowHandle())) {
 		assert(0);
 	}
 	if (!ImGui_ImplDX12_Init(
-		GetDevice(), swcDesc.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, imguiHeap_.Get(),
+		device->Get().Get(), swcDesc.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, imguiHeap_.Get(),
 		imguiHeap_->GetCPUDescriptorHandleForHeapStart(),
 		imguiHeap_->GetGPUDescriptorHandleForHeapStart())) {
 		assert(0);
 	}
+}
+
+Core::ImGuiWrap::~ImGuiWrap()
+{
 }
