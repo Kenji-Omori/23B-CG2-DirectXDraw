@@ -10,6 +10,8 @@ namespace Core {
     ~DirectXFactory();
     void Release();
     Microsoft::WRL::ComPtr<IDXGIFactory7> Get() const;
+    Window* GetWindow() const;
+
 
   private:
     void EnableDebugLayer();

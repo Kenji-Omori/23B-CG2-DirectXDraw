@@ -17,13 +17,15 @@
 #include <Core/DirectX12/DirectXFence.h>
 #include <Core/DirectX12/DirectXInfoQueue.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
-#include <Core/DirectX12/DirectXDescriptorHeapSwapChainBuffers.h>
+#include <Core/DirectX12/DirectXSwapChain.h>
 #include <Core/DirectX12/DirectXCommandQueue.h>
 #include <Core/DirectX12/DirectXCommandAllocator.h>
 #include <Core/DirectX12/DirectXCommandList.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
 #include <Core/DirectX12/DirectXDescriptorHeapRTV.h>
 #include <Core/DirectX12/DirectXDescriptorHeapSRV.h>
+#include <Core/DirectX12/DirectXDepthBuffer.h>
+#include <Core/DirectX12/DirectXResourceTexture.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -46,8 +48,9 @@ Core::DirectXCommon::DirectXCommon(Window* window)
   infoQueue = nullptr;
   swapChain = nullptr;
   //resourceTexture = nullptr;
-  rtvDescriptorHeap = nullptr;
-  srvDescriptorHeap = nullptr;
+  //rtvDescriptorHeap = nullptr;
+  resourceTexture = nullptr;
+  depthBuffer = nullptr;
 }
 
 Core::DirectXCommon::~DirectXCommon()
@@ -73,20 +76,20 @@ void Core::DirectXCommon::Initialize()
 
 
 
-
-  swapChain = new DirectXSwapChain(window, factory, commandQueue,SWAP_CHAIN_BUFFER_NUM);
-  backBuffers = new DirectXDescriptorHeapSwapChainBuffers(device, swapChain);
-
-  rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, swapChain->GetBufferNum());
-  //swapchain * 1;
+  swapChain = new DirectXSwapChain(device,commandQueue,SWAP_CHAIN_BUFFER_NUM);
+  depthBuffer = new DirectXDepthBuffer(device, window);
   fence = new DirectXFence(device);
 
+
+  //rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, swapChain->GetBufferNum());
+
+
   //descriptor(Resources) * (rtv, srv, dsv)
-  srvDescriptorHeap = new DirectXDescriptorHeapSRV(device, 128);
+  //srvDescriptorHeap = new DirectXDescriptorHeapSRV(device, 128);
 
   //dsv(Depth stencil view)用のDescriptorHeapも
 
-  int textureHandle = srvDescriptorHeap->LoadTexture("./Resources/Texture/uvChecker2.dds");
+  //int textureHandle = resourceTexture->LoadTexture("./Resources/Texture/uvChecker2.dds");
   
 
 

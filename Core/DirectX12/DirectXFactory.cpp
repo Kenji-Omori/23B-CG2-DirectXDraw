@@ -31,6 +31,11 @@ Microsoft::WRL::ComPtr<IDXGIFactory7> Core::DirectXFactory::Get() const
   return factory;
 }
 
+Core::Window* Core::DirectXFactory::GetWindow() const
+{
+	return window;
+}
+
 void Core::DirectXFactory::EnableDebugLayer()
 {
 #ifdef _DEBUG

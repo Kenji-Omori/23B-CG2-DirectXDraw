@@ -63,6 +63,11 @@ IDXGIAdapter4* Core::DirectXAdapter::GetRaw() const
   return adapter.Get();
 }
 
+Core::DirectXFactory* Core::DirectXAdapter::GetFactory() const
+{
+    return factory;
+}
+
 void Core::DirectXAdapter::Release()
 {
   adapter->Release();

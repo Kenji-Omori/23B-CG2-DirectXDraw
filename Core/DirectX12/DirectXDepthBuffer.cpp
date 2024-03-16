@@ -1,10 +1,10 @@
-#include "DirectXDescriptorHeapDepthBuffer.h"
+#include "DirectXDepthBuffer.h"
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/Window.h>
 #include <Externals/DirectXTex/d3dx12.h>
 #include <cassert>
 
-Core::DirectXDescriptorHeapDepthBuffer::DirectXDescriptorHeapDepthBuffer(DirectXDevice* device, Window* window):DirectXDescriptorHeap(device)
+Core::DirectXDepthBuffer::DirectXDepthBuffer(DirectXDevice* device, Window* window):DirectXDescriptorHeap(device)
 {
 	HRESULT result = S_FALSE;
 
@@ -35,4 +35,8 @@ Core::DirectXDescriptorHeapDepthBuffer::DirectXDescriptorHeapDepthBuffer(DirectX
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	device->Get()->CreateDepthStencilView(
 		depthBuffer.Get(), &dsvDesc, descriptorHeap->GetCPUDescriptorHandleForHeapStart());
+}
+
+Core::DirectXDepthBuffer::~DirectXDepthBuffer()
+{
 }

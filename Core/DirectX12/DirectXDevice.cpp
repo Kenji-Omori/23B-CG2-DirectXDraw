@@ -4,10 +4,13 @@
 #include <cassert>
 #include <Utility/Debug.h>
 #include <Core/DirectX12/DirectXAdapter.h>
+#include <Core/DirectX12/DirectXFactory.h>
+#include <Core/Window.h>
 #include <format>
 
 Core::DirectXDevice::DirectXDevice(DirectXAdapter* adapter)
 {
+  this->adapter = adapter;
   D3D_FEATURE_LEVEL featureLevels[] = {
     D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
   };
@@ -36,6 +39,21 @@ Core::DirectXDevice::~DirectXDevice()
 Microsoft::WRL::ComPtr <ID3D12Device> Core::DirectXDevice::Get() const
 {
   return device;
+}
+
+Core::DirectXAdapter* Core::DirectXDevice::GetAdapter() const
+{
+    return adapter;
+}
+
+Core::DirectXFactory* Core::DirectXDevice::GetFactory() const
+{
+  return adapter->GetFactory();
+}
+
+Core::Window* Core::DirectXDevice::GetWindow() const
+{
+  return GetFactory()->GetWindow();
 }
 
 void Core::DirectXDevice::Release()

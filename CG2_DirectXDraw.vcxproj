@@ -99,9 +99,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapDepthBuffer.cpp" />
-    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapDepthBuffer.h" />
-    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapSwapChainBuffers.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXDepthBuffer.cpp" />
+    <ClCompile Include="Core\DirectX12\DirectXDepthBuffer.h" />
+    <ClCompile Include="Core\DirectX12\DirectXSwapChainBuffers.cpp" />
+    <ClCompile Include="Core\ImGui.cpp" />
     <ClCompile Include="Utility\String.cpp" />
     <ClCompile Include="Utility\Debug.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXShader.cpp" />
@@ -153,7 +154,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapSwapChainBuffers.h" />
+    <ClInclude Include="Core\DirectX12\DirectXSwapChainBuffers.h" />
+    <ClInclude Include="Core\ImGui.h" />
     <ClInclude Include="Utility\Type\Transform.h" />
     <ClInclude Include="Utility\Type\Vector3.h" />
     <ClInclude Include="Utility\Debug.h" />

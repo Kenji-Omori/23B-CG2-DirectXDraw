@@ -5,11 +5,11 @@ namespace Core
 {
 	class DirectXDevice;
 	class Window;
-	class DirectXDescriptorHeapDepthBuffer:DirectXDescriptorHeap
+	class DirectXDepthBuffer:DirectXDescriptorHeap
 	{
 	public:
-		DirectXDescriptorHeapDepthBuffer(DirectXDevice* device, Window* window);
-		~DirectXDescriptorHeapDepthBuffer();
+		DirectXDepthBuffer(DirectXDevice* device, Window* window);
+		~DirectXDepthBuffer();
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer;

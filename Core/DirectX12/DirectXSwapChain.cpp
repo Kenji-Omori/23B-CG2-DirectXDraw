@@ -6,12 +6,16 @@
 #include <Core/Window.h>
 #include <Core/DirectX12/DirectXFactory.h>
 #include <Core/DirectX12/DirectXCommandQueue.h>
+#include <Core/DirectX12/DirectXSwapChainBuffers.h>
+#include <Core/DirectX12/DirectXDevice.h>
 
-  Core::DirectXSwapChain::DirectXSwapChain(Window* window, DirectXFactory* factory, DirectXCommandQueue* commandQueue, int bufferNum)
+  Core::DirectXSwapChain::DirectXSwapChain(DirectXDevice* device, DirectXCommandQueue* commandQueue, int bufferNum)
   {
-    this->factory = factory;
     this->bufferNum = bufferNum;
     this->commandQueue = commandQueue;
+    this->device = device;
+    Window* window = device->GetWindow();
+    IDXGIFactory7* factory = device->GetFactory()->Get().Get();
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
@@ -25,9 +29,11 @@
     swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING; // ティアリングサポート
     // コマンドキュー、ウィンドウハンドル、設定を渡して生成する
     Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
-    HRESULT hr = factory->Get()->CreateSwapChainForHwnd(commandQueue->GetRaw(), window->GetWindowHandle(), &swapChainDesc, nullptr, nullptr, &swapChain1);
+    HRESULT hr = factory->CreateSwapChainForHwnd(commandQueue->GetRaw(), window->GetWindowHandle(), &swapChainDesc, nullptr, nullptr, &swapChain1);
     assert(SUCCEEDED(hr));
     swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain));
+
+    buffers = new DirectXSwapChainBuffers(device, this);
   }
 
   Core::DirectXSwapChain::~DirectXSwapChain()
@@ -37,6 +43,11 @@
   int Core::DirectXSwapChain::GetBufferNum()
   {
     return bufferNum;
+  }
+
+  HRESULT Core::DirectXSwapChain::GetDesc(DXGI_SWAP_CHAIN_DESC* desc)
+  {
+    return swapChain->GetDesc(desc);
   }
 
   Microsoft::WRL::ComPtr<IDXGISwapChain4> Core::DirectXSwapChain::Get() const

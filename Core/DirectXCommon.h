@@ -40,7 +40,7 @@ struct IDxcUtils;
 struct IDxcBlob;
 namespace Core {
   class DirectXSwapChain;
-  class DirectXDescriptorHeapSwapChainBuffers;
+  class DirectXSwapChainBuffers;
   class DirectXAdapter;
   class DirectXCommand;
   class DirectXFactory;
@@ -53,7 +53,7 @@ namespace Core {
   class DirectXDescriptorHeapRTV;
   class DirectXDescriptorHeapSRV;
   class DirectXResourceTexture;
-
+  class DirectXDepthBuffer;
   class DirectXCommon
   {
   public:
@@ -89,12 +89,12 @@ namespace Core {
     DirectXCommandAllocator* allocator;
     DirectXCommandList* commandList;
     DirectXSwapChain* swapChain;
-    DirectXDescriptorHeapSwapChainBuffers* backBuffers;
+    DirectXSwapChainBuffers* backBuffers;
+    DirectXDepthBuffer* depthBuffer;
 
     DirectXFence* fence;
-    DirectXDescriptorHeapRTV* rtvDescriptorHeap;
-    DirectXDescriptorHeapSRV* srvDescriptorHeap;
-//    DirectXResourceTexture* resourceTexture;
+
+    DirectXResourceTexture* resourceTexture;
 
 
 

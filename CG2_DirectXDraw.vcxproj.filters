@@ -114,13 +114,16 @@
     <ClCompile Include="Utility\String.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapSwapChainBuffers.cpp">
+    <ClCompile Include="Core\DirectX12\DirectXSwapChainBuffers.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapDepthBuffer.h">
+    <ClCompile Include="Core\DirectX12\DirectXDepthBuffer.h">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\DirectX12\DirectXDescriptorHeapDepthBuffer.cpp">
+    <ClCompile Include="Core\DirectX12\DirectXDepthBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ImGui.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -250,7 +253,10 @@
     <ClInclude Include="Utility\Type\Vector3.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Core\DirectX12\DirectXDescriptorHeapSwapChainBuffers.h">
+    <ClInclude Include="Core\DirectX12\DirectXSwapChainBuffers.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ImGui.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,6 +11,7 @@ namespace Core {
 
     Microsoft::WRL::ComPtr<IDXGIAdapter4> Get() const;
     IDXGIAdapter4* GetRaw() const;
+    DirectXFactory* GetFactory() const;
     void Release();
 
   private:
