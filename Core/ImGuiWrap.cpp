@@ -1,4 +1,4 @@
-#include "ImGui.h"
+#include "ImGuiWrap.h"
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
 #include <d3d12.h>

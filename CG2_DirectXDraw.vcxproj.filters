@@ -123,7 +123,7 @@
     <ClCompile Include="Core\DirectX12\DirectXDepthBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Core\ImGui.cpp">
+    <ClCompile Include="Core\ImGuiWrap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -256,7 +256,7 @@
     <ClInclude Include="Core\DirectX12\DirectXSwapChainBuffers.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Core\ImGui.h">
+    <ClInclude Include="Core\ImGuiWrap.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
