@@ -125,6 +125,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Core\DirectXCommon.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXDevice.cpp" />
     <ClCompile Include="Utility\TextureConverter.cpp" />
+    <ClCompile Include="Utility\Type\Color.cpp" />
     <ClCompile Include="Utility\Type\Matrix4x4.cpp" />
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp" />
@@ -156,6 +157,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Core\DirectX12\DirectXSwapChainBuffers.h" />
     <ClInclude Include="Core\ImGuiWrap.h" />
+    <ClInclude Include="Utility\Type\Color.h" />
     <ClInclude Include="Utility\Type\Transform.h" />
     <ClInclude Include="Utility\Type\Vector3.h" />
     <ClInclude Include="Utility\Debug.h" />

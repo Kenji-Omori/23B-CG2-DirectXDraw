@@ -21,7 +21,12 @@ Core::DirectXDescriptorHeap::~DirectXDescriptorHeap()
 {
 }
 
-ID3D12DescriptorHeap* Core::DirectXDescriptorHeap::Get()
+D3D12_CPU_DESCRIPTOR_HANDLE Core::DirectXDescriptorHeap::GetCPUDescriptorHandleForHeapStart() 
+{
+    return descriptorHeap->GetCPUDescriptorHandleForHeapStart();
+}
+
+ID3D12DescriptorHeap* Core::DirectXDescriptorHeap::GetDescriptorHeap() const
 {
   return descriptorHeap;
 }

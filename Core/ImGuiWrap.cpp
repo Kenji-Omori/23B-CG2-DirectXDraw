@@ -1,14 +1,15 @@
 #include "ImGuiWrap.h"
+#include <Core/Window.h>
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
-#include <d3d12.h>
 #include <Externals/DirectXTex/d3dx12.h>
-#include <dxgi1_6.h>
-#include <cassert>
 #include <Externals/imgui/imgui.h>
 #include <Externals/imgui/imgui_impl_dx12.h>
 #include <Externals/imgui/imgui_impl_win32.h>
-#include <Core/Window.h>
+#include <d3d12.h>
+#include <dxgi1_6.h>
+#include <cassert>
+
 Core::ImGuiWrap::ImGuiWrap(DirectXDevice* device, DirectXSwapChain* swapChain)
 { 
 	HRESULT result = S_FALSE;
@@ -22,20 +23,18 @@ Core::ImGuiWrap::ImGuiWrap(DirectXDevice* device, DirectXSwapChain* swapChain)
 	assert(SUCCEEDED(result));
 
 	// スワップチェーンの情報を取得
-	DXGI_SWAP_CHAIN_DESC swcDesc = {};
-	result = swapChain->GetDesc(&swcDesc);
+	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+	result = swapChain->GetDesc(&swapChainDesc);
 	assert(SUCCEEDED(result));
 
 	if (ImGui::CreateContext() == nullptr) {
 		assert(0);
 	}
-	auto w = device->GetWindow();
-	auto h = w->GetWindowHandle();
 	if (!ImGui_ImplWin32_Init(device->GetWindow()->GetWindowHandle())) {
 		assert(0);
 	}
 	if (!ImGui_ImplDX12_Init(
-		device->Get().Get(), swcDesc.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, imguiDescriptorHeap.Get(),
+		device->Get().Get(), swapChainDesc.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, imguiDescriptorHeap.Get(),
 		imguiDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
 		imguiDescriptorHeap->GetGPUDescriptorHandleForHeapStart())) {
 		assert(0);

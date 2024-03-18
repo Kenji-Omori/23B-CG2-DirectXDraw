@@ -16,6 +16,7 @@ namespace Core {
 		DirectXAdapter* GetAdapter() const;
 		DirectXFactory* GetFactory() const;
 		Window* GetWindow() const;
+		UINT GetRTVIncrementSize();
 		void Release();
 
 	private:

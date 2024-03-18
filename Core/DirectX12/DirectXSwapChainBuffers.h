@@ -5,13 +5,15 @@
 namespace Core {
   class DirectXDevice;
   class DirectXSwapChain;
-  class DirectXSwapChainBuffers :DirectXDescriptorHeap
+  class DirectXSwapChainBuffers :public DirectXDescriptorHeap
   {
   public:
     DirectXSwapChainBuffers(DirectXDevice* device, DirectXSwapChain* swapChain);
     ~DirectXSwapChainBuffers();
+    ID3D12Resource* GetBackBuffer();
 
   private:
     std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
+    DirectXSwapChain* swapChain;
   };
 }

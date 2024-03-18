@@ -56,6 +56,11 @@ Core::Window* Core::DirectXDevice::GetWindow() const
   return GetFactory()->GetWindow();
 }
 
+UINT Core::DirectXDevice::GetRTVIncrementSize()
+{
+  return device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+}
+
 void Core::DirectXDevice::Release()
 {
   device->Release();

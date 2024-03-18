@@ -12,7 +12,8 @@ namespace Core {
 		DirectXDescriptorHeap(DirectXDevice* device, D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc);
 		DirectXDescriptorHeap(DirectXDevice* device);
 		~DirectXDescriptorHeap();
-		ID3D12DescriptorHeap* Get();
+		D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandleForHeapStart();
+		ID3D12DescriptorHeap* GetDescriptorHeap() const;
 	protected:
 		void CreateDescriptorHeap();
 		DirectXDevice* GetDevice() const;

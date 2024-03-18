@@ -1,14 +1,15 @@
 #include "DirectXSwapChainBuffers.h"
 #include <Core/DirectX12/DirectXSwapChain.h>
 #include <Core/DirectX12/DirectXDevice.h>
+#include <Externals/DirectXTex/d3dx12.h>
 #include <d3d12.h>
 #include <cassert>
 #include <dxgi1_6.h>
-#include <Externals/DirectXTex/d3dx12.h>
 
 
 Core::DirectXSwapChainBuffers::DirectXSwapChainBuffers(DirectXDevice* device, DirectXSwapChain* swapChain) :DirectXDescriptorHeap(device)
 {
+  this->swapChain = swapChain;
   HRESULT result = S_FALSE;
 
   DXGI_SWAP_CHAIN_DESC swcDesc = {};
@@ -24,6 +25,7 @@ Core::DirectXSwapChainBuffers::DirectXSwapChainBuffers(DirectXDevice* device, Di
     D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE,// D3D12_DESCRIPTOR_HEAP_FLAGS Flags;
     0 // UINT NodeMask;
   };
+
   CreateDescriptorHeap();
 
   // 裏表の２つ分について
@@ -49,4 +51,10 @@ Core::DirectXSwapChainBuffers::DirectXSwapChainBuffers(DirectXDevice* device, Di
 
 Core::DirectXSwapChainBuffers::~DirectXSwapChainBuffers()
 {
+}
+
+ID3D12Resource* Core::DirectXSwapChainBuffers::GetBackBuffer()
+{
+  UINT backbufferIndex = swapChain->GetBufferNum();
+    return backBuffers[backbufferIndex].Get();
 }
