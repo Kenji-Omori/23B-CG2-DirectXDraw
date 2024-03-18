@@ -1,6 +1,5 @@
 #pragma once
 #include <Core/DirectX12/DirectXDescriptorHeap.h>
-#include <wrl.h>
 namespace Core
 {
 	class DirectXDevice;
@@ -12,7 +11,7 @@ namespace Core
 		~DirectXDepthBuffer();
 
 	private:
-		Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer;
+		ID3D12Resource* depthBuffer;
 
 	};
 

@@ -1,6 +1,6 @@
 #include "Debug.h"
 #include <debugapi.h>
-#include <Core/Utility/String.h>
+#include <Utility/String.h>
 
 void Utility::Debug::Log(const std::string& message)
 {

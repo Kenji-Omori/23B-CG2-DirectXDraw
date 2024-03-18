@@ -34,7 +34,7 @@ Core::DirectXDepthBuffer::DirectXDepthBuffer(DirectXDevice* device, Window* wind
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT; // 深度値フォーマット
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	device->Get()->CreateDepthStencilView(
-		depthBuffer.Get(), &dsvDesc, descriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		depthBuffer, &dsvDesc, descriptorHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
 Core::DirectXDepthBuffer::~DirectXDepthBuffer()

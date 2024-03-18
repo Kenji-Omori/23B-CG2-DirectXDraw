@@ -6,6 +6,7 @@
 #include <cassert>
 Core::DirectXFactory::DirectXFactory(Window* window)
 {
+	this->window = window;
 #ifdef _DEBUG
 	EnableDebugLayer();
 #endif 
