@@ -123,8 +123,8 @@ void Core::DirectXCommon::Initialize()
 void Core::DirectXCommon::Release()
 {
   //delete(resourceTexture);
-  delete(srvDescriptorHeap);
-  delete(rtvDescriptorHeap);
+  //delete(srvDescriptorHeap);
+  //delete(rtvDescriptorHeap);
   delete(fence);
   delete(commandList);
   delete(allocator);

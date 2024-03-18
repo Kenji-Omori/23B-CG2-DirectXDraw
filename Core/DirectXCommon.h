@@ -89,7 +89,6 @@ namespace Core {
     DirectXCommandAllocator* allocator;
     DirectXCommandList* commandList;
     DirectXSwapChain* swapChain;
-    DirectXSwapChainBuffers* backBuffers;
     DirectXDepthBuffer* depthBuffer;
 
     DirectXFence* fence;

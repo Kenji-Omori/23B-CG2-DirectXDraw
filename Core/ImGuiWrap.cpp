@@ -18,7 +18,7 @@ Core::ImGuiWrap::ImGuiWrap(DirectXDevice* device, DirectXSwapChain* swapChain)
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	heapDesc.NumDescriptors = 1;
 	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	result = device->Get()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&imguiHeap_));
+	result = device->Get()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&imguiDescriptorHeap));
 	assert(SUCCEEDED(result));
 
 	// スワップチェーンの情報を取得
@@ -35,9 +35,9 @@ Core::ImGuiWrap::ImGuiWrap(DirectXDevice* device, DirectXSwapChain* swapChain)
 		assert(0);
 	}
 	if (!ImGui_ImplDX12_Init(
-		device->Get().Get(), swcDesc.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, imguiHeap_.Get(),
-		imguiHeap_->GetCPUDescriptorHandleForHeapStart(),
-		imguiHeap_->GetGPUDescriptorHandleForHeapStart())) {
+		device->Get().Get(), swcDesc.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, imguiDescriptorHeap.Get(),
+		imguiDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+		imguiDescriptorHeap->GetGPUDescriptorHandleForHeapStart())) {
 		assert(0);
 	}
 }

@@ -11,6 +11,6 @@ namespace Core {
 		~ImGuiWrap();
 
 	private:
-		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imguiHeap_;
+		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imguiDescriptorHeap;
 	};
 }
