@@ -14,10 +14,13 @@ namespace Core {
   public:
     DirectXCommandList(DirectXDevice* device, DirectXCommandAllocator* allocator);
     ~DirectXCommandList();
-    ID3D12CommandList* GetCommandList();
+    ID3D12GraphicsCommandList* GetCommandList();
     void SetResourceBarrier(DirectXSwapChain* swapChain, UINT barrierNum=1);
-    void SetOutputMergeRenderTargets(DirectXDescriptorHeap* rtvHeap, DirectXDescriptorHeap* dsvHeap);
+    void SetOutputMergeRenderTargets(DirectXDescriptorHeap* rtvHeap, DirectXDescriptorHeap* dsvHeap, UINT backBufferIndex);
     void ClearRenderTarget(DirectXDescriptorHeap* rtvHeap, UINT backBufferIndex, const Color& clearColor);
+    void ClearDepthBuffer(DirectXDescriptorHeap* dsvHeap);
+    void SetResourceViewports(UINT viewportNum);
+    void SetResourceScissorRects(UINT viewportNum);
     void Close();
     void Release();
 

@@ -383,34 +383,34 @@ static void ImGui_ImplDX12_CreateFontsTexture()
         queueDesc.Flags    = D3D12_COMMAND_QUEUE_FLAG_NONE;
         queueDesc.NodeMask = 1;
 
-        ID3D12CommandQueue* cmdQueue = nullptr;
-        hr = bd->pd3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&cmdQueue));
+        ID3D12CommandQueue* commandQueue = nullptr;
+        hr = bd->pd3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue));
         IM_ASSERT(SUCCEEDED(hr));
 
         ID3D12CommandAllocator* cmdAlloc = nullptr;
         hr = bd->pd3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&cmdAlloc));
         IM_ASSERT(SUCCEEDED(hr));
 
-        ID3D12GraphicsCommandList* cmdList = nullptr;
-        hr = bd->pd3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, cmdAlloc, nullptr, IID_PPV_ARGS(&cmdList));
+        ID3D12GraphicsCommandList* commandList = nullptr;
+        hr = bd->pd3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, cmdAlloc, nullptr, IID_PPV_ARGS(&commandList));
         IM_ASSERT(SUCCEEDED(hr));
 
-        cmdList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
-        cmdList->ResourceBarrier(1, &barrier);
+        commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+        commandList->ResourceBarrier(1, &barrier);
 
-        hr = cmdList->Close();
+        hr = commandList->Close();
         IM_ASSERT(SUCCEEDED(hr));
 
-        cmdQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&cmdList);
-        hr = cmdQueue->Signal(fence, 1);
+        commandQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&commandList);
+        hr = commandQueue->Signal(fence, 1);
         IM_ASSERT(SUCCEEDED(hr));
 
         fence->SetEventOnCompletion(1, event);
         WaitForSingleObject(event, INFINITE);
 
-        cmdList->Release();
+        commandList->Release();
         cmdAlloc->Release();
-        cmdQueue->Release();
+        commandQueue->Release();
         CloseHandle(event);
         fence->Release();
         uploadBuffer->Release();

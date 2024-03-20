@@ -42,8 +42,8 @@ Core::DirectXCommon::DirectXCommon(Window* window)
   adapter = nullptr;
   device = nullptr;
   cmdAllocator = nullptr;
-  cmdList = nullptr;
-  cmdQueue = nullptr;
+  commandList = nullptr;
+  commandQueue = nullptr;
   fence = nullptr;
   infoQueue = nullptr;
   swapChain = nullptr;
@@ -68,17 +68,17 @@ void Core::DirectXCommon::Initialize()
 
   infoQueue = new DirectXInfoQueue(device);
   cmdAllocator = new DirectXCommandAllocator(device);
-  cmdList = new DirectXCommandList(device, cmdAllocator);
-  cmdQueue = new DirectXCommandQueue(device);
+  commandList = new DirectXCommandList(device, cmdAllocator);
+  commandQueue = new DirectXCommandQueue(device);
 
 
 
 
-  swapChain = new DirectXSwapChain(device,cmdQueue,SWAP_CHAIN_BUFFER_NUM);
-  rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, swapChain->GetBufferNum());
+  swapChain = new DirectXSwapChain(device,commandQueue,SWAP_CHAIN_BUFFER_NUM);
+//  rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, swapChain->GetBufferNum());
   depthBuffer = new DirectXDepthBuffer(device, window);
   fence = new DirectXFence(device);
-
+  
 
 
 
@@ -125,9 +125,9 @@ void Core::DirectXCommon::Release()
   //delete(srvDescriptorHeap);
   //delete(rtvDescriptorHeap);
   delete(fence);
-  delete(cmdList);
+  delete(commandList);
   delete(cmdAllocator);
-  delete(cmdQueue);
+  delete(commandQueue);
   delete(device);
   delete(adapter);
   delete(factory);
@@ -139,14 +139,16 @@ void Core::DirectXCommon::Release()
 
 void Core::DirectXCommon::Draw()
 {
-  PreRenderer();
-  Renderer();
-  PostRenderer();
+  PreDraw();
+  CurDraw();
+  PostDraw();
 }
 
-void Core::DirectXCommon::PreRenderer()
+void Core::DirectXCommon::PreDraw()
 {
-  UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+  swapChain->PreDraw(commandList);
+
+  
 
 
 
@@ -164,6 +166,10 @@ void Core::DirectXCommon::PreRenderer()
 
 
 
+
+}
+void Core::DirectXCommon::CurDraw()
+{
   float onePixel = 2.f / 512.f;
   float texSize = 512;
   float sizes[] = {
@@ -178,17 +184,10 @@ void Core::DirectXCommon::PreRenderer()
     texSize * onePixel / 256.f,
     texSize * onePixel / 512.f,
   };
-
-
-
 }
-void Core::DirectXCommon::Renderer()
+void Core::DirectXCommon::PostDraw()
 {
-
-
-}
-void Core::DirectXCommon::PostRenderer()
-{
+  commandQueue->ExcuteCommand(commandList);
 }
 
 IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler)

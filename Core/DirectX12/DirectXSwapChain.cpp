@@ -11,6 +11,7 @@
 #include <dxgi1_6.h>
 #include <cassert>
 
+
 Core::DirectXSwapChain::DirectXSwapChain(DirectXDevice* device, DirectXCommandQueue* commandQueue, int bufferNum)
 {
   this->bufferNum = bufferNum;
@@ -34,7 +35,7 @@ Core::DirectXSwapChain::DirectXSwapChain(DirectXDevice* device, DirectXCommandQu
   HRESULT hr = factory->CreateSwapChainForHwnd(commandQueue->GetRaw(), window->GetWindowHandle(), &swapChainDesc, nullptr, nullptr, &swapChain1);
   assert(SUCCEEDED(hr));
   swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain));
-
+  dsvHeap = {};
   buffers = new DirectXSwapChainBuffers(device, this);
 }
 
@@ -76,15 +77,19 @@ void Core::DirectXSwapChain::PreDraw(DirectXCommandList* commandList)
 {
   commandList->SetResourceBarrier(this);
   assert(dsvHeap != nullptr);
-  commandList->SetOutputMergeRenderTargets(buffers, dsvHeap);
+  commandList->SetOutputMergeRenderTargets(buffers, dsvHeap, GetCurrentBackBufferIndex());
+  commandList->ClearRenderTarget(buffers, GetCurrentBackBufferIndex(), clearColor);
+  commandList->ClearDepthBuffer(dsvHeap);
 
+  commandList->SetResourceViewports(1);
+  commandList->SetResourceScissorRects(1);
+}
 
-
-
-  commandQueue->ExcuteCommand(commandList);
+void Core::DirectXSwapChain::PostDraw()
+{
 }
 
 void Core::DirectXSwapChain::ClearRenderTarget(DirectXCommandList* commandList)
 {
-  
+
 }

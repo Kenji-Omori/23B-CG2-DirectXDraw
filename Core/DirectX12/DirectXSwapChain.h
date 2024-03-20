@@ -1,5 +1,7 @@
 #pragma once
 #include <wrl.h>
+#include <Utility/Type/Color.h>
+
 struct IDXGISwapChain4;
 struct ID3D12Resource;
 struct DXGI_SWAP_CHAIN_DESC;
@@ -22,6 +24,7 @@ namespace Core {
     void SetDSVHeap(DirectXDescriptorHeap* dsvHeap);
     void PreDraw(DirectXCommandList* commandList);
     void PostDraw();
+    static const Color clearColor; 
   private:
     void ClearRenderTarget(DirectXCommandList* commandList);
 

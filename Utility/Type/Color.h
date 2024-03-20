@@ -12,7 +12,6 @@ public:
 	float GetB() const;
 	float GetA() const;
 
-private:
 	float r;
 	float g;
 	float b;

@@ -36,9 +36,9 @@ namespace Core {
     void Release();
     void Draw();
   private:
-    void PreRenderer();
-    void Renderer();
-    void PostRenderer();
+    void PreDraw();
+    void CurDraw();
+    void PostDraw();
     IDxcBlob* CompileShader(
       // CompilerするShaderファイルへのパス
       const std::wstring& filePath,
@@ -57,9 +57,9 @@ namespace Core {
     DirectXDevice* device;
     DirectXInfoQueue* infoQueue;
 
-    DirectXCommandQueue* cmdQueue;
+    DirectXCommandQueue* commandQueue;
     DirectXCommandAllocator* cmdAllocator;
-    DirectXCommandList* cmdList;
+    DirectXCommandList* commandList;
     DirectXSwapChain* swapChain;
     DirectXDepthBuffer* depthBuffer;
 
