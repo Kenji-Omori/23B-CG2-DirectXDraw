@@ -10,6 +10,8 @@ struct IDxcIncludeHandler;
 struct IDxcCompiler3;
 struct IDxcUtils;
 struct IDxcBlob;
+class TimeKeeper;
+
 namespace Core {
   class Window;
   class DirectXSwapChain;
@@ -27,6 +29,7 @@ namespace Core {
   class DirectXDescriptorHeapSRV;
   class DirectXResourceTexture;
   class DirectXDepthBuffer;
+  class ImGuiWrap;
   class DirectXCommon
   {
   public:
@@ -34,6 +37,7 @@ namespace Core {
     ~DirectXCommon();
     void Initialize();
     void Release();
+    void Update();
     void Draw();
   private:
     void PreDraw();
@@ -66,7 +70,8 @@ namespace Core {
     DirectXFence* fence;
 
     DirectXResourceTexture* resourceTexture;
-
+    ImGuiWrap* imgui;
+    TimeKeeper* timeKeeper;
 
 
     Window* window;

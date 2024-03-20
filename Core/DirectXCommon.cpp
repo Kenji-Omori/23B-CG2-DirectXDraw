@@ -26,6 +26,8 @@
 #include <Core/DirectX12/DirectXDescriptorHeapSRV.h>
 #include <Core/DirectX12/DirectXDepthBuffer.h>
 #include <Core/DirectX12/DirectXResourceTexture.h>
+#include <Core/ImGuiWrap.h>
+#include <Core/TimeKeeper.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -51,6 +53,7 @@ Core::DirectXCommon::DirectXCommon(Window* window)
   //rtvDescriptorHeap = nullptr;
   resourceTexture = nullptr;
   depthBuffer = nullptr;
+  imgui = nullptr;
 }
 
 Core::DirectXCommon::~DirectXCommon()
@@ -59,6 +62,7 @@ Core::DirectXCommon::~DirectXCommon()
 
 void Core::DirectXCommon::Initialize()
 {
+  
 
   // Device
   factory = new DirectXFactory(window);
@@ -75,11 +79,10 @@ void Core::DirectXCommon::Initialize()
 
 
   swapChain = new DirectXSwapChain(device,commandQueue,SWAP_CHAIN_BUFFER_NUM);
-//  rtvDescriptorHeap = new DirectXDescriptorHeapRTV(device, swapChain->GetBufferNum());
-  depthBuffer = new DirectXDepthBuffer(device, window);
-  fence = new DirectXFence(device);
-  
 
+  fence = new DirectXFence(device);
+  imgui = new ImGuiWrap(device, swapChain);
+  timeKeeper = new TimeKeeper();
 
 
 
@@ -137,6 +140,12 @@ void Core::DirectXCommon::Release()
 #endif
 }
 
+void Core::DirectXCommon::Update()
+{
+  timeKeeper->Update();
+  if(!timeKeeper->IsNextFrame()){ return; }
+}
+
 void Core::DirectXCommon::Draw()
 {
   PreDraw();
@@ -147,8 +156,7 @@ void Core::DirectXCommon::Draw()
 void Core::DirectXCommon::PreDraw()
 {
   swapChain->PreDraw(commandList);
-
-  
+  imgui->PreDraw();
 
 
 

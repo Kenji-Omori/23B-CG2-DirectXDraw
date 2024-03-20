@@ -6,6 +6,7 @@
 #include <Core/DirectX12/DirectXSwapChainBuffers.h>
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/DirectX12/DirectXCommandList.h>
+#include <Core/DirectX12/DirectXDepthBuffer.h>
 #include <Externals/DirectXTex/d3dx12.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -35,8 +36,8 @@ Core::DirectXSwapChain::DirectXSwapChain(DirectXDevice* device, DirectXCommandQu
   HRESULT hr = factory->CreateSwapChainForHwnd(commandQueue->GetRaw(), window->GetWindowHandle(), &swapChainDesc, nullptr, nullptr, &swapChain1);
   assert(SUCCEEDED(hr));
   swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain));
-  dsvHeap = {};
   buffers = new DirectXSwapChainBuffers(device, this);
+  depthBuffer = new DirectXDepthBuffer(device, window);
 }
 
 Core::DirectXSwapChain::~DirectXSwapChain()
@@ -68,18 +69,14 @@ ID3D12Resource* Core::DirectXSwapChain::GetBackBuffer()
   return buffers->GetBackBuffer();
 }
 
-void Core::DirectXSwapChain::SetDSVHeap(DirectXDescriptorHeap* dsvHeap)
-{
-  this->dsvHeap = dsvHeap;
-}
+
 
 void Core::DirectXSwapChain::PreDraw(DirectXCommandList* commandList)
 {
   commandList->SetResourceBarrier(this);
-  assert(dsvHeap != nullptr);
-  commandList->SetOutputMergeRenderTargets(buffers, dsvHeap, GetCurrentBackBufferIndex());
+  commandList->SetOutputMergeRenderTargets(buffers, depthBuffer, GetCurrentBackBufferIndex());
   commandList->ClearRenderTarget(buffers, GetCurrentBackBufferIndex(), clearColor);
-  commandList->ClearDepthBuffer(dsvHeap);
+  commandList->ClearDepthBuffer(depthBuffer);
 
   commandList->SetResourceViewports(1);
   commandList->SetResourceScissorRects(1);

@@ -55,6 +55,6 @@ Core::DirectXSwapChainBuffers::~DirectXSwapChainBuffers()
 
 ID3D12Resource* Core::DirectXSwapChainBuffers::GetBackBuffer()
 {
-  UINT backbufferIndex = swapChain->GetBufferNum();
+  UINT backbufferIndex = swapChain->GetBufferNum()-1;
     return backBuffers[backbufferIndex].Get();
 }

@@ -103,6 +103,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Core\DirectX12\DirectXDepthBuffer.h" />
     <ClCompile Include="Core\DirectX12\DirectXSwapChainBuffers.cpp" />
     <ClCompile Include="Core\ImGuiWrap.cpp" />
+    <ClCompile Include="Core\TimeKeeper.cpp" />
     <ClCompile Include="Utility\String.cpp" />
     <ClCompile Include="Utility\Debug.cpp" />
     <ClCompile Include="Core\DirectX12\DirectXShader.cpp" />
@@ -157,6 +158,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Core\DirectX12\DirectXSwapChainBuffers.h" />
     <ClInclude Include="Core\ImGuiWrap.h" />
+    <ClInclude Include="Core\TimeKeeper.h" />
     <ClInclude Include="Utility\Type\Color.h" />
     <ClInclude Include="Utility\Type\Transform.h" />
     <ClInclude Include="Utility\Type\Vector3.h" />

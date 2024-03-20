@@ -11,6 +11,7 @@ namespace Core {
   class DirectXDevice;
   class DirectXCommandList;
   class DirectXDescriptorHeap;
+  class DirectXDepthBuffer;
   class DirectXSwapChain
   {
   public:
@@ -21,7 +22,6 @@ namespace Core {
     Microsoft::WRL::ComPtr<IDXGISwapChain4> Get() const;
     UINT GetCurrentBackBufferIndex();
     ID3D12Resource* GetBackBuffer();
-    void SetDSVHeap(DirectXDescriptorHeap* dsvHeap);
     void PreDraw(DirectXCommandList* commandList);
     void PostDraw();
     static const Color clearColor; 
@@ -29,11 +29,11 @@ namespace Core {
     void ClearRenderTarget(DirectXCommandList* commandList);
 
     Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain;
+    DirectXDepthBuffer* depthBuffer;
     DirectXCommandQueue* commandQueue;
     int bufferNum;
     DirectXSwapChainBuffers* buffers;
     DirectXDevice* device;
-    DirectXDescriptorHeap* dsvHeap;
   };
 
 }

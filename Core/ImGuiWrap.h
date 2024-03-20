@@ -10,6 +10,8 @@ namespace Core {
 		ImGuiWrap(DirectXDevice* device, DirectXSwapChain* swapChain);
 		~ImGuiWrap();
 
+		void PreDraw();
+
 	private:
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imguiDescriptorHeap;
 	};

@@ -4,7 +4,7 @@ namespace Core
 {
 	class DirectXDevice;
 	class Window;
-	class DirectXDepthBuffer:DirectXDescriptorHeap
+	class DirectXDepthBuffer:public DirectXDescriptorHeap
 	{
 	public:
 		DirectXDepthBuffer(DirectXDevice* device, Window* window);
