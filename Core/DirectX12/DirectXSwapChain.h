@@ -12,6 +12,7 @@ namespace Core {
   class DirectXCommandList;
   class DirectXDescriptorHeap;
   class DirectXDepthBuffer;
+  class DirectXFence;
   class DirectXSwapChain
   {
   public:
@@ -24,6 +25,9 @@ namespace Core {
     ID3D12Resource* GetBackBuffer();
     void PreDraw(DirectXCommandList* commandList);
     void PostDraw();
+    void Flip(DirectXFence* fence);
+
+
     static const Color clearColor; 
   private:
     void ClearRenderTarget(DirectXCommandList* commandList);

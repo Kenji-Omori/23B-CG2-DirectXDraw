@@ -8,6 +8,7 @@
 #include <Core/DirectX12/DirectXCommandList.h>
 #include <Core/DirectX12/DirectXDepthBuffer.h>
 #include <Externals/DirectXTex/d3dx12.h>
+#include <Core/DirectX12/DirectXFence.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
@@ -69,8 +70,6 @@ ID3D12Resource* Core::DirectXSwapChain::GetBackBuffer()
   return buffers->GetBackBuffer();
 }
 
-
-
 void Core::DirectXSwapChain::PreDraw(DirectXCommandList* commandList)
 {
   commandList->SetResourceBarrier(this);
@@ -84,6 +83,41 @@ void Core::DirectXSwapChain::PreDraw(DirectXCommandList* commandList)
 
 void Core::DirectXSwapChain::PostDraw()
 {
+}
+
+void Core::DirectXSwapChain::Flip(DirectXFence* fence)
+{
+
+  // バッファをフリップ
+  HRESULT result = swapChain->Present(1, 0);
+#ifdef _DEBUG
+  if (FAILED(result)) {
+    Microsoft::WRL::ComPtr<ID3D12DeviceRemovedExtendedData> dred;
+
+    result = device->Get()->QueryInterface(IID_PPV_ARGS(&dred));
+    assert(SUCCEEDED(result));
+
+    // 自動パンくず取得
+    D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT autoBreadcrumbsOutput{};
+    result = dred->GetAutoBreadcrumbsOutput(&autoBreadcrumbsOutput);
+    assert(SUCCEEDED(result));
+  }
+#endif
+
+  // コマンドリストの実行完了を待つ
+  fence->AddFenceValue();
+  // https://shobomaru.wordpress.com/2015/07/12/d3d12-fence/
+  commandQueue->Get()->Signal(fence->Get(), fence->GetFenceValue());
+  if (fence_->GetCompletedValue() != fenceVal_) {
+    HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+    fence_->SetEventOnCompletion(fenceVal_, event);
+    WaitForSingleObject(event, INFINITE);
+    CloseHandle(event);
+  }
+
+  commandAllocator_->Reset(); // キューをクリア
+  commandList_->Reset(commandAllocator_.Get(),
+    nullptr); // 再びコマンドリストを貯める準備
 }
 
 void Core::DirectXSwapChain::ClearRenderTarget(DirectXCommandList* commandList)

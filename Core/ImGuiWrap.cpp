@@ -2,6 +2,7 @@
 #include <Core/Window.h>
 #include <Core/DirectX12/DirectXDevice.h>
 #include <Core/DirectX12/DirectXSwapChain.h>
+#include <Core/DirectX12/DirectXCommandList.h>
 #include <Externals/DirectXTex/d3dx12.h>
 #include <Externals/imgui/imgui.h>
 #include <Externals/imgui/imgui_impl_dx12.h>
@@ -54,4 +55,13 @@ void Core::ImGuiWrap::PreDraw()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+}
+
+void Core::ImGuiWrap::DrawUI(DirectXCommandList* commandList)
+{
+	// imgui描画
+	ImGui::Render();
+
+	commandList->SetDescriptorHeap(imguiDescriptorHeap.Get());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList->GetCommandList());
 }

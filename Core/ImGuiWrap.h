@@ -4,6 +4,7 @@ struct ID3D12DescriptorHeap;
 namespace Core {
 	class DirectXDevice;
 	class DirectXSwapChain;
+	class DirectXCommandList;
 	class ImGuiWrap
 	{
 	public:
@@ -11,6 +12,7 @@ namespace Core {
 		~ImGuiWrap();
 
 		void PreDraw();
+		void DrawUI(DirectXCommandList* commandList);
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imguiDescriptorHeap;

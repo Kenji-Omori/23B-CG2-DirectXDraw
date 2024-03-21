@@ -13,6 +13,7 @@ Core::DirectXFence::DirectXFence(DirectXDevice* device)
   // FenceのSignalを待つためのイベントを作成する
   HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   assert(fenceEvent != nullptr);
+  fenceValue = 0;
 
   //fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 }
@@ -24,4 +25,24 @@ Core::DirectXFence::~DirectXFence()
 void Core::DirectXFence::Release()
 {
   fence->Release();
+}
+
+ID3D12Fence* Core::DirectXFence::Get()
+{
+    return fence.Get();
+}
+
+void Core::DirectXFence::AddFenceValue()
+{
+  fenceValue++;
+}
+
+int Core::DirectXFence::GetFenceValue()
+{
+  return fenceValue;
+}
+
+UINT Core::DirectXFence::GetCompletedValue()
+{
+  return fence->GetCompletedValue();
 }

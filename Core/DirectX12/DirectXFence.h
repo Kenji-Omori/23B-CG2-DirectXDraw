@@ -10,11 +10,13 @@ namespace Core {
     DirectXFence(DirectXDevice* device);
     ~DirectXFence();
     void Release();
-
+    ID3D12Fence* Get();
+    void AddFenceValue();
+    int GetFenceValue();
+    UINT GetCompletedValue();
   private:
     DirectXDevice* device;
     Microsoft::WRL::ComPtr<ID3D12Fence> fence;
-    //HANDLE event;
-  //  HANDLE fenceEvent;
+    UINT fenceValue;
   };
 }

@@ -3,6 +3,7 @@
 
 
 struct ID3D12GraphicsCommandList;
+struct ID3D12DescriptorHeap;
 class Color;
 namespace Core {
   class DirectXDevice;
@@ -15,12 +16,14 @@ namespace Core {
     DirectXCommandList(DirectXDevice* device, DirectXCommandAllocator* allocator);
     ~DirectXCommandList();
     ID3D12GraphicsCommandList* GetCommandList();
-    void SetResourceBarrier(DirectXSwapChain* swapChain, UINT barrierNum=1);
+    void SetResourceBarrier(DirectXSwapChain* swapChain, UINT barrierNum = 1) ;
     void SetOutputMergeRenderTargets(DirectXDescriptorHeap* rtvHeap, DirectXDescriptorHeap* dsvHeap, UINT backBufferIndex);
-    void ClearRenderTarget(DirectXDescriptorHeap* rtvHeap, UINT backBufferIndex, const Color& clearColor);
+    void ClearRenderTarget(DirectXDescriptorHeap* rtvHeap, UINT backBufferIndex,const Color& clearColor);
     void ClearDepthBuffer(DirectXDescriptorHeap* dsvHeap);
     void SetResourceViewports(UINT viewportNum);
     void SetResourceScissorRects(UINT viewportNum);
+    void SetDescriptorHeap(ID3D12DescriptorHeap* descriptorHeap);
+    void SetDescriptorHeap(DirectXDescriptorHeap* descriptorHeap);
     void Close();
     void Release();
 

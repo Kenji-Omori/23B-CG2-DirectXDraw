@@ -32,7 +32,9 @@ ID3D12GraphicsCommandList* Core::DirectXCommandList::GetCommandList()
   return commandList.Get();
 }
 
-void Core::DirectXCommandList::SetResourceBarrier(DirectXSwapChain* swapChain, UINT barrierNum)
+
+
+void Core::DirectXCommandList::SetResourceBarrier(DirectXSwapChain* swapChain, UINT barrierNum)  
 {
   CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
     swapChain->GetBackBuffer(), D3D12_RESOURCE_STATE_RENDER_TARGET,
@@ -55,7 +57,7 @@ void Core::DirectXCommandList::SetOutputMergeRenderTargets(DirectXDescriptorHeap
   commandList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
 }
 
-void Core::DirectXCommandList::ClearRenderTarget(DirectXDescriptorHeap* rtvHeap, UINT backBufferIndex, const Color& clearColor)
+void Core::DirectXCommandList::ClearRenderTarget(DirectXDescriptorHeap* rtvHeap, UINT backBufferIndex,const Color& clearColor)
 {
   float bgColor[] = {
     clearColor.GetR(),
@@ -97,6 +99,17 @@ void Core::DirectXCommandList::SetResourceScissorRects(UINT viewportNum)
   // シザリング矩形の設定
   CD3DX12_RECT rect = CD3DX12_RECT(0, 0, windowResolution.x, windowResolution.y);
   commandList->RSSetScissorRects(viewportNum, &rect);
+}
+
+void Core::DirectXCommandList::SetDescriptorHeap(ID3D12DescriptorHeap* descriptorHeap)
+{
+  ID3D12DescriptorHeap* ppHeaps[] = { descriptorHeap };
+  commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+}
+
+void Core::DirectXCommandList::SetDescriptorHeap(DirectXDescriptorHeap* descriptorHeap)
+{
+  SetDescriptorHeap(descriptorHeap->GetDescriptorHeap());
 }
 
 

@@ -62,61 +62,20 @@ Core::DirectXCommon::~DirectXCommon()
 
 void Core::DirectXCommon::Initialize()
 {
-  
-
   // Device
   factory = new DirectXFactory(window);
   adapter = new DirectXAdapter(factory);
   device = new DirectXDevice(adapter);
-
 
   infoQueue = new DirectXInfoQueue(device);
   cmdAllocator = new DirectXCommandAllocator(device);
   commandList = new DirectXCommandList(device, cmdAllocator);
   commandQueue = new DirectXCommandQueue(device);
 
-
-
-
   swapChain = new DirectXSwapChain(device,commandQueue,SWAP_CHAIN_BUFFER_NUM);
-
   fence = new DirectXFence(device);
   imgui = new ImGuiWrap(device, swapChain);
   timeKeeper = new TimeKeeper();
-
-
-
-  //descriptor(Resources) * (rtv, srv, dsv)
-  //srvDescriptorHeap = new DirectXDescriptorHeapSRV(device, 128);
-
-  //dsv(Depth stencil view)用のDescriptorHeapも
-
-  //int textureHandle = resourceTexture->LoadTexture("./Resources/Texture/uvChecker2.dds");
-  
-
-
-
-
-  
-
-
-
-  //pipeline * ShaderNum;
-  //rootSignature * pipeline
-
-
-
-  //PreDraw
-  //pipeline更新
-  //rootSignature 更新
-  //descriptor(Resources) 更新
-
-  //Draw
-  //各描画処理
-
-
-  //PostDraw
-  //
 
   Utility::Debug::Log("Complete create D3D12Device!!!\n");// 初期化完了のログをだす
 }
@@ -124,13 +83,13 @@ void Core::DirectXCommon::Initialize()
 
 void Core::DirectXCommon::Release()
 {
-  //delete(resourceTexture);
-  //delete(srvDescriptorHeap);
-  //delete(rtvDescriptorHeap);
+  delete(timeKeeper);
+  delete(imgui);
   delete(fence);
+  delete(swapChain);
+  delete(commandQueue);
   delete(commandList);
   delete(cmdAllocator);
-  delete(commandQueue);
   delete(device);
   delete(adapter);
   delete(factory);
@@ -195,7 +154,12 @@ void Core::DirectXCommon::CurDraw()
 }
 void Core::DirectXCommon::PostDraw()
 {
+  imgui->DrawUI(commandList);
+
+  commandList->Close();
   commandQueue->ExcuteCommand(commandList);
+
+  swapChain->Flip();
 }
 
 IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler)
