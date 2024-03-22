@@ -112,6 +112,11 @@ void Core::DirectXCommandList::SetDescriptorHeap(DirectXDescriptorHeap* descript
   SetDescriptorHeap(descriptorHeap->GetDescriptorHeap());
 }
 
+void Core::DirectXCommandList::Reset()
+{
+  commandList->Reset(allocator->GetRaw(), nullptr);
+}
+
 
 void Core::DirectXCommandList::Close()
 {

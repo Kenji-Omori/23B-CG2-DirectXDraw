@@ -62,7 +62,7 @@ namespace Core {
     DirectXInfoQueue* infoQueue;
 
     DirectXCommandQueue* commandQueue;
-    DirectXCommandAllocator* cmdAllocator;
+    DirectXCommandAllocator* commandAllocator;
     DirectXCommandList* commandList;
     DirectXSwapChain* swapChain;
     DirectXDepthBuffer* depthBuffer;

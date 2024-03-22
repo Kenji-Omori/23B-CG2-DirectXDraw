@@ -23,6 +23,11 @@ ID3D12CommandAllocator* Core::DirectXCommandAllocator::GetRaw()
   return allocator.Get();
 }
 
+void Core::DirectXCommandAllocator::Reset()
+{
+  allocator->Reset();
+}
+
 void Core::DirectXCommandAllocator::Release()
 {
   allocator->Release();

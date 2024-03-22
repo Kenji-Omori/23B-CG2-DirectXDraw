@@ -29,7 +29,7 @@ void Core::DirectXFence::Release()
 
 ID3D12Fence* Core::DirectXFence::Get()
 {
-    return fence.Get();
+  return fence.Get();
 }
 
 void Core::DirectXFence::AddFenceValue()
@@ -37,12 +37,26 @@ void Core::DirectXFence::AddFenceValue()
   fenceValue++;
 }
 
-int Core::DirectXFence::GetFenceValue()
+UINT64 Core::DirectXFence::GetFenceValue()
 {
   return fenceValue;
 }
 
-UINT Core::DirectXFence::GetCompletedValue()
+UINT64 Core::DirectXFence::GetCompletedValue()
 {
   return fence->GetCompletedValue();
+}
+
+bool Core::DirectXFence::IsOverFenceValue()
+{
+  return GetCompletedValue() >= fenceValue;
+}
+
+void Core::DirectXFence::WaitForFenceValue()
+{
+  if (!IsOverFenceValue()) { return; }
+  HANDLE fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+  fence->SetEventOnCompletion(fenceValue, fenceEvent);
+  WaitForSingleObject(fenceEvent, INFINITE);
+  CloseHandle(fenceEvent);
 }

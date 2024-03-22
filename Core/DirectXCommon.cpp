@@ -43,7 +43,7 @@ Core::DirectXCommon::DirectXCommon(Window* window)
   factory = nullptr;
   adapter = nullptr;
   device = nullptr;
-  cmdAllocator = nullptr;
+  commandAllocator = nullptr;
   commandList = nullptr;
   commandQueue = nullptr;
   fence = nullptr;
@@ -68,8 +68,8 @@ void Core::DirectXCommon::Initialize()
   device = new DirectXDevice(adapter);
 
   infoQueue = new DirectXInfoQueue(device);
-  cmdAllocator = new DirectXCommandAllocator(device);
-  commandList = new DirectXCommandList(device, cmdAllocator);
+  commandAllocator = new DirectXCommandAllocator(device);
+  commandList = new DirectXCommandList(device, commandAllocator);
   commandQueue = new DirectXCommandQueue(device);
 
   swapChain = new DirectXSwapChain(device,commandQueue,SWAP_CHAIN_BUFFER_NUM);
@@ -89,7 +89,7 @@ void Core::DirectXCommon::Release()
   delete(swapChain);
   delete(commandQueue);
   delete(commandList);
-  delete(cmdAllocator);
+  delete(commandAllocator);
   delete(device);
   delete(adapter);
   delete(factory);
@@ -159,7 +159,12 @@ void Core::DirectXCommon::PostDraw()
   commandList->Close();
   commandQueue->ExcuteCommand(commandList);
 
-  swapChain->Flip();
+  swapChain->Flip(fence);
+
+  commandAllocator->Reset(); // キューをクリア
+  commandList->Reset(); // 再びコマンドリストを貯める準備
+
+  swapChain->Present();
 }
 
 IDxcBlob* Core::DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile, IDxcUtils* dxcUtils, IDxcCompiler3* dxcCompiler, IDxcIncludeHandler* includeHandler)

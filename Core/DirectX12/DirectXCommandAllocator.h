@@ -13,6 +13,7 @@ namespace Core {
 		~DirectXCommandAllocator();
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> Get();
 		ID3D12CommandAllocator* GetRaw();
+		void Reset();
 		void Release();
 	private:
 		DirectXDevice* device;

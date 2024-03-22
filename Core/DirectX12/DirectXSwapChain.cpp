@@ -108,16 +108,14 @@ void Core::DirectXSwapChain::Flip(DirectXFence* fence)
   fence->AddFenceValue();
   // https://shobomaru.wordpress.com/2015/07/12/d3d12-fence/
   commandQueue->Get()->Signal(fence->Get(), fence->GetFenceValue());
-  if (fence_->GetCompletedValue() != fenceVal_) {
-    HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-    fence_->SetEventOnCompletion(fenceVal_, event);
-    WaitForSingleObject(event, INFINITE);
-    CloseHandle(event);
-  }
+  fence->WaitForFenceValue();
 
-  commandAllocator_->Reset(); // キューをクリア
-  commandList_->Reset(commandAllocator_.Get(),
-    nullptr); // 再びコマンドリストを貯める準備
+}
+
+void Core::DirectXSwapChain::Present()
+{
+  swapChain->Present(1, 0);
+  //swapChain->Present1(1,0,nullptr);
 }
 
 void Core::DirectXSwapChain::ClearRenderTarget(DirectXCommandList* commandList)

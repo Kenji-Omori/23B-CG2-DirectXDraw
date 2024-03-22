@@ -26,6 +26,7 @@ namespace Core {
     void PreDraw(DirectXCommandList* commandList);
     void PostDraw();
     void Flip(DirectXFence* fence);
+    void Present();
 
 
     static const Color clearColor; 

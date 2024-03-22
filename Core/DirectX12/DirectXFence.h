@@ -12,11 +12,13 @@ namespace Core {
     void Release();
     ID3D12Fence* Get();
     void AddFenceValue();
-    int GetFenceValue();
-    UINT GetCompletedValue();
+    UINT64 GetFenceValue();
+    UINT64 GetCompletedValue();
+    bool IsOverFenceValue();
+    void WaitForFenceValue();
   private:
     DirectXDevice* device;
     Microsoft::WRL::ComPtr<ID3D12Fence> fence;
-    UINT fenceValue;
+    UINT64 fenceValue;
   };
 }

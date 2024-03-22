@@ -24,6 +24,7 @@ namespace Core {
     void SetResourceScissorRects(UINT viewportNum);
     void SetDescriptorHeap(ID3D12DescriptorHeap* descriptorHeap);
     void SetDescriptorHeap(DirectXDescriptorHeap* descriptorHeap);
+    void Reset();
     void Close();
     void Release();
 
