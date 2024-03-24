@@ -49,8 +49,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   while (!window->IsCallQuitMessage())
   {
-    if (window->IsCallCloseMessage()) { continue; }
     renderer->Draw();
+    if (window->IsCallCloseMessage()) { continue; }
   }
 
   renderer->Release();

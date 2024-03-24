@@ -13,6 +13,7 @@ namespace Core {
 		DirectXDevice(DirectXAdapter* adapter);
 		~DirectXDevice();
 		Microsoft::WRL::ComPtr<ID3D12Device> Get() const;
+		ID3D12Device* GetRaw();
 		DirectXAdapter* GetAdapter() const;
 		DirectXFactory* GetFactory() const;
 		Window* GetWindow() const;

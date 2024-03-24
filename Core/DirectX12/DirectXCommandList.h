@@ -16,7 +16,8 @@ namespace Core {
     DirectXCommandList(DirectXDevice* device, DirectXCommandAllocator* allocator);
     ~DirectXCommandList();
     ID3D12GraphicsCommandList* GetCommandList();
-    void SetResourceBarrier(DirectXSwapChain* swapChain, UINT barrierNum = 1) ;
+    void SetResourceBarrierWriteMode(DirectXSwapChain* swapChain, UINT barrierNum = 1) ;
+    void SetResourceBarrierViewMode(DirectXSwapChain* swapChain, UINT barrierNum = 1) ;
     void SetOutputMergeRenderTargets(DirectXDescriptorHeap* rtvHeap, DirectXDescriptorHeap* dsvHeap, UINT backBufferIndex);
     void ClearRenderTarget(DirectXDescriptorHeap* rtvHeap, UINT backBufferIndex,const Color& clearColor);
     void ClearDepthBuffer(DirectXDescriptorHeap* dsvHeap);

@@ -63,10 +63,19 @@ Core::DirectXCommon::~DirectXCommon()
 void Core::DirectXCommon::Initialize()
 {
   // Device
+  #ifdef _DEBUG
+  Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
+  if(SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+  {
+    debugController->EnableDebugLayer();
+    //debugController->Release();
+  }
+  #endif
+
   factory = new DirectXFactory(window);
   adapter = new DirectXAdapter(factory);
   device = new DirectXDevice(adapter);
-
+   
   infoQueue = new DirectXInfoQueue(device);
   commandAllocator = new DirectXCommandAllocator(device);
   commandList = new DirectXCommandList(device, commandAllocator);
@@ -112,26 +121,77 @@ void Core::DirectXCommon::Draw()
   PostDraw();
 }
 
+#include <Externals/DirectXTex/d3dx12.h>
+#include <Externals/imgui/imgui_impl_win32.h>
+#include <Externals/imgui/imgui_impl_dx12.h>
+#include <d3d12.h>
+#include <dxgi1_6.h>
+
 void Core::DirectXCommon::PreDraw()
 {
+  commandList->SetResourceBarrierWriteMode(swapChain);
   swapChain->PreDraw(commandList);
   imgui->PreDraw();
 
+  //// バックバッファの番号を取得（2つなので0番か1番）
+  //UINT bbIndex = swapChain->Get()->GetCurrentBackBufferIndex();
+  //ID3D12Resource* backBuffer = swapChain->GetBackBuffer();
+  //// リソースバリアを変更（表示状態→描画対象）
+  //CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+  //  backBuffer, D3D12_RESOURCE_STATE_PRESENT,
+  //  D3D12_RESOURCE_STATE_RENDER_TARGET);
+  //commandList->ResourceBarrier(1, &barrier);
 
+  //// レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
+  //CD3DX12_CPU_DESCRIPTOR_HANDLE rtvH = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+  //  rtvHeaps->GetCPUDescriptorHandleForHeapStart(), 
+  //  bbIndex, 
+  //  device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+  //);
+  //// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+  //CD3DX12_CPU_DESCRIPTOR_HANDLE dsvH = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+  //  dsvHeap->GetCPUDescriptorHandleForHeapStart()
+  //);
+  //// レンダーターゲットをセット
+  //commandList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
 
+  //// 全画面クリア
+  //ClearRenderTarget();
+  //// 深度バッファクリア
+  //ClearDepthBuffer();
 
+  //// ビューポートの設定
+  //CD3DX12_VIEWPORT viewport =
+  //  CD3DX12_VIEWPORT(0.0f, 0.0f, float(WinApp::window_width), float(WinApp::window_height));
+  //commandList->RSSetViewports(1, &viewport);
+  //// シザリング矩形の設定
+  //CD3DX12_RECT rect = CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height);
+  //commandList->RSSetScissorRects(1, &rect);
 
+  //// imgui開始
+  //ImGui_ImplDX12_NewFrame();
+  //ImGui_ImplWin32_NewFrame();
+  //ImGui::NewFrame();
 
+  //// 経過時間計測
+  //auto now = std::chrono::steady_clock::now();
+  //deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdate).count() / 1000000.0f;
+  //frameRate = 1.0f / deltaTime;
+  //lastUpdate = now;
 
-
-
-
-
-
-
-
-
-
+  //// FPS,CPU使用率表示
+  //{
+  //  static int count = 0;
+  //  const float FPS_BASIS = 60.0f;
+  //  // 一秒に一度更新
+  //  if (++count > FPS_BASIS) {
+  //    count = 0;
+  //    float cputime = deltaTime - commandWaitTime;
+  //    char str[50];
+  //    sprintf_s(str, "fps=%03.0f cpu usage=%06.2f%%", frameRate, cputime * FPS_BASIS * 100.0f);
+  //    SetWindowTextA(winApp->GetHwnd(), str);
+  //  }
+  //}
 
 
 }
@@ -154,8 +214,8 @@ void Core::DirectXCommon::CurDraw()
 }
 void Core::DirectXCommon::PostDraw()
 {
-  imgui->DrawUI(commandList);
-
+  //imgui->DrawUI(commandList);
+  commandList->SetResourceBarrierViewMode(swapChain);
   commandList->Close();
   commandQueue->ExcuteCommand(commandList);
 

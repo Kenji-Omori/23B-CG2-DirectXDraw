@@ -34,14 +34,24 @@ ID3D12GraphicsCommandList* Core::DirectXCommandList::GetCommandList()
 
 
 
-void Core::DirectXCommandList::SetResourceBarrier(DirectXSwapChain* swapChain, UINT barrierNum)  
+void Core::DirectXCommandList::SetResourceBarrierWriteMode(DirectXSwapChain* swapChain, UINT barrierNum)  
 {
   CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-    swapChain->GetBackBuffer(), D3D12_RESOURCE_STATE_RENDER_TARGET,
+    swapChain->GetCurrentBackBuffer(),
+    D3D12_RESOURCE_STATE_PRESENT,
+    D3D12_RESOURCE_STATE_RENDER_TARGET);
+  commandList->ResourceBarrier(barrierNum, &barrier);
+
+
+}
+
+void Core::DirectXCommandList::SetResourceBarrierViewMode(DirectXSwapChain* swapChain, UINT barrierNum)
+{
+  CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+    swapChain->GetCurrentBackBuffer(),
+    D3D12_RESOURCE_STATE_RENDER_TARGET,
     D3D12_RESOURCE_STATE_PRESENT);
-  commandList->ResourceBarrier(1, &barrier);
-
-
+  commandList->ResourceBarrier(barrierNum, &barrier);
 }
 
 void Core::DirectXCommandList::SetOutputMergeRenderTargets(DirectXDescriptorHeap* rtvHeap, DirectXDescriptorHeap* dsvHeap, UINT backBufferIndex)
@@ -79,7 +89,9 @@ void Core::DirectXCommandList::ClearRenderTarget(DirectXDescriptorHeap* rtvHeap,
 void Core::DirectXCommandList::ClearDepthBuffer(DirectXDescriptorHeap* dsvHeap)
 {
   // 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
-  CD3DX12_CPU_DESCRIPTOR_HANDLE dsvH = CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvHeap->GetCPUDescriptorHandleForHeapStart());
+  CD3DX12_CPU_DESCRIPTOR_HANDLE dsvH = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+    dsvHeap->GetCPUDescriptorHandleForHeapStart()
+  );
   // 深度バッファのクリア
   commandList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }

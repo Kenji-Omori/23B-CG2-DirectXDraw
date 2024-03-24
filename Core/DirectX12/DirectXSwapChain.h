@@ -22,7 +22,7 @@ namespace Core {
     HRESULT GetDesc(DXGI_SWAP_CHAIN_DESC* desc);
     Microsoft::WRL::ComPtr<IDXGISwapChain4> Get() const;
     UINT GetCurrentBackBufferIndex();
-    ID3D12Resource* GetBackBuffer();
+    ID3D12Resource* GetCurrentBackBuffer();
     void PreDraw(DirectXCommandList* commandList);
     void PostDraw();
     void Flip(DirectXFence* fence);

@@ -36,7 +36,7 @@ Core::ImGuiWrap::ImGuiWrap(DirectXDevice* device, DirectXSwapChain* swapChain)
 		assert(0);
 	}
 	if (!ImGui_ImplDX12_Init(
-		device->Get().Get(), swapChainDesc.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, imguiDescriptorHeap.Get(),
+		device->GetRaw(), swapChainDesc.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, imguiDescriptorHeap.Get(),
 		imguiDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
 		imguiDescriptorHeap->GetGPUDescriptorHandleForHeapStart())) {
 		assert(0);

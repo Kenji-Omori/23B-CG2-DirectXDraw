@@ -24,6 +24,7 @@ Core::DirectXSwapChain::DirectXSwapChain(DirectXDevice* device, DirectXCommandQu
 
   DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
+  auto WindowResolution = window->GetResolution();
   swapChainDesc.Width = window->GetResolution().x; // 画面の幅。ウィンドウのクライアント領域を同じものにしておく
   swapChainDesc.Height = window->GetResolution().y;   // 画面の高さ。ウィンドウのクライアント領域を同じものにしておく
   swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;  // 色の形式
@@ -34,9 +35,17 @@ Core::DirectXSwapChain::DirectXSwapChain(DirectXDevice* device, DirectXCommandQu
   swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING; // ティアリングサポート
   // コマンドキュー、ウィンドウハンドル、設定を渡して生成する
   Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
-  HRESULT hr = factory->CreateSwapChainForHwnd(commandQueue->GetRaw(), window->GetWindowHandle(), &swapChainDesc, nullptr, nullptr, &swapChain1);
+  HRESULT hr = factory->CreateSwapChainForHwnd(
+    commandQueue->GetRaw(), 
+    window->GetWindowHandle(), 
+    &swapChainDesc, 
+    nullptr, 
+    nullptr, 
+    &swapChain1
+  );
   assert(SUCCEEDED(hr));
-  swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain));
+//  swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain));
+  swapChain1.As(&swapChain);
   buffers = new DirectXSwapChainBuffers(device, this);
   depthBuffer = new DirectXDepthBuffer(device, window);
 }
@@ -65,25 +74,31 @@ UINT Core::DirectXSwapChain::GetCurrentBackBufferIndex()
   return swapChain->GetCurrentBackBufferIndex();
 }
 
-ID3D12Resource* Core::DirectXSwapChain::GetBackBuffer()
+ID3D12Resource* Core::DirectXSwapChain::GetCurrentBackBuffer()
 {
-  return buffers->GetBackBuffer();
+  return buffers->GetCurrentBackBuffer();
 }
 
 void Core::DirectXSwapChain::PreDraw(DirectXCommandList* commandList)
 {
-  commandList->SetResourceBarrier(this);
   commandList->SetOutputMergeRenderTargets(buffers, depthBuffer, GetCurrentBackBufferIndex());
   commandList->ClearRenderTarget(buffers, GetCurrentBackBufferIndex(), clearColor);
   commandList->ClearDepthBuffer(depthBuffer);
 
   commandList->SetResourceViewports(1);
   commandList->SetResourceScissorRects(1);
+
 }
 
 void Core::DirectXSwapChain::PostDraw()
 {
 }
+
+/*
+D3D12 ERROR: ID3D12CommandQueue::ExecuteCommandLists: Using IDXGISwapChain::Present on Command List (0x000001B0D92F1610:'Internal DXGI CommandList'): Resource state (0x4: D3D12_RESOURCE_STATE_RENDER_TARGET) of resource (0x000001B0D9356770:'Unnamed ID3D12Resource Object') (subresource: 0) is invalid for use as a PRESENT_SOURCE.  Expected State Bits (all): 0x0: D3D12_RESOURCE_STATE_[COMMON|PRESENT], Actual State: 0x4: D3D12_RESOURCE_STATE_RENDER_TARGET, Missing State: 0x0: D3D12_RESOURCE_STATE_[COMMON|PRESENT]. [ EXECUTION ERROR #538: INVALID_SUBRESOURCE_STATE]
+D3D12: **BREAK** enabled for the previous message, which was: [ ERROR EXECUTION #538: INVALID_SUBRESOURCE_STATE ]
+
+*/
 
 void Core::DirectXSwapChain::Flip(DirectXFence* fence)
 {

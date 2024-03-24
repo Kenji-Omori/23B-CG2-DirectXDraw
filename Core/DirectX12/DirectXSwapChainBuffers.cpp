@@ -45,7 +45,7 @@ Core::DirectXSwapChainBuffers::DirectXSwapChainBuffers(DirectXDevice* device, Di
     renderTargetViewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     renderTargetViewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
     // レンダーターゲットビューの生成
-    device->Get()->CreateRenderTargetView(backBuffers[i].Get(), &renderTargetViewDesc, handle);
+    device->Get()->CreateRenderTargetView(backBuffers[i].Get(), nullptr, handle);
   }
 }
 
@@ -53,8 +53,13 @@ Core::DirectXSwapChainBuffers::~DirectXSwapChainBuffers()
 {
 }
 
-ID3D12Resource* Core::DirectXSwapChainBuffers::GetBackBuffer()
+ID3D12Resource* Core::DirectXSwapChainBuffers::GetCurrentBackBuffer()
 {
-  UINT backbufferIndex = swapChain->GetBufferNum()-1;
+  UINT backbufferIndex = swapChain->GetCurrentBackBufferIndex();
     return backBuffers[backbufferIndex].Get();
+}
+
+ID3D12Resource* Core::DirectXSwapChainBuffers::GetBackBuffer(UINT index)
+{
+  return backBuffers[index].Get();
 }

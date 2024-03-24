@@ -14,8 +14,6 @@ Core::DirectXFence::DirectXFence(DirectXDevice* device)
   HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   assert(fenceEvent != nullptr);
   fenceValue = 0;
-
-  //fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 Core::DirectXFence::~DirectXFence()

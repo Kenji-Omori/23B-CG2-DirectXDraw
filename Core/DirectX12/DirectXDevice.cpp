@@ -41,6 +41,11 @@ Microsoft::WRL::ComPtr <ID3D12Device> Core::DirectXDevice::Get() const
   return device;
 }
 
+ID3D12Device* Core::DirectXDevice::GetRaw()
+{
+  return device.Get();
+}
+
 Core::DirectXAdapter* Core::DirectXDevice::GetAdapter() const
 {
     return adapter;
