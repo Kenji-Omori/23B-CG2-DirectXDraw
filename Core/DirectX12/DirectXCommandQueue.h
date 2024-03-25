@@ -5,6 +5,7 @@ struct ID3D12CommandQueue;
 namespace Core {
 	class DirectXDevice;
 	class DirectXCommandList;
+	class DirectXFence;
 	class DirectXCommandQueue
 	{
 	public:
@@ -13,6 +14,7 @@ namespace Core {
 		void Release();
 		Microsoft::WRL::ComPtr<ID3D12CommandQueue> Get();
 		ID3D12CommandQueue* GetRaw();
+		void WaitForFin(DirectXFence* fence);
 		void ExcuteCommand(DirectXCommandList* commandList) const;
 	private:
 		Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue;

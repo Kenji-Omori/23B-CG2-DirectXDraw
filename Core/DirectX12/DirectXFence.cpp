@@ -7,13 +7,12 @@
 Core::DirectXFence::DirectXFence(DirectXDevice* device)
 {
   this->device = device;
-  uint64_t fenceValue = 0;
+  fenceValue = 0;
   HRESULT hr = device->Get()->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
   assert(SUCCEEDED(hr));
   // FenceのSignalを待つためのイベントを作成する
   HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   assert(fenceEvent != nullptr);
-  fenceValue = 0;
 }
 
 Core::DirectXFence::~DirectXFence()
@@ -49,10 +48,10 @@ bool Core::DirectXFence::IsOverFenceValue()
 {
   return GetCompletedValue() >= fenceValue;
 }
-
-void Core::DirectXFence::WaitForFenceValue()
+#include <Utility/Debug.h>
+void Core::DirectXFence::WaitForFin()
 {
-  if (!IsOverFenceValue()) { return; }
+  if (IsOverFenceValue()) { return; }
   HANDLE fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
   fence->SetEventOnCompletion(fenceValue, fenceEvent);
   WaitForSingleObject(fenceEvent, INFINITE);

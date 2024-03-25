@@ -63,25 +63,25 @@ Core::DirectXCommon::~DirectXCommon()
 void Core::DirectXCommon::Initialize()
 {
   // Device
-  #ifdef _DEBUG
+#ifdef _DEBUG
   Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
-  if(SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+  if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
   {
     debugController->EnableDebugLayer();
     //debugController->Release();
   }
-  #endif
+#endif
 
   factory = new DirectXFactory(window);
   adapter = new DirectXAdapter(factory);
   device = new DirectXDevice(adapter);
-   
+
   infoQueue = new DirectXInfoQueue(device);
   commandAllocator = new DirectXCommandAllocator(device);
   commandList = new DirectXCommandList(device, commandAllocator);
   commandQueue = new DirectXCommandQueue(device);
 
-  swapChain = new DirectXSwapChain(device,commandQueue,SWAP_CHAIN_BUFFER_NUM);
+  swapChain = new DirectXSwapChain(device, commandQueue, SWAP_CHAIN_BUFFER_NUM);
   fence = new DirectXFence(device);
   imgui = new ImGuiWrap(device, swapChain);
   timeKeeper = new TimeKeeper();
@@ -111,7 +111,7 @@ void Core::DirectXCommon::Release()
 void Core::DirectXCommon::Update()
 {
   timeKeeper->Update();
-  if(!timeKeeper->IsNextFrame()){ return; }
+  if (!timeKeeper->IsNextFrame()) { return; }
 }
 
 void Core::DirectXCommon::Draw()
@@ -214,13 +214,11 @@ void Core::DirectXCommon::CurDraw()
 }
 void Core::DirectXCommon::PostDraw()
 {
-  //imgui->DrawUI(commandList);
+  imgui->DrawUI(commandList);
   commandList->SetResourceBarrierViewMode(swapChain);
   commandList->Close();
   commandQueue->ExcuteCommand(commandList);
-
-  swapChain->Flip(fence);
-
+  commandQueue->WaitForFin(fence);
   commandAllocator->Reset(); // キューをクリア
   commandList->Reset(); // 再びコマンドリストを貯める準備
 

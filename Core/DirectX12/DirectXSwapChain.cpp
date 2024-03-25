@@ -104,32 +104,46 @@ void Core::DirectXSwapChain::Flip(DirectXFence* fence)
 {
 
   // バッファをフリップ
-  HRESULT result = swapChain->Present(1, 0);
-#ifdef _DEBUG
-  if (FAILED(result)) {
-    Microsoft::WRL::ComPtr<ID3D12DeviceRemovedExtendedData> dred;
-
-    result = device->Get()->QueryInterface(IID_PPV_ARGS(&dred));
-    assert(SUCCEEDED(result));
-
-    // 自動パンくず取得
-    D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT autoBreadcrumbsOutput{};
-    result = dred->GetAutoBreadcrumbsOutput(&autoBreadcrumbsOutput);
-    assert(SUCCEEDED(result));
-  }
-#endif
+  //HRESULT result = swapChain->Present(1, 0);
+//#ifdef _DEBUG
+//  if (FAILED(result)) {
+//    Microsoft::WRL::ComPtr<ID3D12DeviceRemovedExtendedData> dred;
+//
+//    result = device->Get()->QueryInterface(IID_PPV_ARGS(&dred));
+//    assert(SUCCEEDED(result));
+//
+//    // 自動パンくず取得
+//    D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT autoBreadcrumbsOutput{};
+//    result = dred->GetAutoBreadcrumbsOutput(&autoBreadcrumbsOutput);
+//    assert(SUCCEEDED(result));
+//  }
+//#endif
 
   // コマンドリストの実行完了を待つ
   fence->AddFenceValue();
   // https://shobomaru.wordpress.com/2015/07/12/d3d12-fence/
   commandQueue->Get()->Signal(fence->Get(), fence->GetFenceValue());
-  fence->WaitForFenceValue();
+  fence->WaitForFin();
 
 }
 
 void Core::DirectXSwapChain::Present()
 {
-  swapChain->Present(1, 0);
+  HRESULT result = swapChain->Present(1, 0);
+
+  #ifdef _DEBUG
+    if (FAILED(result)) {
+      Microsoft::WRL::ComPtr<ID3D12DeviceRemovedExtendedData> dred;
+  
+      result = device->Get()->QueryInterface(IID_PPV_ARGS(&dred));
+      assert(SUCCEEDED(result));
+  
+      // 自動パンくず取得
+      D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT autoBreadcrumbsOutput{};
+      result = dred->GetAutoBreadcrumbsOutput(&autoBreadcrumbsOutput);
+      assert(SUCCEEDED(result));
+    }
+  #endif
   //swapChain->Present1(1,0,nullptr);
 }
 

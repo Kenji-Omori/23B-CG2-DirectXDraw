@@ -15,7 +15,7 @@ namespace Core {
     UINT64 GetFenceValue();
     UINT64 GetCompletedValue();
     bool IsOverFenceValue();
-    void WaitForFenceValue();
+    void WaitForFin();
   private:
     DirectXDevice* device;
     Microsoft::WRL::ComPtr<ID3D12Fence> fence;
