@@ -24,6 +24,7 @@ namespace Core {
     const HWND& GetWindowHandle();
     bool IsCallCloseMessage();
     bool IsCallQuitMessage();
+    const HINSTANCE& GetWindowInstance();
 
 
   private:

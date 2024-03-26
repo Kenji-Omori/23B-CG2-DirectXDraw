@@ -48,7 +48,7 @@ bool Core::DirectXFence::IsOverFenceValue()
 {
   return GetCompletedValue() >= fenceValue;
 }
-#include <Utility/Debug.h>
+
 void Core::DirectXFence::WaitForFin()
 {
   if (IsOverFenceValue()) { return; }

@@ -50,7 +50,7 @@ void Core::Window::SetResolution(int width, int height)
 {
   rect = { 0,0,0,0 };
   AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU, false);
-  rect = { rect.left, rect.top, rect.left + width, rect.top + height };
+//  rect = { rect.left, rect.top, rect.left + width, rect.top + height };
 }
 
 void Core::Window::Show()
@@ -93,6 +93,11 @@ bool Core::Window::IsCallCloseMessage()
 bool Core::Window::IsCallQuitMessage()
 {
   return msg.message == WM_QUIT;
+}
+
+const HINSTANCE& Core::Window::GetWindowInstance()
+{
+  return wc.hInstance;
 }
 
 
