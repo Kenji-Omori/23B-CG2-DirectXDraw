@@ -27,6 +27,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
+#include <Utility/Input.h>
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -38,6 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   OutputDebugStringA("Hello, DirectX!\n");
   Core::Window* window;
   Core::DirectXCommon* renderer;
+  Input* input = Input::GetInstance();
   
   window = new Core::Window();
   window->Initialize();
@@ -49,6 +51,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   while (!window->IsCallQuitMessage())
   {
+    input->Update();
     renderer->Draw();
     if (window->IsCallCloseMessage()) { continue; }
   }

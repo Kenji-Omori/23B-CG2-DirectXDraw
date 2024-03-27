@@ -1,6 +1,10 @@
 #include "Input.h"
 #include <Core/Window.h>
+//#include <dinput.h>
 #include <cassert>
+
+#pragma comment(lib, "dinput8.lib")
+
 
 void Input::Initialize(Core::Window* window)
 {

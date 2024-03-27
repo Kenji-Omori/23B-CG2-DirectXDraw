@@ -25,7 +25,6 @@ namespace Core {
     ID3D12Resource* GetCurrentBackBuffer();
     void PreDraw(DirectXCommandList* commandList);
     void PostDraw();
-    void Flip(DirectXFence* fence);
     void Present();
 
 

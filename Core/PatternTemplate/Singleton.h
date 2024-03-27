@@ -3,31 +3,29 @@
 
 namespace Core
 {
-	template<class T = int>
+	template<class T>
 	class Singleton {
 	public:
 
 	static T* GetInstance() {
-		if (isntance == nullptr) { CreateInstance(); }
-		return isntance;
+		if (isntance_ == nullptr) { CreateInstance(); }
+		return isntance_;
 	}
 
 
 
 	protected:
-		Singleton() {}
+		Singleton() = default;
+		const Singleton& operator=(const Singleton& other) {}
+		Singleton(const Singleton& other) = delete;
 
 	private:
-		static T* isntance;
-		Singleton() = default;
-		Singleton(const Singleton& other) = delete;
-		T& operator=(const T&) = delete;
+		static T* isntance_;
+//		T& operator=(const T&) = delete;
 
-		const Singleton& operator=(const Singleton& other) {}
 		static void CreateInstance() {
-			isntance = new T();
+			isntance_ = new T();
 		}
-
 	};
-
 }
+

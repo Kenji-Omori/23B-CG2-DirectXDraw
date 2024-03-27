@@ -24,7 +24,9 @@ namespace Core
 	class Window;
 }
 
-class Input: public Core::Singleton<Input>
+
+
+class Input : public Core::Singleton<Input>
 {
 public:
 	void Initialize(Core::Window* window);
@@ -36,6 +38,8 @@ public:
 	bool IsClick(MouseButton button);
 	bool IsClickDown(MouseButton button);
 	bool IsClickUp(MouseButton button);
+	Input():Singleton() {}
+	~Input() {}
 private:
 	void SetupDevice(Core::Window* window);
 	void SetupKeyboard(Core::Window* window);
@@ -52,6 +56,8 @@ private:
 	DIMOUSESTATE2 curMouse = {};
 	DIMOUSESTATE2 preMouse = {};
 
-	Vector2Int mousePosition;
+	Vector2Int mousePosition = {};
 
 };
+
+Input* Core::Singleton<Input>::isntance_ = nullptr;
