@@ -40,7 +40,7 @@ bool Input::IsKeyRelease(KeyCode key)
 
 BYTE Input::KeycodeToByte(KeyCode key)
 {
-  return 0;
+  return BYTE(key);
 }
 
 bool Input::IsClick(MouseButton button)
@@ -110,6 +110,7 @@ void Input::UpdateKeyboard()
   memcpy(preKey, curKey, sizeof(curKey));
   // キーの入力
   hr = keyboard->GetDeviceState(sizeof(curKey), curKey);
+  auto k = DIK_UP;
 }
 
 void Input::UpdateMouse()
